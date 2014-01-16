@@ -1,0 +1,30 @@
+Script wurde gestartet: Do 16 Jan 2014 15:22:50 CET
+use node version supported by could9
+set IP and PORT environment
+cherish reverse-i-search
+broken keyboard key symbols for kuckuck: |<>
+]0;adrian@tanga: ~/eclipse-orion-ws/ad/adrian/OrionContent/SnapperFirefoxadrian@tanga:~/eclipse-orion-ws/ad/adrian/OrionContent/SnapperFirefox$ cd Snappe r
+]0;adrian@tanga: ~/eclipse-orion-ws/ad/adrian/OrionContent/SnapperFirefox/Snapperadrian@tanga:~/eclipse-orion-ws/ad/adrian/OrionContent/SnapperFirefox/Snapper$ p ushd ../../addon-sdk
+~/eclipse-orion-ws/ad/adrian/OrionContent/addon-sdk ~/eclipse-orion-ws/ad/adrian/OrionContent/SnapperFirefox/Snapper
+]0;adrian@tanga: ~/eclipse-orion-ws/ad/adrian/OrionContent/addon-sdkadrian@tanga:~/eclipse-orion-ws/ad/adrian/OrionContent/addon-sdk$ bin/activate.bin/activate bin/activate [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C
+
+Welcome to the Add-on SDK. For the docs, visit https://addons.mozilla.org/en-US/developers/docs/sdk/latest/
+]0;adrian@tanga: ~/eclipse-orion-ws/ad/adrian/OrionContent/addon-sdk(addon-sdk)adrian@tanga:~/eclipse-orion-ws/ad/adrian/OrionContent/addon-sdk$ pop d
+~/eclipse-orion-ws/ad/adrian/OrionContent/SnapperFirefox/Snapper
+]0;adrian@tanga: ~/eclipse-orion-ws/ad/adrian/OrionContent/SnapperFirefox/Snapper(addon-sdk)adrian@tanga:~/eclipse-orion-ws/ad/adrian/OrionContent/SnapperFirefox//Snapper$ cfx init
+* lib directory created
+* data directory created
+* test directory created
+* doc directory created
+* README.md written
+* generated jID automatically: jid1-HE38Y6vsW9TpHg
+* package.json written
+* test/test-main.js written
+* lib/main.js written
+* doc/main.md written
+
+Your sample add-on is now ready.
+Do "cfx test" to test it and "cfx run" to try it.  Have fun!
+]0;adrian@tanga: ~/eclipse-orion-ws/ad/adrian/OrionContent/SnapperFirefox/Snapper(addon-sdk)adrian@tanga:~/eclipse-orion-ws/ad/adrian/OrionContent/SnapperFirefox//Snapper$ exit
+
+Script beendet: Do 16 Jan 2014 15:23:57 CET
