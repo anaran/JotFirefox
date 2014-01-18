@@ -1,0 +1,16 @@
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk\examples\toolbar-api>cfx run -a fennec-on-device --mobile-app fennec --force-mobile -b "C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk\platform-tools\adb.exe"
+Launching mobile application with intent name org.mozilla.fennec
+Killing running Firefox instance ...
+Pushing the addon to your device
+Starting: Intent { act=android.activity.MAIN cmp=org.mozilla.fennec/.App (has extras) }
+Traceback (most recent call last):
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\bin\cfx", line 33, in <module>
+    cuddlefish.run()
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 925, in run
+    pkgdir=options.pkgdir)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\runner.py", line 612, in run_app
+    line = p.stdout.readline()
+KeyboardInterrupt
+Batchvorgang abbrechen (J/N)? j
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk\examples\toolbar-api>

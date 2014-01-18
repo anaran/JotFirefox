@@ -1,0 +1,759 @@
+;; This buffer is for notes you don't want to save, and for Lisp evaluation.
+;; If you want to create a file, visit that file with C-x C-f,
+;; then enter the text in that file's own buffer.
+
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>dir
+ Datenträger in Laufwerk C: ist Kuckuck Main Disk
+ Volumeseriennummer: 901E-E9E7
+
+ Verzeichnis von C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk
+
+17.01.2014  16:16    <DIR>          .
+17.01.2014  16:16    <DIR>          ..
+17.01.2014  16:16    <DIR>          add-ons
+31.12.2013  12:36    <DIR>          build-tools
+31.12.2013  12:36    <DIR>          extras
+31.12.2013  12:37    <DIR>          platform-tools
+31.12.2013  12:37    <DIR>          platforms
+31.12.2013  12:37    <DIR>          system-images
+31.12.2013  12:39    <DIR>          tools
+               0 Datei(en)              0 Bytes
+               9 Verzeichnis(se), 30.123.307.008 Bytes frei
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>adb
+Der Befehl "adb" ist entweder falsch geschrieben oder
+konnte nicht gefunden werden.
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>PATH="C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\and
+roid-studio\sdk\platform-tools";%PATH%
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>adb devices
+List of devices attached
+
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>adb kill-server
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>adb start-server
+* daemon not running. starting it now on port 5037 *
+* daemon started successfully *
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>adb devices
+List of devices attached
+
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>adb devices -l
+List of devices attached
+
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>adb usb
+error: device not found
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>adb devices -l
+List of devices attached
+
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>adb devices -l
+List of devices attached
+014E0F5207012017       device product:yakju model:Galaxy_Nexus device:maguro
+
+
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>
+C:\Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk>cd %HOME%
+
+C:\Users\AichnerAd>cd tmp\mozilla\addon-sdk
+
+C:\Users\AichnerAd\tmp\mozilla\addon-sdk>dir
+ Datenträger in Laufwerk C: ist Kuckuck Main Disk
+ Volumeseriennummer: 901E-E9E7
+
+ Verzeichnis von C:\Users\AichnerAd\tmp\mozilla\addon-sdk
+
+15.01.2014  18:30    <DIR>          .
+15.01.2014  18:30    <DIR>          ..
+14.01.2014  17:34    <DIR>          .git
+14.01.2014  17:34               147 .gitattributes
+14.01.2014  17:34               241 .gitignore
+14.01.2014  17:34               328 .hgignore
+14.01.2014  17:34             2.976 .hgtags
+15.01.2014  18:30    <DIR>          .test_tmp
+14.01.2014  17:34    <DIR>          app-extension
+14.01.2014  17:34    <DIR>          bin
+14.01.2014  17:34    <DIR>          examples
+14.01.2014  17:34    <DIR>          lib
+14.01.2014  17:34               800 LICENSE
+14.01.2014  17:34             2.608 mapping.json
+14.01.2014  17:34               269 package.json
+14.01.2014  17:48    <DIR>          python-lib
+14.01.2014  17:34             1.258 README
+14.01.2014  17:34    <DIR>          test
+               8 Datei(en)          8.627 Bytes
+              10 Verzeichnis(se), 30.125.010.944 Bytes frei
+
+C:\Users\AichnerAd\tmp\mozilla\addon-sdk>bin\activate
+Welcome to the Add-on SDK. For the docs, visit https://addons.mozilla.org/en-US/developers/docs/sdk/latest/
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>pushd cd C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads
+Die Syntax für den Dateinamen, Verzeichnisnamen oder die Datenträgerbezeichnung ist falsch.
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>pushd C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads>pwd
+/cygdrive/c/Dokumente und Einstellungen/AichnerAd/Eigene Dateien/Downloads
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads>cd "snapper(2)"
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)>dir
+ Datenträger in Laufwerk C: ist Kuckuck Main Disk
+ Volumeseriennummer: 901E-E9E7
+
+ Verzeichnis von C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)
+
+17.01.2014  15:43    <DIR>          .
+17.01.2014  15:43    <DIR>          ..
+17.01.2014  15:46    <DIR>          snapper
+               0 Datei(en)              0 Bytes
+               3 Verzeichnis(se), 30.125.006.848 Bytes frei
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)>cd snapper
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>dir
+ Datenträger in Laufwerk C: ist Kuckuck Main Disk
+ Volumeseriennummer: 901E-E9E7
+
+ Verzeichnis von C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper
+
+17.01.2014  15:46    <DIR>          .
+17.01.2014  15:46    <DIR>          ..
+17.01.2014  15:43    <DIR>          lib
+17.01.2014  15:43               302 package.json
+17.01.2014  15:46             7.850 snapper.xpi
+               2 Datei(en)          8.152 Bytes
+               3 Verzeichnis(se), 30.125.006.848 Bytes frei
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>echo cfx run  -a fennec-on-device -b /path/to/adb --mobile-app fennec --
+force-mobile
+cfx run  -a fennec-on-device -b /path/to/adb --mobile-app fennec --force-mobile
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper> cfx run  -a fennec-on-device --mobile-app fennec --force-mobile
+Warning: Use of deprecated require path:
+  In C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper\lib\main.js:7:
+    require('tabs').
+  New path should be:
+    require('sdk/tabs')
+Warning: Use of deprecated require path:
+  In C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper\lib\main.js:6:
+    require('widget').
+  New path should be:
+    require('sdk/widget')
+
+A given cfx option has an inappropriate value:
+  You have to define `--binary` option set to the path to your ADB executable.
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper> cfx run  -a fennec-on-device --mobile-app fennec --force-mobile -b "C:\
+Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk\platform-tools\adb.exe"
+Warning: Use of deprecated require path:
+  In C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper\lib\main.js:7:
+    require('tabs').
+  New path should be:
+    require('sdk/tabs')
+Warning: Use of deprecated require path:
+  In C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper\lib\main.js:6:
+    require('widget').
+  New path should be:
+    require('sdk/widget')
+Launching mobile application with intent name org.mozilla.fennec
+Killing running Firefox instance ...
+Pushing the addon to your device
+rm failed for /mnt/sdcard/jetpack-profile, No such file or directory
+Starting: Intent { act=android.activity.MAIN cmp=org.mozilla.fennec/.App (has extras) }
+Program terminated successfully.
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper> cfx run  -a fennec-on-device --mobile-app fennec --force-mobile -b "C:\
+Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk\platform-tools\adb.exe"
+Warning: Use of deprecated require path:
+  In C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper\lib\main.js:7:
+    require('tabs').
+  New path should be:
+    require('sdk/tabs')
+Warning: Use of deprecated require path:
+  In C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper\lib\main.js:6:
+    require('widget').
+  New path should be:
+    require('sdk/widget')
+error: device not found
+
+A given cfx option has an inappropriate value:
+  Unable to found any Firefox application on your device.
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>adb devices -l
+List of devices attached
+
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>adb devices -l
+List of devices attached
+
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>adb devices -l
+List of devices attached
+
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>adb devices -l
+List of devices attached
+014E0F5207012017       device product:yakju model:Galaxy_Nexus device:maguro
+
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>adb devices -l
+List of devices attached
+014E0F5207012017       device product:yakju model:Galaxy_Nexus device:maguro
+
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>adb devices -l
+List of devices attached
+014E0F5207012017       device product:yakju model:Galaxy_Nexus device:maguro
+
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>adb devices -l
+List of devices attached
+014E0F5207012017       device product:yakju model:Galaxy_Nexus device:maguro
+
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper> cfx run  -a fennec-on-device --mobile-app fennec --force-mobile -b "C:\
+Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk\platform-tools\adb.exe"
+Warning: Use of deprecated require path:
+  In C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper\lib\main.js:7:
+    require('tabs').
+  New path should be:
+    require('sdk/tabs')
+Warning: Use of deprecated require path:
+  In C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper\lib\main.js:6:
+    require('widget').
+  New path should be:
+    require('sdk/widget')
+Launching mobile application with intent name org.mozilla.fennec
+Killing running Firefox instance ...
+Pushing the addon to your device
+Starting: Intent { act=android.activity.MAIN cmp=org.mozilla.fennec/.App (has extras) }
+Traceback (most recent call last):
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\bin\cfx", line 33, in <module>
+    cuddlefish.run()
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 923, in run
+    pkgdir=options.pkgdir)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\runner.py", line 612, in run_app
+    line = p.stdout.readline()
+KeyboardInterrupt
+Batchvorgang abbrechen (J/N)? y
+Batchvorgang abbrechen (J/N)? y
+Batchvorgang abbrechen (J/N)? y
+Batchvorgang abbrechen (J/N)? j
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>popd
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>cd ..
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla>cd SnapperFirefox\Snapper
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\SnapperFirefox\Snapper>dir
+ Datenträger in Laufwerk C: ist Kuckuck Main Disk
+ Volumeseriennummer: 901E-E9E7
+
+ Verzeichnis von C:\Users\AichnerAd\tmp\mozilla\SnapperFirefox\Snapper
+
+17.01.2014  11:45    <DIR>          .
+17.01.2014  11:45    <DIR>          ..
+16.01.2014  23:55    <DIR>          doc
+16.01.2014  23:40    <DIR>          lib
+16.01.2014  16:10               172 package.json
+16.01.2014  16:10                 0 README.md
+17.01.2014  11:45    <DIR>          snapper
+17.01.2014  11:24             7.734 snapper.xpi
+17.01.2014  11:24             7.734 snapper.zip
+16.01.2014  16:10    <DIR>          test
+               4 Datei(en)         15.640 Bytes
+               6 Verzeichnis(se), 30.124.699.648 Bytes frei
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\SnapperFirefox\Snapper> cfx run  -a fennec-on-device --mobile-app fennec --force-mobile -b "C:\Dokumente und Einstellungen\Aic
+hnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk\platform-tools\adb.exe"
+Launching mobile application with intent name org.mozilla.fennec
+Killing running Firefox instance ...
+Pushing the addon to your device
+Starting: Intent { act=android.activity.MAIN cmp=org.mozilla.fennec/.App (has extras) }
+Traceback (most recent call last):
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\bin\cfx", line 33, in <module>
+    cuddlefish.run()
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 923, in run
+    pkgdir=options.pkgdir)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\runner.py", line 612, in run_app
+    line = p.stdout.readline()
+KeyboardInterrupt
+Batchvorgang abbrechen (J/N)? j
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\SnapperFirefox\Snapper> cfx xpi  -a fennec-on-device --mobile-app fennec --force-mobile -b "C:\Dokumente und Einstellungen\Aic
+hnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk\platform-tools\adb.exe"
+Exporting extension to snapper.xpi.
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\SnapperFirefox\Snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\SnapperFirefox\Snapper>adb
+Android Debug Bridge version 1.0.31
+
+ -a                            - directs adb to listen on all interfaces for a connection
+ -d                            - directs command to the only connected USB device
+                                 returns an error if more than one USB device is present.
+ -e                            - directs command to the only running emulator.
+                                 returns an error if more than one emulator is running.
+ -s <specific device>          - directs command to the device or emulator with the given
+                                 serial number or qualifier. Overrides ANDROID_SERIAL
+                                 environment variable.
+ -p <product name or path>     - simple product name like 'sooner', or
+                                 a relative/absolute path to a product
+                                 out directory like 'out/target/product/sooner'.
+                                 If -p is not specified, the ANDROID_PRODUCT_OUT
+                                 environment variable is used, which must
+                                 be an absolute path.
+ -H                            - Name of adb server host (default: localhost)
+ -P                            - Port of adb server (default: 5037)
+ devices [-l]                  - list all connected devices
+                                 ('-l' will also list device qualifiers)
+ connect <host>[:<port>]       - connect to a device via TCP/IP
+                                 Port 5555 is used by default if no port number is specified.
+ disconnect [<host>[:<port>]]  - disconnect from a TCP/IP device.
+                                 Port 5555 is used by default if no port number is specified.
+                                 Using this command with no additional arguments
+                                 will disconnect from all connected TCP/IP devices.
+
+device commands:
+  adb push <local> <remote>    - copy file/dir to device
+  adb pull <remote> [<local>]  - copy file/dir from device
+  adb sync [ <directory> ]     - copy host->device only if changed
+                                 (-l means list but don't copy)
+                                 (see 'adb help all')
+  adb shell                    - run remote shell interactively
+  adb shell <command>          - run remote shell command
+  adb emu <command>            - run emulator console command
+  adb logcat [ <filter-spec> ] - View device log
+  adb forward --list           - list all forward socket connections.
+                                 the format is a list of lines with the following format:
+                                    <serial> " " <local> " " <remote> "\n"
+  adb forward <local> <remote> - forward socket connections
+                                 forward specs are one of:
+                                   tcp:<port>
+                                   localabstract:<unix domain socket name>
+                                   localreserved:<unix domain socket name>
+                                   localfilesystem:<unix domain socket name>
+                                   dev:<character device name>
+                                   jdwp:<process pid> (remote only)
+  adb forward --no-rebind <local> <remote>
+                               - same as 'adb forward <local> <remote>' but fails
+                                 if <local> is already forwarded
+  adb forward --remove <local> - remove a specific forward socket connection
+  adb forward --remove-all     - remove all forward socket connections
+  adb jdwp                     - list PIDs of processes hosting a JDWP transport
+  adb install [-l] [-r] [-s] [--algo <algorithm name> --key <hex-encoded key> --iv <hex-encoded iv>] <file>
+                               - push this package file to the device and install it
+                                 ('-l' means forward-lock the app)
+                                 ('-r' means reinstall the app, keeping its data)
+                                 ('-s' means install on SD card instead of internal storage)
+                                 ('--algo', '--key', and '--iv' mean the file is encrypted already)
+  adb uninstall [-k] <package> - remove this app package from the device
+                                 ('-k' means keep the data and cache directories)
+  adb bugreport                - return all information from the device
+                                 that should be included in a bug report.
+
+  adb backup [-f <file>] [-apk|-noapk] [-obb|-noobb] [-shared|-noshared] [-all] [-system|-nosystem] [<packages...>]
+                               - write an archive of the device's data to <file>.
+                                 If no -f option is supplied then the data is written
+                                 to "backup.ab" in the current directory.
+                                 (-apk|-noapk enable/disable backup of the .apks themselves
+                                    in the archive; the default is noapk.)
+                                 (-obb|-noobb enable/disable backup of any installed apk expansion
+                                    (aka .obb) files associated with each application; the default
+                                    is noobb.)
+                                 (-shared|-noshared enable/disable backup of the device's
+                                    shared storage / SD card contents; the default is noshared.)
+                                 (-all means to back up all installed applications)
+                                 (-system|-nosystem toggles whether -all automatically includes
+                                    system applications; the default is to include system apps)
+                                 (<packages...> is the list of applications to be backed up.  If
+                                    the -all or -shared flags are passed, then the package
+                                    list is optional.  Applications explicitly given on the
+                                    command line will be included even if -nosystem would
+                                    ordinarily cause them to be omitted.)
+
+  adb restore <file>           - restore device contents from the <file> backup archive
+
+  adb help                     - show this help message
+  adb version                  - show version num
+
+scripting:
+  adb wait-for-device          - block until device is online
+  adb start-server             - ensure that there is a server running
+  adb kill-server              - kill the server if it is running
+  adb get-state                - prints: offline | bootloader | device
+  adb get-serialno             - prints: <serial-number>
+  adb get-devpath              - prints: <device-path>
+  adb status-window            - continuously print device status for a specified device
+  adb remount                  - remounts the /system partition on the device read-write
+  adb reboot [bootloader|recovery] - reboots the device, optionally into the bootloader or recovery program
+  adb reboot-bootloader        - reboots the device into the bootloader
+  adb root                     - restarts the adbd daemon with root permissions
+  adb usb                      - restarts the adbd daemon listening on USB
+  adb tcpip <port>             - restarts the adbd daemon listening on TCP on the specified port
+networking:
+  adb ppp <tty> [parameters]   - Run PPP over USB.
+ Note: you should not automatically start a PPP connection.
+ <tty> refers to the tty for PPP stream. Eg. dev:/dev/omap_csmi_tty1
+ [parameters] - Eg. defaultroute debug dump local notty usepeerdns
+
+adb sync notes: adb sync [ <directory> ]
+  <localdir> can be interpreted in several ways:
+
+  - If <directory> is not specified, both /system and /data partitions will be updated.
+
+  - If it is "system" or "data", only the corresponding partition
+    is updated.
+
+environmental variables:
+  ADB_TRACE                    - Print debug information. A comma separated list of the following values
+                                 1 or all, adb, sockets, packets, rwx, usb, sync, sysdeps, transport, jdwp
+  ANDROID_SERIAL               - The serial number to connect to. -s takes priority over this if given.
+  ANDROID_LOG_TAGS             - When used with the logcat option, only these debug tags are printed.
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\SnapperFirefox\Snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\SnapperFirefox\Snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\SnapperFirefox\Snapper>adb push snapper.xpi /mnt/sdcard/
+7 KB/s (7734 bytes in 1.000s)
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\SnapperFirefox\Snapper>cd C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads>cd "snapper(2)"
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)>dir
+ Datenträger in Laufwerk C: ist Kuckuck Main Disk
+ Volumeseriennummer: 901E-E9E7
+
+ Verzeichnis von C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)
+
+17.01.2014  15:43    <DIR>          .
+17.01.2014  15:43    <DIR>          ..
+17.01.2014  20:11    <DIR>          snapper
+               0 Datei(en)              0 Bytes
+               3 Verzeichnis(se), 30.124.564.480 Bytes frei
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)>cd snapper
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>dir
+ Datenträger in Laufwerk C: ist Kuckuck Main Disk
+ Volumeseriennummer: 901E-E9E7
+
+ Verzeichnis von C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper
+
+17.01.2014  20:11    <DIR>          .
+17.01.2014  20:11    <DIR>          ..
+17.01.2014  15:43    <DIR>          lib
+17.01.2014  15:43               302 package.json
+17.01.2014  15:46             7.850 snapper.xpi
+               2 Datei(en)          8.152 Bytes
+               3 Verzeichnis(se), 30.124.564.480 Bytes frei
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper> cfx xpi  -a fennec-on-device --mobile-app fennec --force-mobile -b "C:\
+Dokumente und Einstellungen\AichnerAd\Lokale Einstellungen\Anwendungsdaten\Android\android-studio\sdk\platform-tools\adb.exe"
+Warning: Use of deprecated require path:
+  In C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper\lib\main.js:7:
+    require('tabs').
+  New path should be:
+    require('sdk/tabs')
+Warning: Use of deprecated require path:
+  In C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper\lib\main.js:6:
+    require('widget').
+  New path should be:
+    require('sdk/widget')
+Exporting extension to snapper.xpi.
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>adb push snapper.xpi /mnt/sdcard/
+490 KB/s (7850 bytes in 0.015s)
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Dokumente und Einstellungen\AichnerAd\Eigene Dateien\Downloads\snapper(2)\snapper>cd %HOME%\tmp\mozilla
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla>cd addon-sdk
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>cfx textex
+Unknown command: textex
+Try using '--help' for assistance.
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>cfx testex
+Testing annotator...
+Using binary at 'C:\Programme\Mozilla Firefox 3 Beta 5\firefox.exe'.
+Using profile at 'c:\dokume~1\aichne~1\lokale~1\temp\tmpdp5nil.mozrunner'.
+Bootstrap error: syntax error
+loadSandbox@resource://gre/modules/XPIProvider.jsm -> jar:file:///c:/dokume~1/aichne~1/lokale~1/temp/tmpdp5nil.mozrunner/extensions/anonid0-annotator@jetpack.xpi!/bootstrap.js:276
+@resource://gre/modules/XPIProvider.jsm -> jar:file:///c:/dokume~1/aichne~1/lokale~1/temp/tmpdp5nil.mozrunner/extensions/anonid0-annotator@jetpack.xpi!/bootstrap.js -> resource://extensions.modules.an
+onid0-annotator-at-jetpack.commonjs.path/sdk/loader/cuddlefish.js:30
+loadSandbox@resource://gre/modules/XPIProvider.jsm -> jar:file:///c:/dokume~1/aichne~1/lokale~1/temp/tmpdp5nil.mozrunner/extensions/anonid0-annotator@jetpack.xpi!/bootstrap.js:276
+startup@resource://gre/modules/XPIProvider.jsm -> jar:file:///c:/dokume~1/aichne~1/lokale~1/temp/tmpdp5nil.mozrunner/extensions/anonid0-annotator@jetpack.xpi!/bootstrap.js:192
+XPI_callBootstrapMethod@resource://gre/modules/XPIProvider.jsm:4025
+XPI_startup@resource://gre/modules/XPIProvider.jsm:1842
+AMI_callProviders@resource://gre/modules/AddonManager.jsm:677
+AMI_startup@resource://gre/modules/AddonManager.jsm:558
+AMP_startup@resource://gre/modules/AddonManager.jsm:2127
+AMC_observe@resource://gre/components/addonManager.js:53
+
+reference to undefined property options.bytesreference to undefined property exn.stackJavaScript strict warning: chrome://browser/content/urlbarBindings.xml, line 672: reference to undefined property
+this._value
+JavaScript error: chrome://browser/content/urlbarBindings.xml, line 654: aUrl is undefined
+reference to undefined property options.bytesNo handlers could be found for logger "mozrunner"
+Traceback (most recent call last):
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\bin\cfx", line 33, in <module>
+    cuddlefish.run()
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 609, in run
+    test_all_examples(env_root, defaults=options.__dict__)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 455, in test_all_examples
+    env_root=env_root)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 923, in run
+    pkgdir=options.pkgdir)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\runner.py", line 719, in run_app
+    time.sleep(0.05)
+KeyboardInterrupt
+Batchvorgang abbrechen (J/N)? j
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>git status
+# On branch master
+nothing to commit (working directory clean)
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>git pull
+remote: Counting objects: 202, done.
+remote: Compressing objects: 100% (163/163), done.
+remote: Total 202 (delta 82), reused 114 (delta 26)
+Receiving objects: 100% (202/202), 121.25 KiB, done.
+Resolving deltas: 100% (82/82), done.
+From https://github.com/mozilla/addon-sdk
+   5289247..35c590b  master     -> origin/master
+   30af6af..2da1ca7  JEP        -> origin/JEP
+   dc6000a..a096664  firefox28  -> origin/firefox28
+   38851bf..ebf1b43  firefox29  -> origin/firefox29
+Updating 5289247..35c590b
+Fast-forward
+ README                                             |    9 +-
+ app-extension/bootstrap.js                         |    2 +
+ lib/diffpatcher/diff.js                            |    2 +-
+ lib/diffpatcher/patch.js                           |    2 +-
+ lib/sdk/content/mod.js                             |    2 +-
+ lib/sdk/content/utils.js                           |    2 +-
+ lib/sdk/content/worker.js                          |    9 +-
+ lib/sdk/deprecated/api-utils.js                    |   23 --
+ lib/sdk/deprecated/app-strings.js                  |   67 ----
+ lib/sdk/deprecated/observer-service.js             |  134 --------
+ lib/sdk/deprecated/symbiont.js                     |   56 ++--
+ lib/sdk/deprecated/traits-worker.js                |    8 +-
+ lib/sdk/l10n/prefs.js                              |    8 +-
+ lib/sdk/page-mod.js                                |   10 +-
+ lib/sdk/self.js                                    |    3 +-
+ lib/sdk/simple-prefs.js                            |   16 +-
+ lib/sdk/ui/button/action.js                        |   11 +
+ lib/sdk/ui/button/toggle.js                        |   11 +
+ lib/sdk/ui/button/view.js                          |    3 +-
+ lib/sdk/ui/frame.js                                |   11 +
+ lib/sdk/ui/id.js                                   |    2 +-
+ lib/sdk/ui/sidebar/actions.js                      |    2 +-
+ lib/sdk/ui/sidebar/utils.js                        |    2 +-
+ lib/sdk/ui/toolbar.js                              |   11 +
+ lib/sdk/view/core.js                               |    2 +-
+ lib/sdk/window/utils.js                            |   20 --
+ lib/toolkit/loader.js                              |   14 +-
+ mapping.json                                       |    1 -
+ python-lib/cuddlefish/__init__.py                  |    2 +
+ python-lib/cuddlefish/options_defaults.py          |    4 +-
+ python-lib/cuddlefish/options_xul.py               |    4 +-
+ python-lib/cuddlefish/packaging.py                 |   15 +
+ python-lib/cuddlefish/prefs.py                     |    1 -
+ .../packages/curly-id/lib/main.js                  |    4 +
+ .../packages/curly-id/package.json                 |   14 +
+ .../packages/preferences-branch/lib/main.js        |    4 +
+ .../packages/preferences-branch/package.json       |   14 +
+ python-lib/cuddlefish/tests/test_packaging.py      |    3 +-
+ python-lib/cuddlefish/tests/test_xpi.py            |   52 +++-
+ python-lib/cuddlefish/xpi.py                       |    5 +-
+ test/addons/curly-id/lib/main.js                   |   43 +++
+ test/addons/curly-id/package.json                  |   14 +
+ test/addons/layout-change/main.js                  |    6 -
+ test/addons/predefined-id-with-at/lib/main.js      |   34 ++
+ test/addons/predefined-id-with-at/package.json     |   11 +
+ test/addons/preferences-branch/lib/main.js         |   35 ++
+ test/addons/preferences-branch/package.json        |   14 +
+ .../app-extension/application.ini                  |   11 +
+ .../app-extension/bootstrap.js                     |  337 ++++++++++++++++++++
+ .../app-extension/defaults/preferences/prefs.js    |    3 +
+ .../app-extension/install.rdf                      |   33 ++
+ .../app-extension/options.xul                      |    5 +
+ test/addons/simple-prefs-regression/lib/main.js    |   97 ++++++
+ test/addons/simple-prefs-regression/package.json   |   24 ++
+ test/addons/simple-prefs/lib/main.js               |    5 +
+ test/addons/standard-id/lib/main.js                |   44 +++
+ test/addons/standard-id/package.json               |   14 +
+ test/fixtures/loader/missing-twice/file.json       |    1 +
+ test/fixtures/loader/missing-twice/main.js         |   32 ++
+ test/tabs/test-firefox-tabs.js                     |    9 +-
+ test/test-addon-installer.js                       |   21 +-
+ test/test-api-utils.js                             |   25 --
+ test/test-app-strings.js                           |   68 ----
+ test/test-loader.js                                |   27 ++
+ test/test-observer-service.js                      |   79 -----
+ test/test-simple-prefs.js                          |    4 +-
+ test/test-traceback.js                             |    7 +-
+ test/test-window-utils2.js                         |   22 +--
+ 68 files changed, 1044 insertions(+), 546 deletions(-)
+ delete mode 100644 lib/sdk/deprecated/app-strings.js
+ delete mode 100644 lib/sdk/deprecated/observer-service.js
+ create mode 100644 python-lib/cuddlefish/tests/preferences-files/packages/curly-id/lib/main.js
+ create mode 100644 python-lib/cuddlefish/tests/preferences-files/packages/curly-id/package.json
+ create mode 100644 python-lib/cuddlefish/tests/preferences-files/packages/preferences-branch/lib/main.js
+ create mode 100644 python-lib/cuddlefish/tests/preferences-files/packages/preferences-branch/package.json
+ create mode 100644 test/addons/curly-id/lib/main.js
+ create mode 100644 test/addons/curly-id/package.json
+ create mode 100644 test/addons/predefined-id-with-at/lib/main.js
+ create mode 100644 test/addons/predefined-id-with-at/package.json
+ create mode 100644 test/addons/preferences-branch/lib/main.js
+ create mode 100644 test/addons/preferences-branch/package.json
+ create mode 100644 test/addons/simple-prefs-regression/app-extension/application.ini
+ create mode 100644 test/addons/simple-prefs-regression/app-extension/bootstrap.js
+ create mode 100644 test/addons/simple-prefs-regression/app-extension/defaults/preferences/prefs.js
+ create mode 100644 test/addons/simple-prefs-regression/app-extension/install.rdf
+ create mode 100644 test/addons/simple-prefs-regression/app-extension/options.xul
+ create mode 100644 test/addons/simple-prefs-regression/lib/main.js
+ create mode 100644 test/addons/simple-prefs-regression/package.json
+ create mode 100644 test/addons/standard-id/lib/main.js
+ create mode 100644 test/addons/standard-id/package.json
+ create mode 100644 test/fixtures/loader/missing-twice/file.json
+ create mode 100644 test/fixtures/loader/missing-twice/main.js
+ delete mode 100644 test/test-app-strings.js
+ delete mode 100644 test/test-observer-service.js
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>cfx testex
+Testing annotator...
+Using binary at 'C:\Programme\Mozilla Firefox 3 Beta 5\firefox.exe'.
+Using profile at 'c:\dokume~1\aichne~1\lokale~1\temp\tmpfvmd0e.mozrunner'.
+Bootstrap error: syntax error
+loadSandbox@resource://gre/modules/XPIProvider.jsm -> jar:file:///c:/dokume~1/aichne~1/lokale~1/temp/tmpfvmd0e.mozrunner/extensions/anonid0-annotator@jetpack.xpi!/bootstrap.js:278
+@resource://gre/modules/XPIProvider.jsm -> jar:file:///c:/dokume~1/aichne~1/lokale~1/temp/tmpfvmd0e.mozrunner/extensions/anonid0-annotator@jetpack.xpi!/bootstrap.js -> resource://extensions.modules.an
+onid0-annotator-at-jetpack.commonjs.path/sdk/loader/cuddlefish.js:30
+loadSandbox@resource://gre/modules/XPIProvider.jsm -> jar:file:///c:/dokume~1/aichne~1/lokale~1/temp/tmpfvmd0e.mozrunner/extensions/anonid0-annotator@jetpack.xpi!/bootstrap.js:278
+startup@resource://gre/modules/XPIProvider.jsm -> jar:file:///c:/dokume~1/aichne~1/lokale~1/temp/tmpfvmd0e.mozrunner/extensions/anonid0-annotator@jetpack.xpi!/bootstrap.js:192
+XPI_callBootstrapMethod@resource://gre/modules/XPIProvider.jsm:4025
+XPI_startup@resource://gre/modules/XPIProvider.jsm:1842
+AMI_callProviders@resource://gre/modules/AddonManager.jsm:677
+AMI_startup@resource://gre/modules/AddonManager.jsm:558
+AMP_startup@resource://gre/modules/AddonManager.jsm:2127
+AMC_observe@resource://gre/components/addonManager.js:53
+
+reference to undefined property options.bytesreference to undefined property exn.stackJavaScript strict warning: chrome://browser/content/urlbarBindings.xml, line 672: reference to undefined property
+this._value
+JavaScript error: chrome://browser/content/urlbarBindings.xml, line 654: aUrl is undefined
+JavaScript error: chrome://browser/content/urlbarBindings.xml, line 654: aUrl is undefined
+Traceback (most recent call last):
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\bin\cfx", line 33, in <module>
+    cuddlefish.run()
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 609, in run
+    test_all_examples(env_root, defaults=options.__dict__)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 455, in test_all_examples
+    env_root=env_root)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 925, in run
+    pkgdir=options.pkgdir)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\runner.py", line 742, in run_app
+    OUTPUT_TIMEOUT, test_name, parseable)
+Exception: Test output exceeded timeout (300s).
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>cfx testex --binary c:\programme\nightly\firefox
+Testing annotator...
+Traceback (most recent call last):
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\bin\cfx", line 33, in <module>
+    cuddlefish.run()
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 609, in run
+    test_all_examples(env_root, defaults=options.__dict__)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 455, in test_all_examples
+    env_root=env_root)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\__init__.py", line 925, in run
+    pkgdir=options.pkgdir)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\runner.py", line 582, in run_app
+    kp_kwargs=popen_kwargs)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\mozrunner\__init__.py", line 384, in __init__
+    raise Exception("Binary path does not exist "+self.binary)
+Exception: Binary path does not exist c:\programme\nightly\firefox
+Error in atexit._run_exitfuncs:
+Traceback (most recent call last):
+  File "C:\Python275\lib\atexit.py", line 24, in _run_exitfuncs
+    func(*targs, **kargs)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\runner.py", line 533, in maybe_remove_outfile
+    os.remove(outfile)
+WindowsError: [Error 32] Der Prozess kann nicht auf die Datei zugreifen, da sie von einem anderen Prozess verwendet wird: 'c:\\dokume~1\\aichne~1\\lokale~1\\temp\\harness-stdout-jvtasf'
+Error in sys.exitfunc:
+Traceback (most recent call last):
+  File "C:\Python275\lib\atexit.py", line 24, in _run_exitfuncs
+    func(*targs, **kargs)
+  File "C:\Users\AichnerAd\tmp\mozilla\addon-sdk\python-lib\cuddlefish\runner.py", line 533, in maybe_remove_outfile
+    os.remove(outfile)
+WindowsError: [Error 32] Der Prozess kann nicht auf die Datei zugreifen, da sie von einem anderen Prozess verwendet wird: 'c:\\dokume~1\\aichne~1\\lokale~1\\temp\\harness-stdout-jvtasf'
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>cfx testex --binary c:\programme\nightly\firefox.exe
+Testing annotator...
+Using binary at 'c:\programme\nightly\firefox.exe'.
+Using profile at 'c:\dokume~1\aichne~1\lokale~1\temp\tmp129gho.mozrunner'.
+Running tests on Firefox 29.0a1/Gecko 29.0a1 ({ec8030f7-c20a-464f-9b0e-13a3a9e97384}) under winnt/x86-msvc.
+.
+1 of 1 tests passed.
+Error Cleaning up: [Error 5] Zugriff verweigert: 'c:\\dokume~1\\aichne~1\\lokale~1\\temp\\tmp129gho.mozrunner\\extensions\\anonid0-annotator@jetpack.xpi'
+Error Cleaning up: [Error 145] Das Verzeichnis ist nicht leer: 'c:\\dokume~1\\aichne~1\\lokale~1\\temp\\tmp129gho.mozrunner\\extensions'
+Error Cleaning up: [Error 145] Das Verzeichnis ist nicht leer: 'c:\\dokume~1\\aichne~1\\lokale~1\\temp\\tmp129gho.mozrunner'
+Total time: 8.422000 seconds
+Program terminated successfully.
+Testing library-detector...
+Using binary at 'c:\programme\nightly\firefox.exe'.
+Using profile at 'c:\dokume~1\aichne~1\lokale~1\temp\tmpj8c8nr.mozrunner'.
+Running tests on Firefox 29.0a1/Gecko 29.0a1 ({ec8030f7-c20a-464f-9b0e-13a3a9e97384}) under winnt/x86-msvc.
+.
+1 of 1 tests passed.
+Error Cleaning up: [Error 5] Zugriff verweigert: 'c:\\dokume~1\\aichne~1\\lokale~1\\temp\\tmpj8c8nr.mozrunner\\extensions\\jid1-R4rSVNkBANnvGQ@jetpack.xpi'
+Error Cleaning up: [Error 145] Das Verzeichnis ist nicht leer: 'c:\\dokume~1\\aichne~1\\lokale~1\\temp\\tmpj8c8nr.mozrunner\\extensions'
+Error Cleaning up: [Error 145] Das Verzeichnis ist nicht leer: 'c:\\dokume~1\\aichne~1\\lokale~1\\temp\\tmpj8c8nr.mozrunner'
+Total time: 5.500000 seconds
+Program terminated successfully.
+Testing reading-data...
+Using binary at 'c:\programme\nightly\firefox.exe'.
+Using profile at 'c:\dokume~1\aichne~1\lokale~1\temp\tmpsc7stj.mozrunner'.
+Running tests on Firefox 29.0a1/Gecko 29.0a1 ({ec8030f7-c20a-464f-9b0e-13a3a9e97384}) under winnt/x86-msvc.
+...console.log: reading-data: My ID is reading-data-example@jetpack.mozillalabs.com
+console.warn: reading-data: 1 warnings or errors were logged to the platform's nsIConsoleService, which could be of no consequence; however, they could also be indicative of aberrant behavior.
+
+3 of 3 tests passed.
+Error Cleaning up: [Error 5] Zugriff verweigert: 'c:\\dokume~1\\aichne~1\\lokale~1\\temp\\tmpsc7stj.mozrunner\\extensions\\reading-data-example@jetpack.mozillalabs.com.xpi'
+Error Cleaning up: [Error 145] Das Verzeichnis ist nicht leer: 'c:\\dokume~1\\aichne~1\\lokale~1\\temp\\tmpsc7stj.mozrunner\\extensions'
+Error Cleaning up: [Error 145] Das Verzeichnis ist nicht leer: 'c:\\dokume~1\\aichne~1\\lokale~1\\temp\\tmpsc7stj.mozrunner'
+Total time: 5.844000 seconds
+Program terminated successfully.
+Testing reddit-panel...
+Using binary at 'c:\programme\nightly\firefox.exe'.
+Using profile at 'c:\dokume~1\aichne~1\lokale~1\temp\tmpeumfjs.mozrunner'.
+Running tests on Firefox 29.0a1/Gecko 29.0a1 ({ec8030f7-c20a-464f-9b0e-13a3a9e97384}) under winnt/x86-msvc.
+..
+2 of 2 tests passed.
+Total time: 5.922000 seconds
+Program terminated successfully.
+Testing toolbar-api...
+
+(C:\Users\AichnerAd\tmp\mozilla\addon-sdk) C:\Users\AichnerAd\tmp\mozilla\addon-sdk>
