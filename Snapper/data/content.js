@@ -9,21 +9,19 @@
 //            "data": data
 //    });
 //};
-//document.addEventListener('contextmenu', function(event) {
-//    console.log(event.type, event.target, event.detail);
-//    //    window.alert(JSON.stringify({ event.type, event.target, event.detail }));
-//}, false);
 self.port.on("welcome", function(tag) {
     console.log(tag);
-    // document.addEventListener('contextmenu', function(event) {
-    // document.addEventListener('click', function(event) {
-    var myDocument = document;
+    var displayInformation = function(event) {
+        console.log(event.type, event.target, event.detail);
+        // document.addEventListener('contextmenu', function(event) {
+        // document.addEventListener('click', function(event) {
+        var myDocument = document;
         var autosaveIndicator = myDocument.createElement('div');
         autosaveIndicator.style.position = 'fixed';
         autosaveIndicator.style.top = '20px';
         autosaveIndicator.style.left = '20px';
-//        autosaveIndicator.style.bottom = '1em';
-//        autosaveIndicator.style.right = '1em';
+        //        autosaveIndicator.style.bottom = '1em';
+        //        autosaveIndicator.style.right = '1em';
         autosaveIndicator.style.backgroundColor = 'white';
         autosaveIndicator.style.border = '1px dashed';
         // autosaveIndicator.style.transition = 'opacity 1s 0s';
@@ -36,16 +34,19 @@ self.port.on("welcome", function(tag) {
         close.textContent = "[x]";
         close.addEventListener('click', function(event) {
             event.preventDefault();
-                document.body.removeChild(autosaveIndicator);
+            document.body.removeChild(autosaveIndicator);
         }, false);
         myDocument.body.appendChild(autosaveIndicator);
-    document.addEventListener('touchstart', function(event) {
-//    self.on('contextmenu', function(event) {
-        console.log(event.type, event.target, event.detail);
-        self.port.emit('contextmenu', event.type);
+        //    document.addEventListener('touchstart', function(event) {
+        //        //    self.on('contextmenu', function(event) {
+        //        console.log(event.type, event.target, event.detail);
+        //        self.port.emit('contextmenu', event.type);
+        //        }, false);
 
         //    window.alert(JSON.stringify({ event.type, event.target, event.detail }));
-    });
+    }
+    document.addEventListener('contextmenu', displayInformation, false);
+    document.addEventListener('touchend', displayInformation, false);
     self.port.emit('hello', 'goodbye');
 });
 // self.on("click", postInformation);

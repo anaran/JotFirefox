@@ -1,13 +1,13 @@
 // 'use strict';
 /*global require: false */
-var cm = require("sdk/context-menu");
+// var cm = require("sdk/context-menu");
 var data = require("sdk/self").data;
-var selection = require("sdk/selection");
-var notifications = require("sdk/notifications");
+// var selection = require("sdk/selection");
+// var notifications = require("sdk/notifications");
 var pageMod = require("sdk/page-mod");
 pageMod.PageMod({
     include: ['*'],
-    contentScriptWhen: 'ready',
+    contentScriptWhen: 'end',
      attachTo: ["existing", "top"],
   onAttach: function(worker) {
 //    worker.port.emit("getElements", tag);
@@ -21,15 +21,15 @@ pageMod.PageMod({
   },
     contentScriptFile: data.url("content.js")
 });
-var textSelections = [];
-
-if (!selection.isContiguous) {
-    for (var subselection in selection) {
-        textSelections.push(subselection.text);
-    }
-} else {
-    textSelections.push(selection.text);
-}
+//var textSelections = [];
+//
+//if (!selection.isContiguous) {
+//    for (var subselection in selection) {
+//        textSelections.push(subselection.text);
+//    }
+//} else {
+//    textSelections.push(selection.text);
+//}
 
 //cm.Item({
 //    label: "Snap Information",
