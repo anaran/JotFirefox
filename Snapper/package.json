@@ -1,9 +1,10 @@
 {
-  "name": "snapper",
-  "title": "Snapper",
-  "id": "jid1-HE38Y6vsW9TpHg",
-  "description": "a basic add-on",
-  "author": "",
-  "license": "MPL 2.0",
-  "version": "0.1"
+    "name": "snapper",
+        "title": "Snapper",
+        "id": "jid1-HE38Y6vsW9TpHg",
+        "description": "a basic add-on",
+        "author": "",
+        "license": "MPL 2.0",
+        "version": "0.8",
+        "dependencies": ["menuitems", "addon-sdk"]
 }
