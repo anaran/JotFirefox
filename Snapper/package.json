@@ -1,7 +1,7 @@
 {
     "author": "",
         "dependencies": ["menuitems", "addon-sdk"],
-        "description": "a basic add-on",
+        "description": "Extension for Desktop and Mobile Firefox saves information about the current web page and any active text selection.\n\nThese time-stamped entries can be downloaded in timeclock file format.\n\nContext menu entry on Android is only avaliable on hyperlinks, because text selection is mutually exclusive with context a menu there.",
         "id": "jid1-HE38Y6vsW9TpHg",
         "license": "MPL 2.0",
         "name": "snapper",
@@ -13,5 +13,5 @@
             "title": "DEBUG"
     }],
         "title": "Snapper",
-        "version": "2.2"
+        "version": "2.3"
 }
