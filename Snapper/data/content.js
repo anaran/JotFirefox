@@ -67,5 +67,23 @@ self.port.on("welcome", function(tag) {
         }
     });
 });
+
+
+self.on("context", function(node, data) {
+    console.log("context", (new Error()).stack.split('\n')[1].trim(), node, data);
+    return true;
+});
+
+self.on("click", function(node, data) {
+    console.log("click", (new Error()).stack.split('\n')[1].trim(), node, data);
+    self.postMessage({
+        now: Date.now(),
+        title: document.title,
+        url: document.URL,
+        selection: (document.getSelection() ? document.getSelection().toString() : undefined)
+    });
+});
+
+
 // self.on("click", postInformation);
 // setInterval(postInformation, 5000);

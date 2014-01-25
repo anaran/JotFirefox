@@ -1,10 +1,17 @@
 {
-    "name": "snapper",
-        "title": "Snapper",
-        "id": "jid1-HE38Y6vsW9TpHg",
+    "author": "",
+        "dependencies": ["menuitems", "addon-sdk"],
         "description": "a basic add-on",
-        "author": "",
+        "id": "jid1-HE38Y6vsW9TpHg",
         "license": "MPL 2.0",
-        "version": "0.8",
-        "dependencies": ["menuitems", "addon-sdk"]
+        "name": "snapper",
+        "preferences": [{
+        "name": "DEBUG",
+            "type": "bool",
+            "description": "Set debug mode.",
+            "value": false,
+            "title": "DEBUG"
+    }],
+        "title": "Snapper",
+        "version": "2.2"
 }
