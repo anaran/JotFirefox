@@ -9,9 +9,21 @@
         "name": "DEBUG",
             "type": "bool",
             "description": "Set debug mode.",
-            "value": false,
+            "value": true,
             "title": "DEBUG"
+    }, {
+        "name": "DATE_FORMAT",
+            "type": "string",
+            "description": "Set Snapper Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
+            "value": "%Y/%m/%d %H:%M:%S",
+            "title": "DATE_FORMAT"
+    }, {
+        "name": "INFORMATION_FORMAT",
+            "type": "string",
+            "description": "Set Snapper Information Format (%u = URL, %t = title, %s = selection).",
+            "value": "%u\n%t\n%s",
+            "title": "INFORMATION_FORMAT"
     }],
         "title": "Snapper",
-        "version": "2.3"
+        "version": "2.4"
 }

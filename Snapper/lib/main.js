@@ -4,10 +4,20 @@
 let sp = require('sdk/simple-prefs');
 
 var DEBUG = sp.prefs.DEBUG;
+var DATE_FORMAT = sp.prefs.DATE_FORMAT;
+var INFORMATION_FORMAT = sp.prefs.INFORMATION_FORMAT;
 
 sp.on('DEBUG', function() {
     DEBUG = sp.prefs.DEBUG;
     console.log('DEBUG set to ' + DEBUG);
+});
+sp.on('DATE_FORMAT', function() {
+    DATE_FORMAT = sp.prefs.DATE_FORMAT;
+    console.log('DEBUG set to ' + DATE_FORMAT);
+});
+sp.on('INFORMATION_FORMAT', function() {
+    INFORMATION_FORMAT = sp.prefs.INFORMATION_FORMAT;
+    console.log('DEBUG set to ' + INFORMATION_FORMAT);
 });
 var data = require("sdk/self").data;
 // See https://blog.mozilla.org/addons/2013/06/13/jetpack-fennec-and-nativewindow
@@ -42,7 +52,7 @@ if (recent.NativeWindow) {
 } else {
     var cm = require("sdk/context-menu");
     cm.Item({
-        label: "My Snapper",
+        label: "Snapper",
         context: cm.URLContext("*"),
         contentScriptFile: data.url("content.js"),
         onMessage: function(data) {
@@ -76,4 +86,32 @@ if (recent.NativeWindow) {
             recent.alert(info);
         },
     });
+}
+
+// Modified version of my own function from popchrom in
+// https://code.google.com/p/trnsfrmr/source/browse/Transformer/scripts/date.js?name=v1.8#92
+function replaceDates(format, date) {
+    var d = date || new Date();
+    if (d instanceof Date && !isNaN(d.getTime())) {} else {
+        console.error('%o is not a valid Date', d);
+        return format;
+    };
+    //	TODO getDay() returns the day of week,
+    //	see http://www.ecma-international.org/ecma-262/5.1/#sec-15.9.5.16
+    format = format.replace(/(?:%DAY%|%d)/, (d.getDate() < 10) ? "0" + d.getDate() : d.getDate()); //$NON-NLS-0$
+    var month = d.getMonth() + 1;
+    format = format.replace(/(?:%MONTH%|%m)/, (month < 10) ? "0" + month : month); //$NON-NLS-0$
+    format = format.replace(/(?:%YEAR%|%Y)/, d.getFullYear());
+    var hours = d.getHours();
+    format = format.replace(/%H/, (hours < 10) ? "0" + hours : hours); //$NON-NLS-0$
+    var minutes = d.getMinutes();
+    format = format.replace(/%M/, (minutes < 10) ? "0" + minutes : minutes);
+    var seconds = d.getSeconds();
+    format = format.replace(/%S/, (seconds < 10) ? "0" + seconds : seconds); //$NON-NLS-0$
+    var timeZoneOffset = -d.getTimezoneOffset();
+    var offsetMinutes = timeZoneOffset % 60;
+    var offsetHours = (timeZoneOffset - offsetMinutes) / 60;
+    format = format.replace(/%z/, (offsetHours > 0 ? "+" : "") + ((offsetHours < 10) ? "0" + offsetHours : offsetHours) + ((offsetMinutes < 10) ? "0" + offsetMinutes : offsetMinutes)); //$NON-NLS-0$
+    // format = replaceDate(format);
+    return format;
 }
