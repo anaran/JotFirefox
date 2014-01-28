@@ -1,5 +1,5 @@
 // 'use strict';
-/*global document: false, self: false, setInterval: false */
+/*global console: false, document: false, getSelection: false, require: false, self: false, setInterval: false */
 var displayInformation = function( /*event*/ ) {
     //        var myX = (event.targetTouches) ? event.targetTouches[event.targetTouches.length - 1].clientX : event.clientX;
     //        var myY = (event.targetTouches) ? event.targetTouches[event.targetTouches.length - 1].clientY : event.clientY;
@@ -37,21 +37,60 @@ var displayInformation = function( /*event*/ ) {
     myDocument.body.appendChild(snapperDiv);
 };
 
+
+var handleContextMenu = function(node, data) {
+    //    self.on("click", function(node, data) {
+    //        console.log("click", (new Error()).stack.split('\n')[1].trim(), node, data);
+    switch (data) {
+        case 'snap':
+            {
+                // var activeTab = require("sdk/tabs").activeTab;
+                self.postMessage({
+                    now: Date.now(),
+                    title: document.title,
+                    url: document.URL,
+                    selection: (document.getSelection() ? document.getSelection().toString() : undefined)
+                });
+                break;
+            }
+        case 'download':
+            {
+                self.postMessage({
+                    download: 'filename.json'
+                });
+                break;
+            }
+    }
+    //    });
+};
+
 // Not fired for NativeWindow contextmenu in Fennec!
-// TODO: Remove completely!
 self.on("context", function(node, data) {
     console.log("context", (new Error()).stack.split('\n')[1].trim(), node, data);
     return true;
 });
 
 // Not fired for NativeWindow contextmenu in Fennec!
-// TODO: Remove completely!
 self.on("click", function(node, data) {
     console.log("click", (new Error()).stack.split('\n')[1].trim(), node, data);
-    self.postMessage({
-        now: Date.now(),
-        title: document.title,
-        url: document.URL,
-        selection: (document.getSelection() ? document.getSelection().toString() : undefined)
-    });
+    switch (data) {
+        case 'snap':
+            {
+                // var activeTab = require("sdk/tabs").activeTab;
+                self.postMessage({
+                    now: Date.now(),
+                    title: document.title,
+                    url: document.URL,
+                    selection: (document.getSelection() ? document.getSelection().toString() : undefined)
+                });
+                break;
+            }
+        case 'download':
+            {
+                self.postMessage({
+                    download: 'filename.json'
+                });
+                break;
+            }
+    }
 });

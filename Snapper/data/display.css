@@ -1,0 +1,22 @@
+.pre {
+    display: inline;
+    font-family: monospace;
+    white-space: pre
+}
+
+.activity:focus {
+    display: block;
+}
+
+span:focus {
+    border: 2px solid blue;
+}
+
+/*.timelog_entry {
+    padding: 2em;
+}*/
+
+/*hr::after {
+    content: "Just Ctrl+A Ctrl+C to copy this complete timelog entry"
+}*/
+

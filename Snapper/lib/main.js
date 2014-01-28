@@ -3,22 +3,22 @@
 
 let sp = require('sdk/simple-prefs');
 
-var DEBUG = sp.prefs.DEBUG;
-var DATE_FORMAT = sp.prefs.DATE_FORMAT;
-var INFORMATION_FORMAT = sp.prefs.INFORMATION_FORMAT;
+//var DEBUG = sp.prefs.DEBUG;
+//var DATE_FORMAT = sp.prefs.DATE_FORMAT;
+//var INFORMATION_FORMAT = sp.prefs.INFORMATION_FORMAT;
 
-sp.on('DEBUG', function() {
-    DEBUG = sp.prefs.DEBUG;
-    console.log('DEBUG set to ' + DEBUG);
-});
-sp.on('DATE_FORMAT', function() {
-    DATE_FORMAT = sp.prefs.DATE_FORMAT;
-    console.log('DEBUG set to ' + DATE_FORMAT);
-});
-sp.on('INFORMATION_FORMAT', function() {
-    INFORMATION_FORMAT = sp.prefs.INFORMATION_FORMAT;
-    console.log('DEBUG set to ' + INFORMATION_FORMAT);
-});
+//sp.on('DEBUG', function() {
+//    DEBUG = sp.prefs.DEBUG;
+//    console.log('DEBUG set to ' + DEBUG);
+//});
+//sp.on('DATE_FORMAT', function() {
+//    DATE_FORMAT = sp.prefs.DATE_FORMAT;
+//    console.log('DEBUG set to ' + DATE_FORMAT);
+//});
+//sp.on('INFORMATION_FORMAT', function() {
+//    INFORMATION_FORMAT = sp.prefs.INFORMATION_FORMAT;
+//    console.log('DEBUG set to ' + INFORMATION_FORMAT);
+//});
 var data = require("sdk/self").data;
 // See https://blog.mozilla.org/addons/2013/06/13/jetpack-fennec-and-nativewindow
 // get a global window reference
@@ -51,7 +51,9 @@ if (recent.NativeWindow) {
     });
 } else {
     var cm = require("sdk/context-menu");
-    cm.Item({
+    var tabs = require("sdk/tabs");
+var self = require("sdk/self");
+    cm.Menu({
         label: "Snapper",
         context: cm.URLContext("*"),
         contentScriptFile: data.url("content.js"),
@@ -60,58 +62,85 @@ if (recent.NativeWindow) {
             notifications.notify({
                 text: 'onMessage called with ' + JSON.stringify(data)
             });
-        }
-    });
-    var menuitem = require("menuitems").Menuitem({
-        id: "snapper",
-        menuid: "menu_ToolsPopup",
-        label: "Snapper",
-        accesskey: 'n',
-        onCommand: function() {
-            var activeTab = require("sdk/tabs").activeTab;
-            var info = "Snap!\n" + (activeTab ? (activeTab.title + '\n' + activeTab.url) : ('No Title' + '\n' + 'No URL'));
-            if (false) {
-                require("sdk/widget").Widget({
-                    id: "hello-display",
-                    label: "My Hello Widget",
-                    content: info,
-                    width: 50
-                });
-            } else {
-                var notifications = require("sdk/notifications");
-                notifications.notify({
-                    text: info
+            if (data.url) {
+                function runScript(tab) {
+                    var worker = tab.attach({
+                        contentScriptFile: self.data.url('display.js')
+                    });
+                    worker.port.emit("display", data);
+                }
+                tabs.open({
+                    url: self.data.url('display.html'),
+                    onReady: runScript
                 });
             }
-            recent.alert(info);
         },
+        items: [
+        cm.Item({
+            label: "Snap",
+            data: 'snap'
+            // contentScript: 'handleContextMenu();',
+        }),
+//        cm.Item({
+//            label: "Download Snapper Data",
+//            data: 'download'
+//            // contentScript: 'handleContextMenu();',
+//        })
+        ]
     });
+    //    var menuitem = require("menuitems").Menuitem({
+    //        id: "snapper",
+    //        menuid: "menu_ToolsPopup",
+    //        label: "Snapper",
+    //        accesskey: 'n',
+    //        onCommand: function() {
+    //            //var activeTab = require("sdk/tabs").activeTab;
+    //            //var info = "Snap!\n" + (activeTab ? (activeTab.title + '\n' + activeTab.url) : ('No Title' + '\n' + 'No URL'));
+    //            var activeTab = require("sdk/tabs").activeTab;
+    //            var selection = utils.getMostRecentBrowserWindow().getSelection();
+    //            var info = "Snap!" + (activeTab ? ('\n' + activeTab.title + '\n' + activeTab.url) : ('\nNo Title\nNo URL')) + (selection ? '\n' + selection.toString() : '');
+    //            if (false) {
+    //                require("sdk/widget").Widget({
+    //                    id: "hello-display",
+    //                    label: "My Hello Widget",
+    //                    content: info,
+    //                    width: 50
+    //                });
+    //            } else {
+    //                var notifications = require("sdk/notifications");
+    //                notifications.notify({
+    //                    text: info
+    //                });
+    //            }
+    //            // recent.alert(info);
+    //        },
+    //    });
 }
 
 // Modified version of my own function from popchrom in
 // https://code.google.com/p/trnsfrmr/source/browse/Transformer/scripts/date.js?name=v1.8#92
-function replaceDates(format, date) {
-    var d = date || new Date();
-    if (d instanceof Date && !isNaN(d.getTime())) {} else {
-        console.error('%o is not a valid Date', d);
-        return format;
-    };
-    //	TODO getDay() returns the day of week,
-    //	see http://www.ecma-international.org/ecma-262/5.1/#sec-15.9.5.16
-    format = format.replace(/(?:%DAY%|%d)/, (d.getDate() < 10) ? "0" + d.getDate() : d.getDate()); //$NON-NLS-0$
-    var month = d.getMonth() + 1;
-    format = format.replace(/(?:%MONTH%|%m)/, (month < 10) ? "0" + month : month); //$NON-NLS-0$
-    format = format.replace(/(?:%YEAR%|%Y)/, d.getFullYear());
-    var hours = d.getHours();
-    format = format.replace(/%H/, (hours < 10) ? "0" + hours : hours); //$NON-NLS-0$
-    var minutes = d.getMinutes();
-    format = format.replace(/%M/, (minutes < 10) ? "0" + minutes : minutes);
-    var seconds = d.getSeconds();
-    format = format.replace(/%S/, (seconds < 10) ? "0" + seconds : seconds); //$NON-NLS-0$
-    var timeZoneOffset = -d.getTimezoneOffset();
-    var offsetMinutes = timeZoneOffset % 60;
-    var offsetHours = (timeZoneOffset - offsetMinutes) / 60;
-    format = format.replace(/%z/, (offsetHours > 0 ? "+" : "") + ((offsetHours < 10) ? "0" + offsetHours : offsetHours) + ((offsetMinutes < 10) ? "0" + offsetMinutes : offsetMinutes)); //$NON-NLS-0$
-    // format = replaceDate(format);
-    return format;
-}
+//function replaceDates(format, date) {
+//    var d = date || new Date();
+//    if (d instanceof Date && !isNaN(d.getTime())) {} else {
+//        console.error('%o is not a valid Date', d);
+//        return format;
+//    };
+//    //	TODO getDay() returns the day of week,
+//    //	see http://www.ecma-international.org/ecma-262/5.1/#sec-15.9.5.16
+//    format = format.replace(/(?:%DAY%|%d)/, (d.getDate() < 10) ? "0" + d.getDate() : d.getDate()); //$NON-NLS-0$
+//    var month = d.getMonth() + 1;
+//    format = format.replace(/(?:%MONTH%|%m)/, (month < 10) ? "0" + month : month); //$NON-NLS-0$
+//    format = format.replace(/(?:%YEAR%|%Y)/, d.getFullYear());
+//    var hours = d.getHours();
+//    format = format.replace(/%H/, (hours < 10) ? "0" + hours : hours); //$NON-NLS-0$
+//    var minutes = d.getMinutes();
+//    format = format.replace(/%M/, (minutes < 10) ? "0" + minutes : minutes);
+//    var seconds = d.getSeconds();
+//    format = format.replace(/%S/, (seconds < 10) ? "0" + seconds : seconds); //$NON-NLS-0$
+//    var timeZoneOffset = -d.getTimezoneOffset();
+//    var offsetMinutes = timeZoneOffset % 60;
+//    var offsetHours = (timeZoneOffset - offsetMinutes) / 60;
+//    format = format.replace(/%z/, (offsetHours > 0 ? "+" : "") + ((offsetHours < 10) ? "0" + offsetHours : offsetHours) + ((offsetMinutes < 10) ? "0" + offsetMinutes : offsetMinutes)); //$NON-NLS-0$
+//    // format = replaceDate(format);
+//    return format;
+//}
