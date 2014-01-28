@@ -24,13 +24,30 @@ var data = require("sdk/self").data;
 // get a global window reference
 const utils = require('sdk/window/utils');
 const recent = utils.getMostRecentBrowserWindow();
+
+var openSnapperTab = function(data) {
+    var tabs = require("sdk/tabs");
+    var self = require("sdk/self");
+    if (data.now && data.title && data.url) {
+        function runScript(tab) {
+            var worker = tab.attach({
+                contentScriptFile: self.data.url('display.js')
+            });
+            worker.port.emit("display", data);
+        }
+        tabs.open({
+            url: self.data.url('display.html'),
+            onReady: runScript
+        });
+    }
+};
 if (recent.NativeWindow) {
     // Add a menu item
-    var menuID = recent.NativeWindow.menu.add('Snapper', null, function(target) {
-        var activeTab = require("sdk/tabs").activeTab;
-        var selection = recent.getSelection();
-        recent.NativeWindow.toast.show("Snap!" + (activeTab ? ('\n' + activeTab.title + '\n' + activeTab.url) : ('\nNo Title\nNo URL')) + (selection ? '\n' + selection.toString() : ''), "long");
-    });
+    //    var menuID = recent.NativeWindow.menu.add('Snapper', null, function(target) {
+    //        var activeTab = require("sdk/tabs").activeTab;
+    //        var selection = recent.getSelection();
+    //        recent.NativeWindow.toast.show("Snap!" + (activeTab ? ('\n' + activeTab.title + '\n' + activeTab.url) : ('\nNo Title\nNo URL')) + (selection ? '\n' + selection.toString() : ''), "long");
+    //    });
     let nw = require('./nativewindow');
     var snapperId = nw.addContextMenu({
         name: 'Snapper',
@@ -45,48 +62,42 @@ if (recent.NativeWindow) {
         callback: function(target) {
             var activeTab = require("sdk/tabs").activeTab;
             var selection = target.ownerDocument.getSelection();
+            var data = {
+                now: Date.now(),
+                selection: selection.toString(),
+                title: activeTab.title,
+                url: activeTab.url
+            };
             recent.NativeWindow.toast.show("Snap!" + (activeTab ? ('\n' + activeTab.title + '\n' + activeTab.url) : ('\nNo Title\nNo URL')) + (selection ? '\n' + selection.toString() : ''), "long");
             console.log(target);
+            openSnapperTab(data);
         }
     });
 } else {
     var cm = require("sdk/context-menu");
-    var tabs = require("sdk/tabs");
-var self = require("sdk/self");
-    cm.Menu({
+    cm.Item({
         label: "Snapper",
         context: cm.URLContext("*"),
         contentScriptFile: data.url("content.js"),
         onMessage: function(data) {
             var notifications = require("sdk/notifications");
-            notifications.notify({
-                text: 'onMessage called with ' + JSON.stringify(data)
-            });
-            if (data.url) {
-                function runScript(tab) {
-                    var worker = tab.attach({
-                        contentScriptFile: self.data.url('display.js')
-                    });
-                    worker.port.emit("display", data);
-                }
-                tabs.open({
-                    url: self.data.url('display.html'),
-                    onReady: runScript
-                });
-            }
+            //            notifications.notify({
+            //                text: 'onMessage called with ' + JSON.stringify(data)
+            //            });
+            openSnapperTab(data);
         },
-        items: [
-        cm.Item({
-            label: "Snap",
-            data: 'snap'
-            // contentScript: 'handleContextMenu();',
-        }),
-//        cm.Item({
-//            label: "Download Snapper Data",
-//            data: 'download'
-//            // contentScript: 'handleContextMenu();',
-//        })
-        ]
+        data: 'snap'
+        //        items: [
+        //        cm.Item({
+        //            label: "Snap",
+        //            // contentScript: 'handleContextMenu();',
+        //        }),
+        //        cm.Item({
+        //            label: "Download Snapper Data",
+        //            data: 'download'
+        //            // contentScript: 'handleContextMenu();',
+        //        })
+        //        ]
     });
     //    var menuitem = require("menuitems").Menuitem({
     //        id: "snapper",

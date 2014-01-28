@@ -27,12 +27,17 @@
         return lpad((d.getFullYear()), "0", 4) + "/" + lpad((d.getMonth() + 1), "0", 2) + "/" + lpad(d.getDate(), "0", 2) + " " + lpad(d.getHours(), "0", 2) + ":" + lpad(d.getMinutes(), "0", 2) + ":" + lpad(d.getSeconds(), "0", 2);
     }
 
-    function display(activity) {
+    function display(now, activity) {
         try {
+            var d = new Date(now) || new Date();
+            if (d instanceof Date && !isNaN(d.getTime())) {} else {
+                console.error('%o is not a valid Date', d);
+                return;
+            };
             if (activity) {
                 preActivity.blur();
-                preActivity.textContent = activity;
-                preClockin.textContent = dateToTimeClock(new Date());
+                preActivity.textContent = JSON.stringify(activity);
+                preClockin.textContent = dateToTimeClock(d);
                 preClockout.textContent = preClockin.textContent;
                 timelogEntry.click();
             }
@@ -107,7 +112,8 @@
     //    chrome.runtime.onMessage.addListener(cb);
     //    console.timeEnd(loading);
     self.port.on('display', function(data) {
-        display("Snap!" + (data.title ? '\n# ' + data.title : '\n#') + (data.title ? '\n@ ' + data.url : '\n@') + (data.selection ? '\n' + data.selection : ''));
+        display(data.now,
+            "Snap!" + (data.title ? '\n# ' + data.title : '\n#') + (data.title ? '\n@ ' + data.url : '\n@') + (data.selection ? '\n' + data.selection : ''));
     });
     console.log("Reload it with Ctrl+R or as follows:\nlocation.reload(true)");
     console.log("injection into " + document.URL + " in\n" + JSON.stringify(navigator.userAgent) + "\nends at\n" + JSON.stringify(Date()));
