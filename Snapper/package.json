@@ -6,10 +6,16 @@
         "license": "MPL 2.0",
         "name": "snapper",
         "preferences": [{
-        "name": "DEBUG2",
+        "name": "download",
+            "type": "control",
+            "description": "Download all snapper data in JSON format.",
+            "label": "Download Now",
+            "title": "Download All Snaps"
+    }, {
+        "name": "DEBUG",
             "type": "bool",
             "description": "Set debug mode.",
-            "value": false,
+            "value": true,
             "title": "DEBUG"
     }, {
         "name": "DATEFORMAT",
@@ -25,5 +31,5 @@
             "title": "INFORMATION FORMAT"
     }],
         "title": "Snapper",
-        "version": "2.9"
+        "version": "3.1"
 }

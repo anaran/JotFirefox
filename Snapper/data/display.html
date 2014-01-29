@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <meta charset=utf-8>
+        <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1, minimum-scale=0.25, maximum-scale=4, user-scalable=yes">
         <title>Snapper</title>
         <link rel="icon" href="AdrianCaligraphySmallTransparent16.png" id="favicon" type="image/png">
         <!--
@@ -12,12 +13,17 @@
     <body class="timelog_entry">
         <div>
         <!-- Keep following line intact to avoid introducig additional space characters in text representation -->
-        <span class="pre">i </span><span class="clockin pre" contenteditable="true">$CLOCKIN$</span><span class="pre"> </span><span style="word-wrap: break-word;" class="activity pre" contenteditable="true">$ACTIVITY$</span>
+        <span class="pre">i </span><span class="clockin pre" contenteditable="true">$CLOCKIN$</span><span class="pre"> </span><span class="activity pre" contenteditable="true">$ACTIVITY$</span>
+        <p class="tooltip_activity">$TOOLTIP_ACTIVITY$</p>
         </div>
         <div>
         <!-- Keep following line intact to avoid introducig additional space characters in text representation -->
         <span class="pre">o </span><span class="clockout pre" contenteditable="true">$CLOCKOUT$</span>
         </div>
         <hr/>
+        <a href="" download="">Download</a>
+        <input type="button" class="download" value="Dowload All"/>
+        <input type="button" class="save" value="Add"/>
+        <input type="button" class="close" value="Close"/>
     </body>
 </html>

@@ -1,3 +1,13 @@
+/*@media print {
+  body { font-size: 10pt }
+}
+@media screen {
+  body { font-size: 13px }
+}
+@media screen, print {
+  body { line-height: 1.2 }
+}*/
+
 .pre {
     display: inline;
     font-family: monospace;
@@ -9,6 +19,28 @@
     display: block;
     white-space: pre-line;
   	/*word-wrap: break-word;*/
+}
+
+span+p.tooltip_activity {
+  	margin: 0.5em;
+    position: fixed;
+        display: none;
+     border-radius: 0.5em;
+    padding: 0.5em;
+    background-color: gray;
+    color: white;
+	opacity: 0.8;
+    transition-property: display;
+    transition-duration: 2s;
+    transition-timing-function: ease-out;
+}
+
+span:active+p.tooltip_activity {
+    display: inline-block;
+}
+
+span:hover+p.tooltip_activity {
+    display: inline-block;
 }
 
 span:focus {
