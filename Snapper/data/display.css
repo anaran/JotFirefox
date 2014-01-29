@@ -1,11 +1,14 @@
 .pre {
     display: inline;
     font-family: monospace;
-    white-space: pre
+    white-space: pre-word;
+  	/*word-wrap: break-word;*/
 }
 
 .activity:focus {
     display: block;
+    white-space: pre-line;
+  	/*word-wrap: break-word;*/
 }
 
 span:focus {
