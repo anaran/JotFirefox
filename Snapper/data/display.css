@@ -11,8 +11,8 @@
 .pre {
     display: inline;
     font-family: monospace;
-    white-space: pre-word;
-  	/*word-wrap: break-word;*/
+    /*white-space: pre-word;
+    word-wrap: break-word;*/
 }
 
 .activity:focus {
@@ -24,27 +24,33 @@
 span+p.tooltip_activity {
   	margin: 0.5em;
     position: fixed;
-        display: none;
+        /*display: none;*/
      border-radius: 0.5em;
     padding: 0.5em;
     background-color: gray;
     color: white;
-	opacity: 0.8;
-    transition-property: display;
+	opacity: 0;
+    transition-property: opacity;
     transition-duration: 2s;
-    transition-timing-function: ease-out;
+    transition-timing-function: ease-in;
 }
 
 span:active+p.tooltip_activity {
-    display: inline-block;
+	opacity: 0.8;
+    /*display: inline-block;*/
 }
 
 span:hover+p.tooltip_activity {
-    display: inline-block;
+	opacity: 0.8;
+    /*display: inline-block;*/
 }
 
 span:focus {
     border: 2px solid blue;
+}
+
+a[download] {
+    display: none;
 }
 
 /*.timelog_entry {

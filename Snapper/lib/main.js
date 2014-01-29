@@ -16,24 +16,6 @@ sp.on('DEBUG', function() {
     console.error('Setting log level for ' + self.name + ' version ' + self.version + ' to ' + (DEBUG ? 'all' : 'error'));
     require("sdk/preferences/service").set(name, (DEBUG ? 'all' : 'error'));
 });
-sp.on('download', function() {
-    console.error('Downloading data for ' + self.name + ' version ' + self.version + ' in JSON format.');
-                console.log(snapperStorage.storage.entries);
-                var blob = new recent.Blob([JSON.stringify(snapperStorage.storage.entries, null, 4)], {
-                    'type': 'text/utf-8'
-                });
-                var myDocument = recent.document;
-                var a = myDocument.createElement('a');
-                a.href = recent.URL.createObjectURL(blob);
-                a.download = self.name + '@' + Date.now() + '.txt';
-                a.textContent = 'Download ' + self.name + ' data';
-                console.dir(a);
-                console.dir(document);
-                console.dir(window);
-                console.dir(recent);
-                //recent.document.body.appendChild(a);
-                // a.click();
-});
 //sp.on('DATE_FORMAT', function() {
 //    DATE_FORMAT = sp.prefs.DATE_FORMAT;
 //    console.log('DEBUG set to ' + DATE_FORMAT);
@@ -71,7 +53,8 @@ var openSnapperTab = function(data) {
             });
             worker.port.on('download', function(data) {
                 console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
-            worker.port.emit("entries", {entries: snapperStorage.storage.entries});
+            worker.port.emit("entries", {entries: snapperStorage.storage.entries,
+            filename: self.name + '@' + Date.now() + '.txt'});
             });
         }
         tabs.open({

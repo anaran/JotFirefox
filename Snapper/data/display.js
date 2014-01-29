@@ -93,13 +93,14 @@
             timelogEntry = document.querySelector('.timelog_entry');
             downloadButton = document.querySelector('.download');
             downloadLink = document.querySelector('a[download]');
-                self.port.on('entries', function(data) {
+            self.port.on('entries', function(data) {
                 var blob = new window.Blob([JSON.stringify(data.entries, null, 4)], {
                     'type': 'text/utf-8'
                 });
                 downloadLink.href = window.URL.createObjectURL(blob);
-                downloadLink.download = self.name + '@' + Date.now() + '.txt';
-    });
+                downloadLink.download = data.filename;
+                downloadLink.click();
+            });
             downloadButton.addEventListener('click', function(event) {
                 try {
 
@@ -159,17 +160,19 @@
             }, false);
             //                preActivity.focus();
             //                preActivity.blur();
-            timelogEntry.addEventListener('click', function(event) {
-                if (event.currentTarget === event.target) {
-                    var selection = window.getSelection();
-                    selection.removeAllRanges();
-                    var range = document.createRange();
-                    range.selectNodeContents(event.target);
-                    // range.collapse(!'toStart');
-                    // Always add the range to restore focus.
-                    selection.addRange(range);
-                }
-            }, false);
+            if (false) {
+                timelogEntry.addEventListener('click', function(event) {
+                    if (event.currentTarget === event.target) {
+                        var selection = window.getSelection();
+                        selection.removeAllRanges();
+                        var range = document.createRange();
+                        range.selectNodeContents(event.target);
+                        // range.collapse(!'toStart');
+                        // Always add the range to restore focus.
+                        selection.addRange(range);
+                    }
+                }, false);
+            }
             //            chrome.runtime.sendMessage({
             //                greeting: "display"
             //            }, function(response) {
