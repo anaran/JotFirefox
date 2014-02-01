@@ -17,9 +17,8 @@ sp.on('consoleLogLevel', function() {
     console.error('Setting log level for ' + self.name + ' version ' + self.version + ' to ' + consoleLogLevel);
     require("sdk/preferences/service").set(name, consoleLogLevel);
 });
-//sp.on('DATE_FORMAT', function() {
-//    DATE_FORMAT = sp.prefs.DATE_FORMAT;
-//    console.log('DEBUG set to ' + DATE_FORMAT);
+//sp.on('DELETEALL', function() {
+//performDownload();
 //});
 //sp.on('INFORMATION_FORMAT', function() {
 //    INFORMATION_FORMAT = sp.prefs.INFORMATION_FORMAT;
@@ -35,9 +34,10 @@ let snapperStorage = require("sdk/simple-storage");
 let formatEntry = function(entryFormat, start, end, text) {
     // Expand character escapes (\n, \r, \t) first, before text (most likely with character escapes of its own, although quotes) gets replaced.
     entryFormat = entryFormat.replace(/\\n/g, '\n').replace(/\\r/g, '\r').replace(/\\t/g, '\t');
-    entryFormat = entryFormat.replace(/%i\b/g, start );
+    entryFormat = entryFormat.replace(/%i\b/g, start);
     entryFormat = entryFormat.replace(/%o\b/g, end);
     entryFormat = entryFormat.replace(/%t\b/g, text);
+    entryFormat = entryFormat.replace(/%T\b/g, '"' + JSON.parse(text).replace(/"/g, '""') + '"');
     return entryFormat;
 }
 
@@ -69,15 +69,88 @@ let replaceDates = function(format, date) {
     return format;
 };
 
+var performDownload = function(worker, data) {
+    //TODO Please note that file extensions .csv or .json just cause trouble downloading or opening in Firefox.
+    var filename = self.name + '_' + sp.prefs[data.type] + '_' + snapperStorage.storage.entries.length + '@' + Date.now() + '.txt';
+    console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
+    console.log(JSON.stringify(snapperStorage.storage.entries));
+    if ( ! snapperStorage.storage.entries || ! snapperStorage.storage.entries.length) {
+        notifications.notify({
+            text: 'There is no data to be downloaded in '+sp.prefs[data.type]+' format.'
+        });
+        return;
+    }
+    switch (data.type) {
+        case 'DATAFORMAT0':
+            {
+                    notifications.notify({
+                        text: 'Downloading ' + filename
+                    });
+                    worker.port.emit('content', {
+                        content: JSON.stringify(snapperStorage.storage.entries, null, 2),
+                        filename: filename
+                    });
+                break;
+            }
+        case 'DATAFORMAT1':
+            {
+                let start, end, text, content = '', dateFormat = sp.prefs['DATEFORMAT1'], infoFormat = sp.prefs['INFOFORMAT1'], entryFormat = sp.prefs['ENTRYFORMAT1'];
+                for (var i = 0, len = snapperStorage.storage.entries.length; i < len; i++) {
+                    start = (snapperStorage.storage.entries[i].start);
+                    end = (snapperStorage.storage.entries[i].end);
+                    //                                start = replaceDates(dateFormat, snapperStorage.storage.entries[i].start);
+                    //                                end = replaceDates(dateFormat, snapperStorage.storage.entries[i].end);
+                    text = snapperStorage.storage.entries[i].activity;
+                    content += formatEntry(entryFormat, start, end, text);
+                }
+                notifications.notify({
+                    text: 'Downloading ' + filename
+                });
+                worker.port.emit('content', {
+                    content: content,
+                    filename: filename
+                });
+                break;
+            }
+        case 'DATAFORMAT2':
+            {
+                let start, end, text, content = '', dateFormat = sp.prefs['DATEFORMAT2'], infoFormat = sp.prefs['INFOFORMAT2'], entryFormat = sp.prefs['ENTRYFORMAT2'];
+                for (var i = 0, len = snapperStorage.storage.entries.length; i < len; i++) {
+                    start = (snapperStorage.storage.entries[i].start);
+                    end = (snapperStorage.storage.entries[i].end);
+                    //                                start = replaceDates(dateFormat, snapperStorage.storage.entries[i].start);
+                    //                                end = replaceDates(dateFormat, snapperStorage.storage.entries[i].end);
+                    text = snapperStorage.storage.entries[i].activity;
+                    content += formatEntry(entryFormat, start, end, text);
+                }
+                notifications.notify({
+                    text: 'Downloading ' + filename
+                });
+                worker.port.emit('content', {
+                    content: content,
+                    filename: filename
+                });
+                break;
+            }
+        default:
+            {
+                notifications.notify({
+                    text: 'Don\'t know how to download ' + sp.prefs[data.type]
+                });
+                break;
+            }
+    }
+};
+
 var openSnapperTab = function(data) {
     // Add names of user data formats to be sent to content script.
-    data.user1 = sp.prefs['DATAFORMAT1'];
-    data.user2 = sp.prefs['DATAFORMAT2'];
+    data.format0 = sp.prefs['DATAFORMAT0'];
+    data.format1 = sp.prefs['DATAFORMAT1'];
+    data.format2 = sp.prefs['DATAFORMAT2'];
     snapperStorage.on("OverQuota", function() {
-        //  while (ss.snapperStorage > 1)
-        //    ss.storage.myList.pop();
         console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
     });
+    let activeTab = require("sdk/tabs").activeTab;
     var tabs = require("sdk/tabs");
     if (data.now && data.title && data.url) {
         function runScript(tab) {
@@ -85,6 +158,21 @@ var openSnapperTab = function(data) {
                 contentScriptFile: self.data.url('display.js')
             });
             worker.port.emit("display", data);
+            worker.port.on('close', function(data) {
+                require("sdk/tabs").activeTab.close();
+            });
+            worker.port.on('delete', function(data) {
+                if ( ! snapperStorage.storage.entries || ! snapperStorage.storage.entries.length) {
+                    notifications.notify({
+                        text: 'There is no data to be deleted.'
+                    });
+                } else {
+                    notifications.notify({
+                        text: 'Deleting all ' + snapperStorage.storage.entries.length + ' entries of snapper data, see browser downloads directory for exported data.'
+                    });
+                    snapperStorage.storage.entries = [];
+                }
+            });
             worker.port.on('save', function(data) {
                 console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
                 if (!snapperStorage.storage.entries) {
@@ -106,56 +194,15 @@ var openSnapperTab = function(data) {
                 console.log(snapperStorage.storage.entries);
             });
             worker.port.on('download', function(data) {
-                var filename = self.name + '_' + data.type + '_' + snapperStorage.storage.entries.length + '@' + Date.now() + '.txt';
-                //var contentUser1 = '';
-                //var dataFormatUser1 =
-                //var contentUser2 = '';
-                console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
-                console.log(JSON.stringify(snapperStorage.storage.entries));
-                switch (data.type) {
-                    case 'json':
-                        {
-                            if ( !! snapperStorage.storage.entries) {
-                                notifications.notify({
-                                    text: 'Downloading ' + filename
-                                });
-                                worker.port.emit('content', {
-                                    content: JSON.stringify(snapperStorage.storage.entries, null, 2),
-                                    filename: filename
-                                });
-                            }
-                            break;
-                        }
-                    case 'user1':
-                        {
-                            let start, end, text, content = '', dateFormat = sp.prefs['DATEFORMAT1'], infoFormat = sp.prefs['INFOFORMAT1'], entryFormat = sp.prefs['ENTRYFORMAT1'];
-                            for (var i = 0, len = snapperStorage.storage.entries.length; i < len; i++) {
-                                start = (snapperStorage.storage.entries[i].start);
-                                end = (snapperStorage.storage.entries[i].end);
-//                                start = replaceDates(dateFormat, snapperStorage.storage.entries[i].start);
-//                                end = replaceDates(dateFormat, snapperStorage.storage.entries[i].end);
-                                text = snapperStorage.storage.entries[i].activity;
-                                content += formatEntry(entryFormat, start , end, text);
-                            }
-                            notifications.notify({
-                                text: 'Downloading ' + filename
-                            });
-                            worker.port.emit('content', {
-                                content: content,
-                                filename: filename
-                            });
-                            break;
-                        }
-                    case 'user2':
-                        {
-                            break;
-                        }
-                }
+                performDownload(worker, data);
             });
         }
         tabs.open({
             url: self.data.url('display.html'),
-            onReady: runScript
+            onReady: runScript,
+            onClose: function() {
+                activeTab.activate();
+            }
         });
     }
 };
@@ -166,7 +213,7 @@ if (recent.NativeWindow) {
         // TODO Please report mozilla bug to the fact that Fennec contextmenu and text selection are mutually exclusive!
         context: nw.SelectorContext('a'),
         callback: function(target) {
-            var activeTab = require("sdk/tabs").activeTab;
+            let activeTab = require("sdk/tabs").activeTab;
             var selection = target.ownerDocument.getSelection();
             var data = {
                 now: Date.now(),
@@ -186,7 +233,6 @@ if (recent.NativeWindow) {
         context: cm.URLContext("*"),
         contentScriptFile: data.url("content.js"),
         onMessage: function(data) {
-            var notifications = require("sdk/notifications");
             openSnapperTab(data);
         },
         data: 'snap'

@@ -17,13 +17,15 @@ var handleContextMenu = function(node, data) {
 
 // Not fired for NativeWindow contextmenu in Fennec!
 self.on("context", function(node, data) {
-    console.log("context", (new Error()).stack.split('\n')[1].trim(), node, data);
+    //console.log("context", (new Error()).stack.split('\n')[1].trim(), node, data);
+    console.log( JSON.stringify(node, function(key, value) { if (!key || value !== node) return value; }, 2), data);
     return true;
 });
 
 // Not fired for NativeWindow contextmenu in Fennec!
 self.on("click", function(node, data) {
-    console.log("click", (new Error()).stack.split('\n')[1].trim(), node, data);
+    //console.log("click", (new Error()).stack.split('\n')[1].trim(), node, data);
+    console.log( JSON.stringify(node, function(key, value) { if (!key || value !== node) return value; }, 2), data);
     switch (data) {
         case 'snap':
             {

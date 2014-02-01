@@ -1,7 +1,7 @@
 /*jslint browser: true, devel: true */
 /*global findRegExpBar: false, chrome: false, console: false, require: false, document: false */
     'use strict';
-    // require does not seem to be available in content scripts.
+// require does not seem to be available in content scripts.
 //let sp = require('sdk/simple-prefs');
 (function() {
     // var loading = "loading started at " + new Error().stack.split(/\s+/)[2] + "\n(" + (chrome.app.getDetails() && chrome.app.getDetails().name || "no chrome.app.getDetails()") + ") takes";
@@ -15,12 +15,13 @@
     var preClockin;
     var preClockout;
     var timelogEntry;
-    var downloadJsonButton;
-    var downloadUser1Button;
-    var downloadUser2Button;
+    var downloadFormat0Button;
+    var downloadFormat1Button;
+    var downloadFormat2Button;
     var downloadLink;
     var saveButton;
     var closeButton;
+    var deleteButton;
 
     function dateToTimeClock(d) {
         // Taken from http://sajjadhossain.com/2008/10/31/javascript-string-trimming-and-padding/
@@ -43,8 +44,9 @@
                 console.error('%o is not a valid Date', d);
                 return;
             };
-            downloadUser1Button.value = data.user1;
-            downloadUser2Button.value = data.user2;
+            downloadFormat0Button.value = data.format0;
+            downloadFormat1Button.value = data.format1;
+            downloadFormat2Button.value = data.format2;
             var activity = "Snap!" + (data.title ? '\n# ' + data.title : '\n#') + (data.title ? '\n@ ' + data.url : '\n@') + (data.selection ? '\n' + data.selection : '');
             if (activity) {
                 preActivity.blur();
@@ -70,9 +72,9 @@
             preClockin = document.querySelector('.clockin');
             preClockout = document.querySelector('.clockout');
             timelogEntry = document.querySelector('.timelog_entry');
-            downloadJsonButton = document.querySelector('.download_json');
-            downloadUser1Button = document.querySelector('.download_user1');
-            downloadUser2Button = document.querySelector('.download_user2');
+            downloadFormat0Button = document.querySelector('.download_format0');
+            downloadFormat1Button = document.querySelector('.download_format1');
+            downloadFormat2Button = document.querySelector('.download_format2');
             // Shared link for all download types for now.
             downloadLink = document.querySelector('a[download]');
             self.port.on('content', function(data) {
@@ -83,27 +85,33 @@
                 downloadLink.download = data.filename;
                 downloadLink.click();
             });
-            downloadJsonButton.addEventListener('click', function(event) {
+            downloadFormat0Button.addEventListener('click', function(event) {
                 try {
-                    self.port.emit('download', {type: 'json'});
+                    self.port.emit('download', {
+                        type: 'DATAFORMAT0'
+                    });
                 } catch (exception) {
                     //window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
                     console.error(exception.message, exception.stack);
                     // console.error("exception:", exception);
                 }
             }, false);
-            downloadUser1Button.addEventListener('click', function(event) {
+            downloadFormat1Button.addEventListener('click', function(event) {
                 try {
-                    self.port.emit('download', {type: 'user1'});
+                    self.port.emit('download', {
+                        type: 'DATAFORMAT1'
+                    });
                 } catch (exception) {
                     //window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
                     console.error(exception.message, exception.stack);
                     // console.error("exception:", exception);
                 }
             }, false);
-            downloadUser2Button.addEventListener('click', function(event) {
+            downloadFormat2Button.addEventListener('click', function(event) {
                 try {
-                    self.port.emit('download', {type: 'user2'});
+                    self.port.emit('download', {
+                        type: 'DATAFORMAT2'
+                    });
                 } catch (exception) {
                     //window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
                     console.error(exception.message, exception.stack);
@@ -117,8 +125,8 @@
                         activity: preActivity.textContent,
                         start: preClockin.textContent,
                         end: preClockout.textContent
-//                        start: Date.parse(preClockin.textContent),
-//                        end: Date.parse(preClockout.textContent)
+                        //                        start: Date.parse(preClockin.textContent),
+                        //                        end: Date.parse(preClockout.textContent)
                     });
                 } catch (exception) {
                     //window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
@@ -127,6 +135,34 @@
                 }
             }, false);
             closeButton = document.querySelector('.close');
+            closeButton.addEventListener('click', function(event) {
+                try {
+                    self.port.emit('close');
+                } catch (exception) {
+                    //window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
+                    console.error(exception.message, exception.stack);
+                    // console.error("exception:", exception);
+                }
+            }, false);
+            deleteButton = document.querySelector('.delete');
+            deleteButton.addEventListener('click', function(event) {
+                try {
+                    self.port.emit('download', {
+                        type: 'DATAFORMAT0'
+                    });
+                    self.port.emit('download', {
+                        type: 'DATAFORMAT1'
+                    });
+                    self.port.emit('download', {
+                        type: 'DATAFORMAT2'
+                    });
+                    self.port.emit('delete');
+                } catch (exception) {
+                    //window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
+                    console.error(exception.message, exception.stack);
+                    // console.error("exception:", exception);
+                }
+            }, false);
             preActivity.addEventListener('focus', function(event) {
                 try {
                     // console.log('focus');
