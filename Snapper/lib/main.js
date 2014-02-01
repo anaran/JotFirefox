@@ -6,12 +6,12 @@ let self = require('sdk/self');
 let notifications = require("sdk/notifications");
 var data = self.data;
 
-var consoleLogLevel = sp.prefs.consoleLogLevel;
-var DATEFORMAT = sp.prefs.DATEFORMAT;
-var INFOFORMAT = sp.prefs.INFOFORMAT;
+var consoleLogLevel = sp.prefs['consoleLogLevel'];
+//var DATEFORMAT = sp.prefs.DATEFORMAT;
+//var INFOFORMAT = sp.prefs.INFOFORMAT;
 
 sp.on('consoleLogLevel', function() {
-    consoleLogLevel = sp.prefs.consoleLogLevel;
+    consoleLogLevel = sp.prefs['consoleLogLevel'];
     var name = "extensions." + self.id + ".sdk.console.logLevel";
     // TODO Using error to make sure message will always be visible -- not ideal.
     console.error('Setting log level for ' + self.name + ' version ' + self.version + ' to ' + consoleLogLevel);
@@ -30,8 +30,49 @@ sp.on('consoleLogLevel', function() {
 const utils = require('sdk/window/utils');
 const recent = utils.getMostRecentBrowserWindow();
 
-var snapperStorage = require("sdk/simple-storage");
+let snapperStorage = require("sdk/simple-storage");
+
+let formatEntry = function(entryFormat, start, end, text) {
+    // Expand character escapes (\n, \r, \t) first, before text (most likely with character escapes of its own, although quotes) gets replaced.
+    entryFormat = entryFormat.replace(/\\n/g, '\n').replace(/\\r/g, '\r').replace(/\\t/g, '\t');
+    entryFormat = entryFormat.replace(/%i\b/g, start );
+    entryFormat = entryFormat.replace(/%o\b/g, end);
+    entryFormat = entryFormat.replace(/%t\b/g, text);
+    return entryFormat;
+}
+
+// Modified version of my own function from popchrom in
+// https://code.google.com/p/trnsfrmr/source/browse/Transformer/scripts/date.js?name=v1.8#92
+let replaceDates = function(format, date) {
+    var d = date || new Date();
+    if (d instanceof Date && !isNaN(d.getTime())) {} else {
+        console.error('%o is not a valid Date', d);
+        return format;
+    };
+    //	TODO getDay() returns the day of week,
+    //	see http://www.ecma-international.org/ecma-262/5.1/#sec-15.9.5.16
+    format = format.replace(/(?:%DAY%|%d)/, (d.getDate() < 10) ? "0" + d.getDate() : d.getDate()); //$NON-NLS-0$
+    var month = d.getMonth() + 1;
+    format = format.replace(/(?:%MONTH%|%m)/, (month < 10) ? "0" + month : month); //$NON-NLS-0$
+    format = format.replace(/(?:%YEAR%|%Y)/, d.getFullYear());
+    var hours = d.getHours();
+    format = format.replace(/%H/, (hours < 10) ? "0" + hours : hours); //$NON-NLS-0$
+    var minutes = d.getMinutes();
+    format = format.replace(/%M/, (minutes < 10) ? "0" + minutes : minutes);
+    var seconds = d.getSeconds();
+    format = format.replace(/%S/, (seconds < 10) ? "0" + seconds : seconds); //$NON-NLS-0$
+    var timeZoneOffset = -d.getTimezoneOffset();
+    var offsetMinutes = timeZoneOffset % 60;
+    var offsetHours = (timeZoneOffset - offsetMinutes) / 60;
+    format = format.replace(/%z/, (offsetHours > 0 ? "+" : "") + ((offsetHours < 10) ? "0" + offsetHours : offsetHours) + ((offsetMinutes < 10) ? "0" + offsetMinutes : offsetMinutes)); //$NON-NLS-0$
+    // format = replaceDate(format);
+    return format;
+};
+
 var openSnapperTab = function(data) {
+    // Add names of user data formats to be sent to content script.
+    data.user1 = sp.prefs['DATAFORMAT1'];
+    data.user2 = sp.prefs['DATAFORMAT2'];
     snapperStorage.on("OverQuota", function() {
         //  while (ss.snapperStorage > 1)
         //    ss.storage.myList.pop();
@@ -65,17 +106,50 @@ var openSnapperTab = function(data) {
                 console.log(snapperStorage.storage.entries);
             });
             worker.port.on('download', function(data) {
-                var filename = self.name + snapperStorage.storage.entries.length + '@' + Date.now() + '.txt';
+                var filename = self.name + '_' + data.type + '_' + snapperStorage.storage.entries.length + '@' + Date.now() + '.txt';
+                //var contentUser1 = '';
+                //var dataFormatUser1 =
+                //var contentUser2 = '';
                 console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
                 console.log(JSON.stringify(snapperStorage.storage.entries));
-                if ( !! snapperStorage.storage.entries) {
-                    notifications.notify({
-                        text: 'Downloading ' + filename
-                    });
-                    worker.port.emit("entries", {
-                        entries: snapperStorage.storage.entries,
-                        filename: filename
-                    });
+                switch (data.type) {
+                    case 'json':
+                        {
+                            if ( !! snapperStorage.storage.entries) {
+                                notifications.notify({
+                                    text: 'Downloading ' + filename
+                                });
+                                worker.port.emit('content', {
+                                    content: JSON.stringify(snapperStorage.storage.entries, null, 2),
+                                    filename: filename
+                                });
+                            }
+                            break;
+                        }
+                    case 'user1':
+                        {
+                            let start, end, text, content = '', dateFormat = sp.prefs['DATEFORMAT1'], infoFormat = sp.prefs['INFOFORMAT1'], entryFormat = sp.prefs['ENTRYFORMAT1'];
+                            for (var i = 0, len = snapperStorage.storage.entries.length; i < len; i++) {
+                                start = (snapperStorage.storage.entries[i].start);
+                                end = (snapperStorage.storage.entries[i].end);
+//                                start = replaceDates(dateFormat, snapperStorage.storage.entries[i].start);
+//                                end = replaceDates(dateFormat, snapperStorage.storage.entries[i].end);
+                                text = snapperStorage.storage.entries[i].activity;
+                                content += formatEntry(entryFormat, start , end, text);
+                            }
+                            notifications.notify({
+                                text: 'Downloading ' + filename
+                            });
+                            worker.port.emit('content', {
+                                content: content,
+                                filename: filename
+                            });
+                            break;
+                        }
+                    case 'user2':
+                        {
+                            break;
+                        }
                 }
             });
         }

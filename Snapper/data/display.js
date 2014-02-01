@@ -1,6 +1,8 @@
 /*jslint browser: true, devel: true */
 /*global findRegExpBar: false, chrome: false, console: false, require: false, document: false */
     'use strict';
+    // require does not seem to be available in content scripts.
+//let sp = require('sdk/simple-prefs');
 (function() {
     // var loading = "loading started at " + new Error().stack.split(/\s+/)[2] + "\n(" + (chrome.app.getDetails() && chrome.app.getDetails().name || "no chrome.app.getDetails()") + ") takes";
     // console.time(loading);
@@ -13,38 +15,12 @@
     var preClockin;
     var preClockout;
     var timelogEntry;
-    var downloadButton;
+    var downloadJsonButton;
+    var downloadUser1Button;
+    var downloadUser2Button;
     var downloadLink;
     var saveButton;
     var closeButton;
-
-    // Modified version of my own function from popchrom in
-    // https://code.google.com/p/trnsfrmr/source/browse/Transformer/scripts/date.js?name=v1.8#92
-    var replaceDates = function(format, date) {
-        var d = date || new Date();
-        if (d instanceof Date && !isNaN(d.getTime())) {} else {
-            console.error('%o is not a valid Date', d);
-            return format;
-        };
-        //	TODO getDay() returns the day of week,
-        //	see http://www.ecma-international.org/ecma-262/5.1/#sec-15.9.5.16
-        format = format.replace(/(?:%DAY%|%d)/, (d.getDate() < 10) ? "0" + d.getDate() : d.getDate()); //$NON-NLS-0$
-        var month = d.getMonth() + 1;
-        format = format.replace(/(?:%MONTH%|%m)/, (month < 10) ? "0" + month : month); //$NON-NLS-0$
-        format = format.replace(/(?:%YEAR%|%Y)/, d.getFullYear());
-        var hours = d.getHours();
-        format = format.replace(/%H/, (hours < 10) ? "0" + hours : hours); //$NON-NLS-0$
-        var minutes = d.getMinutes();
-        format = format.replace(/%M/, (minutes < 10) ? "0" + minutes : minutes);
-        var seconds = d.getSeconds();
-        format = format.replace(/%S/, (seconds < 10) ? "0" + seconds : seconds); //$NON-NLS-0$
-        var timeZoneOffset = -d.getTimezoneOffset();
-        var offsetMinutes = timeZoneOffset % 60;
-        var offsetHours = (timeZoneOffset - offsetMinutes) / 60;
-        format = format.replace(/%z/, (offsetHours > 0 ? "+" : "") + ((offsetHours < 10) ? "0" + offsetHours : offsetHours) + ((offsetMinutes < 10) ? "0" + offsetMinutes : offsetMinutes)); //$NON-NLS-0$
-        // format = replaceDate(format);
-        return format;
-    };
 
     function dateToTimeClock(d) {
         // Taken from http://sajjadhossain.com/2008/10/31/javascript-string-trimming-and-padding/
@@ -67,11 +43,14 @@
                 console.error('%o is not a valid Date', d);
                 return;
             };
+            downloadUser1Button.value = data.user1;
+            downloadUser2Button.value = data.user2;
             var activity = "Snap!" + (data.title ? '\n# ' + data.title : '\n#') + (data.title ? '\n@ ' + data.url : '\n@') + (data.selection ? '\n' + data.selection : '');
             if (activity) {
                 preActivity.blur();
                 preActivity.textContent = JSON.stringify(activity);
                 preClockin.textContent = dateToTimeClock(d);
+                //preClockin.textContent = d.toString();
                 preClockout.textContent = preClockin.textContent;
                 timelogEntry.click();
             }
@@ -91,20 +70,40 @@
             preClockin = document.querySelector('.clockin');
             preClockout = document.querySelector('.clockout');
             timelogEntry = document.querySelector('.timelog_entry');
-            downloadButton = document.querySelector('.download');
+            downloadJsonButton = document.querySelector('.download_json');
+            downloadUser1Button = document.querySelector('.download_user1');
+            downloadUser2Button = document.querySelector('.download_user2');
+            // Shared link for all download types for now.
             downloadLink = document.querySelector('a[download]');
-            self.port.on('entries', function(data) {
-                var blob = new window.Blob([JSON.stringify(data.entries, null, 4)], {
+            self.port.on('content', function(data) {
+                var blob = new window.Blob([data.content], {
                     'type': 'text/utf-8'
                 });
                 downloadLink.href = window.URL.createObjectURL(blob);
                 downloadLink.download = data.filename;
                 downloadLink.click();
             });
-            downloadButton.addEventListener('click', function(event) {
+            downloadJsonButton.addEventListener('click', function(event) {
                 try {
-
-                    self.port.emit('download');
+                    self.port.emit('download', {type: 'json'});
+                } catch (exception) {
+                    //window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
+                    console.error(exception.message, exception.stack);
+                    // console.error("exception:", exception);
+                }
+            }, false);
+            downloadUser1Button.addEventListener('click', function(event) {
+                try {
+                    self.port.emit('download', {type: 'user1'});
+                } catch (exception) {
+                    //window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
+                    console.error(exception.message, exception.stack);
+                    // console.error("exception:", exception);
+                }
+            }, false);
+            downloadUser2Button.addEventListener('click', function(event) {
+                try {
+                    self.port.emit('download', {type: 'user2'});
                 } catch (exception) {
                     //window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
                     console.error(exception.message, exception.stack);
@@ -118,6 +117,8 @@
                         activity: preActivity.textContent,
                         start: preClockin.textContent,
                         end: preClockout.textContent
+//                        start: Date.parse(preClockin.textContent),
+//                        end: Date.parse(preClockout.textContent)
                     });
                 } catch (exception) {
                     //window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
