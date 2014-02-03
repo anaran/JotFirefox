@@ -8,11 +8,11 @@
         "license": "MPL 2.0",
         "name": "snapper",
         "preferences": [{
-        "description": "Better add a (Delete All) button to the snapper tab! Delete Snapper data after downloading in all available formats.",
-        "hidden": true,
-            "label": "Delete All Snapper Data",
-            "name": "DELETEALL",
-            "title": "Delete All Snaps",
+        "description": "Shows some Information about currently stored snapper data.",
+        "hidden": false,
+            "label": "Show",
+            "name": "ABOUTDATA",
+            "title": "About Snapper Data",
             "type": "control"
     }, {
         "description": "Controls the amount of logging to the browser console by level, from most to nothing at all.",

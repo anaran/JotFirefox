@@ -3,6 +3,7 @@
 
 let sp = require('sdk/simple-prefs');
 let self = require('sdk/self');
+let snapperStorage = require("sdk/simple-storage");
 let notifications = require("sdk/notifications");
 var data = self.data;
 
@@ -17,9 +18,30 @@ sp.on('consoleLogLevel', function() {
     console.error('Setting log level for ' + self.name + ' version ' + self.version + ' to ' + consoleLogLevel);
     require("sdk/preferences/service").set(name, consoleLogLevel);
 });
-//sp.on('DELETEALL', function() {
-//performDownload();
-//});
+sp.on('ABOUTDATA', function() {
+    let start, end, min_start, max_start, min_end, max_end, text, min_text, max_text;
+    for (var i = 0, len = snapperStorage.storage.entries.length; i < len; i++) {
+        start = (snapperStorage.storage.entries[i].start);
+        end = (snapperStorage.storage.entries[i].end);
+        text = snapperStorage.storage.entries[i].activity;
+        if (!max_text || (text.length > max_text)) {
+            max_text = text.length;
+        }
+        if (!min_text || (text.length < min_text)) {
+            min_text = text.length;
+        }
+        if (!min_start || (start.localeCompare(min_start) < 0)) {
+            min_start = start;
+        }
+        if (!max_start || (start.localeCompare(max_start) > 0)) {
+            max_start = start;
+        }
+    }
+    notifications.notify({
+        title: 'About Snapper Data',
+        text: 'Use of storage quota: ' + (new Number(snapperStorage.quotaUsage * 100)).toPrecision(3) + '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text + ' characters\nlongest: ' + max_text + ' characters\noldest: ' + min_start + '\nnewest: ' + max_start
+    });
+});
 //sp.on('INFORMATION_FORMAT', function() {
 //    INFORMATION_FORMAT = sp.prefs.INFORMATION_FORMAT;
 //    console.log('DEBUG set to ' + INFORMATION_FORMAT);
@@ -29,7 +51,6 @@ sp.on('consoleLogLevel', function() {
 const utils = require('sdk/window/utils');
 const recent = utils.getMostRecentBrowserWindow();
 
-let snapperStorage = require("sdk/simple-storage");
 
 let formatEntry = function(entryFormat, start, end, text) {
     // Expand character escapes (\n, \r, \t) first, before text (most likely with character escapes of its own, although quotes) gets replaced.
@@ -74,22 +95,22 @@ var performDownload = function(worker, data) {
     var filename = self.name + '_' + sp.prefs[data.type] + '_' + snapperStorage.storage.entries.length + '@' + Date.now() + '.txt';
     console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
     console.log(JSON.stringify(snapperStorage.storage.entries));
-    if ( ! snapperStorage.storage.entries || ! snapperStorage.storage.entries.length) {
+    if (!snapperStorage.storage.entries || !snapperStorage.storage.entries.length) {
         notifications.notify({
-            text: 'There is no data to be downloaded in '+sp.prefs[data.type]+' format.'
+            text: 'There is no data to be downloaded in ' + sp.prefs[data.type] + ' format.'
         });
         return;
     }
     switch (data.type) {
         case 'DATAFORMAT0':
             {
-                    notifications.notify({
-                        text: 'Downloading ' + filename
-                    });
-                    worker.port.emit('content', {
-                        content: JSON.stringify(snapperStorage.storage.entries, null, 2),
-                        filename: filename
-                    });
+                notifications.notify({
+                    text: 'Downloading ' + filename
+                });
+                worker.port.emit('content', {
+                    content: JSON.stringify(snapperStorage.storage.entries, null, 2),
+                    filename: filename
+                });
                 break;
             }
         case 'DATAFORMAT1':
@@ -162,7 +183,7 @@ var openSnapperTab = function(data) {
                 require("sdk/tabs").activeTab.close();
             });
             worker.port.on('delete', function(data) {
-                if ( ! snapperStorage.storage.entries || ! snapperStorage.storage.entries.length) {
+                if (!snapperStorage.storage.entries || !snapperStorage.storage.entries.length) {
                     notifications.notify({
                         text: 'There is no data to be deleted.'
                     });
