@@ -50,7 +50,7 @@ span:focus {
 }
 
 a[download] {
-    display: none;
+    display: inline;
 }
 
 /*.timelog_entry {
