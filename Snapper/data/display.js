@@ -5,12 +5,11 @@
 // require does not seem to be available in content scripts.
 // let sp = require('sdk/simple-prefs');
 (function() {
-    // var loading = "loading started at " + new Error().stack.split(/\s+/)[2] + "\n(" + (chrome.app.getDetails() && chrome.app.getDetails().name || "no chrome.app.getDetails()") + ") takes";
+    var loading = "loading started at " + new Error().stack.split(/\s+/)[2] + "\n(" + ") takes";
+    console.log(loading);
+    // TODO console.time is not available in FireFox addon content script.
     // console.time(loading);
-    // TODO Place following code where timed section should end.
-    // console.timeEnd(loading);
-    // console.log("Reload it with Ctrl+R or as follows:\nlocation.reload(true)");
-    // console.log("injection into " + document.URL + " in\n" + JSON.stringify(navigator.userAgent) + "\nends at\n" + JSON.stringify(Date()));
+    // console.log(self);
     var preActivity;
     var tooltipActivity;
     var preClockin;
@@ -39,6 +38,7 @@
 
     function display(data) {
         try {
+        	document.title = data.self.name + " v" + data.self.version;
             var d = new Date(data.now) || new Date();
             if (d instanceof Date && !isNaN(d.getTime())) {} else {
                 console.error('%o is not a valid Date', d);
@@ -224,6 +224,8 @@
     self.port.on('display', function(data) {
         display(data);
     });
-    console.log("Reload it with Ctrl+R or as follows:\nlocation.reload(true)");
-    console.log("injection into " + document.URL + " in\n" + JSON.stringify(navigator.userAgent) + "\nends at\n" + JSON.stringify(Date()));
+    // TODO Place following code where timed section should end.
+     // console.timeEnd(loading);
+     console.log("Reload it with Ctrl+R or as follows:\nlocation.reload(true)");
+     console.log("injection into " + document.URL + " in\n" + JSON.stringify(navigator.userAgent) + "\nends at\n" + JSON.stringify(Date()));
 })();

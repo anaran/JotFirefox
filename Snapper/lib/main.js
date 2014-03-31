@@ -14,6 +14,7 @@ sp.on('consoleLogLevel', function() {
     var name = "extensions." + self.id + ".sdk.console.logLevel";
     // TODO Using error to make sure message will always be visible -- not ideal.
     console.error('Setting log level for ' + self.name + ' version ' + self.version + ' to ' + consoleLogLevel);
+    console.log('self', self);
     require("sdk/preferences/service").set(name, consoleLogLevel);
 });
 sp.on('ABOUTDATA', function() {
@@ -164,6 +165,8 @@ var getSnapperEntries = function(worker, data) {
 };
 
 var openSnapperTab = function(data) {
+	// Pass self to content script for it to get self.version, self.id, self.name, etc.
+    data.self = self;
     // Add names of user data formats to be sent to content script.
     data.format0 = sp.prefs['DATAFORMAT0'];
     data.format1 = sp.prefs['DATAFORMAT1'];
