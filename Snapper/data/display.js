@@ -49,12 +49,12 @@
             downloadFormat2Button.value = data.format2;
             var activity = "Snap!" + (data.title ? '\n# ' + data.title : '\n#') + (data.title ? '\n@ ' + data.url : '\n@') + (data.selection ? '\n' + data.selection : '');
             if (activity) {
-                preActivity.blur();
-                preActivity.textContent = JSON.stringify(activity);
+//                preActivity.blur();
+                preActivity.value = activity;
                 preClockin.textContent = dateToTimeClock(d);
                 // preClockin.textContent = d.toString();
                 preClockout.textContent = preClockin.textContent;
-                timelogEntry.click();
+//                timelogEntry.click();
             }
         } catch (exception) {
             // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
@@ -128,7 +128,7 @@
             saveButton.addEventListener('click', function(event) {
                 try {
                     self.port.emit('save', {
-                        activity: preActivity.textContent,
+                        activity: JSON.stringify(preActivity.value),
                         start: preClockin.textContent,
                         end: preClockout.textContent
                         // start: Date.parse(preClockin.textContent),
@@ -172,8 +172,8 @@
             preActivity.addEventListener('focus', function(event) {
                 try {
                     // console.log('focus');
-                    event.target.textContent = JSON.parse(event.target.textContent);
-                    tooltipActivity.textContent = "When needed: Insert newline as \\n, return as \\r, tab as \\t.";
+//                    event.target.textContent = JSON.parse(event.target.textContent);
+//                    tooltipActivity.textContent = "When needed: Insert newline as \\n, return as \\r, tab as \\t.";
                     // See https://developer.mozilla.org/en-US/docs/Web/Reference/Events/focus#Event_delegation
                     // }, !!"useCapture");
                 } catch (exception) {
@@ -183,17 +183,17 @@
             }, false);
             preActivity.addEventListener('blur', function(event) {
                 try {
-                    event.target.textContent = event.target.textContent.replace(/\\n/g, '\n').replace(/\\r/g, '\r').replace(/\\t/g, '\t');
-                    console.log('before stringify in blur:', event.target.textContent);
+//                    event.target.textContent = event.target.textContent.replace(/\\n/g, '\n').replace(/\\r/g, '\r').replace(/\\t/g, '\t');
+//                    console.log('before stringify in blur:', event.target.textContent);
                     // Filter out empty strings (at begin or end) to avoid counting them as words (without trimmig text content).
-                    var lines = event.target.textContent.split(/\n/g).filter(function(value) {
-                        if (value.length) return value;
+                    var lines = event.target.value.split(/\n/g).filter(function(value) {
+                        if (value.length) {return value;}
                     }).length;
-                    var words = event.target.textContent.split(/\s+/g).filter(function(value) {
-                        if (value.length) return value;
+                    var words = event.target.value.split(/\s+/g).filter(function(value) {
+                        if (value.length) {return value;}
                     }).length;
-                    tooltipActivity.textContent = "activity has " + event.target.textContent.length + " characters, " + words + " words, " + lines + " lines";
-                    event.target.textContent = JSON.stringify(event.target.textContent);
+                    tooltipActivity.textContent = "activity has " + event.target.value.length + " characters, " + words + " words, " + lines + " lines";
+//                    event.target.textContent = JSON.stringify(event.target.textContent);
                     // See https://developer.mozilla.org/en-US/docs/Web/Reference/Events/blur#Event_delegation
                     // }, !!"useCapture");
                 } catch (exception) {
