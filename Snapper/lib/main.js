@@ -109,7 +109,8 @@ var performDownload = function(worker, data) {
                 });
                 worker.port.emit('content', {
                     content: JSON.stringify(snapperStorage.storage.entries, null, 2),
-                    filename: filename
+                    filename: filename,
+                    type: data.type
                 });
                 break;
             }
@@ -129,7 +130,8 @@ var performDownload = function(worker, data) {
                 });
                 worker.port.emit('content', {
                     content: content,
-                    filename: filename
+                    filename: filename,
+                    type: data.type
                 });
                 break;
             }
@@ -149,7 +151,8 @@ var performDownload = function(worker, data) {
                 });
                 worker.port.emit('content', {
                     content: content,
-                    filename: filename
+                    filename: filename,
+                    type: data.type
                 });
                 break;
             }
@@ -178,7 +181,6 @@ var openSnapperTab = function(data) {
             var worker = tab.attach({
                 contentScriptFile: self.data.url('display.js')
             });
-            worker.port.emit("display", data);
             worker.port.on('close', function(data) {
                 require("sdk/tabs").activeTab.close();
             });
@@ -217,6 +219,7 @@ var openSnapperTab = function(data) {
             worker.port.on('download', function(data) {
                 performDownload(worker, data);
             });
+            worker.port.emit("display", data);
         }
         tabs.open({
             url: self.data.url('display.html'),
