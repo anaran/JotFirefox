@@ -47,13 +47,13 @@
             downloadFormat0Link.textContent = data.format0;
             downloadFormat1Link.textContent = data.format1;
             downloadFormat2Link.textContent = data.format2;
-            self.port.emit('download', {
+            self.port.emit('getSnapperEntries', {
                 type: 'DATAFORMAT0'
             });
-            self.port.emit('download', {
+            self.port.emit('getSnapperEntries', {
                 type: 'DATAFORMAT1'
             });
-            self.port.emit('download', {
+            self.port.emit('getSnapperEntries', {
                 type: 'DATAFORMAT2'
             });
             var activity = "Snap!" + (data.title ? '\n# ' + data.title : '\n#') + (data.title ? '\n@ ' + data.url : '\n@') + (data.selection ? '\n' + data.selection : '');
@@ -84,7 +84,7 @@
             downloadFormat0Link = document.querySelector('.download_format0');
             downloadFormat1Link = document.querySelector('.download_format1');
             downloadFormat2Link = document.querySelector('.download_format2');
-            self.port.on('content', function(data) {
+            self.port.on('setSnapperEntriesBlob', function(data) {
                 var blob = new window.Blob([data.content], {
                     type: 'text/plain; charset=utf-8'
                 });
@@ -93,16 +93,28 @@
                         {
                             downloadFormat0Link.href = window.URL.createObjectURL(blob);
                             downloadFormat0Link.download = data.filename;
+                            if ( !! data.download) {
+                                downloadFormat0Link.click();
+                            }
+                            break;
                         }
                     case 'DATAFORMAT1':
                         {
                             downloadFormat1Link.href = window.URL.createObjectURL(blob);
                             downloadFormat1Link.download = data.filename;
+                            if ( !! data.download) {
+                                downloadFormat1Link.click();
+                            }
+                            break;
                         }
                     case 'DATAFORMAT2':
                         {
                             downloadFormat2Link.href = window.URL.createObjectURL(blob);
                             downloadFormat2Link.download = data.filename;
+                            if ( !! data.download) {
+                                downloadFormat2Link.click();
+                            }
+                            break;
                         }
                     default:
                         {
@@ -111,41 +123,6 @@
                         }
                 }
             });
-            if (false) {
-                downloadFormat0Link.addEventListener('click', function(event) {
-                    try {
-                        self.port.emit('download', {
-                            type: 'DATAFORMAT0'
-                        });
-                    } catch (exception) {
-                        // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-                        console.error(exception.message, exception.stack);
-                        // console.error("exception:", exception);
-                    }
-                }, false);
-                downloadFormat1Link.addEventListener('click', function(event) {
-                    try {
-                        self.port.emit('download', {
-                            type: 'DATAFORMAT1'
-                        });
-                    } catch (exception) {
-                        // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-                        console.error(exception.message, exception.stack);
-                        // console.error("exception:", exception);
-                    }
-                }, false);
-                downloadFormat2Link.addEventListener('click', function(event) {
-                    try {
-                        self.port.emit('download', {
-                            type: 'DATAFORMAT2'
-                        });
-                    } catch (exception) {
-                        // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-                        console.error(exception.message, exception.stack);
-                        // console.error("exception:", exception);
-                    }
-                }, false);
-            }
             saveButton = document.querySelector('.save');
             saveButton.addEventListener('click', function(event) {
                 try {
@@ -156,15 +133,15 @@
                         // start: Date.parse(preClockin.textContent),
                         // end: Date.parse(preClockout.textContent)
                     });
-            self.port.emit('download', {
-                type: 'DATAFORMAT0'
-            });
-            self.port.emit('download', {
-                type: 'DATAFORMAT1'
-            });
-            self.port.emit('download', {
-                type: 'DATAFORMAT2'
-            });
+                    self.port.emit('getSnapperEntries', {
+                        type: 'DATAFORMAT0'
+                    });
+                    self.port.emit('getSnapperEntries', {
+                        type: 'DATAFORMAT1'
+                    });
+                    self.port.emit('getSnapperEntries', {
+                        type: 'DATAFORMAT2'
+                    });
                 } catch (exception) {
                     // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
                     console.error(exception.message, exception.stack);
@@ -184,14 +161,17 @@
             deleteButton = document.querySelector('.delete');
             deleteButton.addEventListener('click', function(event) {
                 try {
-                    self.port.emit('download', {
-                        type: 'DATAFORMAT0'
+                    self.port.emit('getSnapperEntries', {
+                        type: 'DATAFORMAT0',
+                        download: true
                     });
-                    self.port.emit('download', {
-                        type: 'DATAFORMAT1'
+                    self.port.emit('getSnapperEntries', {
+                        type: 'DATAFORMAT1',
+                        download: true
                     });
-                    self.port.emit('download', {
-                        type: 'DATAFORMAT2'
+                    self.port.emit('getSnapperEntries', {
+                        type: 'DATAFORMAT2',
+                        download: true
                     });
                     self.port.emit('delete');
                 } catch (exception) {
@@ -236,41 +216,11 @@
                     console.error(exception.message, exception.stack);
                 }
             }, false);
-            // preActivity.focus();
-            // preActivity.blur();
-            if (false) {
-                timelogEntry.addEventListener('click', function(event) {
-                    if (event.currentTarget === event.target) {
-                        var selection = window.getSelection();
-                        selection.removeAllRanges();
-                        var range = document.createRange();
-                        range.selectNodeContents(event.target);
-                        // range.collapse(!'toStart');
-                        // Always add the range to restore focus.
-                        selection.addRange(range);
-                    }
-                }, false);
-            }
-            // chrome.runtime.sendMessage({
-            // greeting: "display"
-            // }, function(response) {
-            // display(response.activity);
-            // });
         } catch (exception) {
             // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
             console.error(exception.message, exception.stack);
         }
     }, false);
-    // var cb = function(request, sender, sendResponse) {
-    // console.log(sender.tab ?
-    // "from a content script:" + sender.tab.url :
-    // "from the extension");
-    // if (request.greeting === "display") {
-    // display(request.activity);
-    // }
-    // };
-    // chrome.runtime.onMessage.addListener(cb);
-    // console.timeEnd(loading);
     self.port.on('display', function(data) {
         display(data);
     });

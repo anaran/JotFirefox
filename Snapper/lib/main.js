@@ -8,8 +8,6 @@ let notifications = require("sdk/notifications");
 var data = self.data;
 
 var consoleLogLevel = sp.prefs['consoleLogLevel'];
-//var DATEFORMAT = sp.prefs.DATEFORMAT;
-//var INFOFORMAT = sp.prefs.INFOFORMAT;
 
 sp.on('consoleLogLevel', function() {
     consoleLogLevel = sp.prefs['consoleLogLevel'];
@@ -42,10 +40,6 @@ sp.on('ABOUTDATA', function() {
         text: 'Use of storage quota: ' + (new Number(snapperStorage.quotaUsage * 100)).toPrecision(3) + '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text + ' characters\nlongest: ' + max_text + ' characters\noldest: ' + min_start + '\nnewest: ' + max_start
     });
 });
-//sp.on('INFORMATION_FORMAT', function() {
-//    INFORMATION_FORMAT = sp.prefs.INFORMATION_FORMAT;
-//    console.log('DEBUG set to ' + INFORMATION_FORMAT);
-//});
 // See https://blog.mozilla.org/addons/2013/06/13/jetpack-fennec-and-nativewindow
 // get a global window reference
 const utils = require('sdk/window/utils');
@@ -90,7 +84,7 @@ let replaceDates = function(format, date) {
     return format;
 };
 
-var performDownload = function(worker, data) {
+var getSnapperEntries = function(worker, data) {
     //TODO Please note that file extensions .csv or .json just cause trouble downloading or opening in Firefox.
     var filename = self.name + '_' + sp.prefs[data.type] + '_' + snapperStorage.storage.entries.length + '@' + Date.now() + '.txt';
     console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
@@ -107,10 +101,11 @@ var performDownload = function(worker, data) {
                 notifications.notify({
                     text: 'Downloading ' + filename
                 });
-                worker.port.emit('content', {
+                worker.port.emit('setSnapperEntriesBlob', {
                     content: JSON.stringify(snapperStorage.storage.entries, null, 2),
                     filename: filename,
-                    type: data.type
+                    type: data.type,
+                    download: !! data.download
                 });
                 break;
             }
@@ -128,10 +123,11 @@ var performDownload = function(worker, data) {
                 notifications.notify({
                     text: 'Downloading ' + filename
                 });
-                worker.port.emit('content', {
+                worker.port.emit('setSnapperEntriesBlob', {
                     content: content,
                     filename: filename,
-                    type: data.type
+                    type: data.type,
+                    download: !! data.download
                 });
                 break;
             }
@@ -149,10 +145,11 @@ var performDownload = function(worker, data) {
                 notifications.notify({
                     text: 'Downloading ' + filename
                 });
-                worker.port.emit('content', {
+                worker.port.emit('setSnapperEntriesBlob', {
                     content: content,
                     filename: filename,
-                    type: data.type
+                    type: data.type,
+                    download: !! data.download
                 });
                 break;
             }
@@ -216,8 +213,8 @@ var openSnapperTab = function(data) {
                 snapperStorage.storage.entries.push(data);
                 console.log(snapperStorage.storage.entries);
             });
-            worker.port.on('download', function(data) {
-                performDownload(worker, data);
+            worker.port.on('getSnapperEntries', function(data) {
+                getSnapperEntries(worker, data);
             });
             worker.port.emit("display", data);
         }
