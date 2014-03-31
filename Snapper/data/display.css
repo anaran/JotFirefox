@@ -21,7 +21,7 @@
   	/*word-wrap: break-word;*/
 }
 
-span+p.tooltip_activity {
+textarea+p.tooltip_activity {
   	margin: 0.5em;
     position: fixed;
         /*display: none;*/
@@ -35,12 +35,12 @@ span+p.tooltip_activity {
     transition-timing-function: ease-in;
 }
 
-span:active+p.tooltip_activity {
+textarea:active+p.tooltip_activity {
 	opacity: 0.8;
     /*display: inline-block;*/
 }
 
-span:hover+p.tooltip_activity {
+textarea:hover+p.tooltip_activity {
 	opacity: 0.8;
     /*display: inline-block;*/
 }
