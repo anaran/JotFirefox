@@ -18,6 +18,7 @@
     var downloadFormat0Link;
     var downloadFormat1Link;
     var downloadFormat2Link;
+    var links = {};
     var saveButton;
     var closeButton;
     var deleteButton;
@@ -38,7 +39,7 @@
 
     function display(data) {
         try {
-        	document.title = data.self.name + " v" + data.self.version;
+            document.title = data.self.name + " v" + data.self.version;
             var d = new Date(data.now) || new Date();
             if (d instanceof Date && !isNaN(d.getTime())) {} else {
                 console.error('%o is not a valid Date', d);
@@ -84,43 +85,42 @@
             downloadFormat0Link = document.querySelector('.download_format0');
             downloadFormat1Link = document.querySelector('.download_format1');
             downloadFormat2Link = document.querySelector('.download_format2');
+            links['DATAFORMAT0'] = document.querySelector('.download_format0');
+            links['DATAFORMAT1'] = document.querySelector('.download_format1');
+            links['DATAFORMAT2'] = document.querySelector('.download_format2');
+            console.log(links);
+            Object.getOwnPropertyNames(links).forEach(function (type) {
+            links[type].addEventListener('click', function(event) {
+                try {
+                    window.setTimeout(function() {
+                    // TODO Please note we are showing user that data has already been downloaded.
+                    // console.log('removing href for ', link);
+                    event.target.removeAttribute('href');
+                    // link.href = null;
+                    }, 900);
+                } catch (exception) {
+                    // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
+                    console.error(exception.message, exception.stack);
+                    // console.error("exception:", exception);
+                }
+            }, false);
+            });
             self.port.on('setSnapperEntriesBlob', function(data) {
                 var blob = new window.Blob([data.content], {
                     type: 'text/plain; charset=utf-8'
                 });
-                switch (data.type) {
-                    case 'DATAFORMAT0':
-                        {
-                            downloadFormat0Link.href = window.URL.createObjectURL(blob);
-                            downloadFormat0Link.download = data.filename;
+                if ( !! data.download) {
+                    console.log('we will dowload as well', data);
+                }
+                if (links[data.type]) {
                             if ( !! data.download) {
-                                downloadFormat0Link.click();
+                                links[data.type].click();
+                            } else {
+                                links[data.type].href = window.URL.createObjectURL(blob);
+                                links[data.type].download = data.filename;
                             }
-                            break;
-                        }
-                    case 'DATAFORMAT1':
-                        {
-                            downloadFormat1Link.href = window.URL.createObjectURL(blob);
-                            downloadFormat1Link.download = data.filename;
-                            if ( !! data.download) {
-                                downloadFormat1Link.click();
-                            }
-                            break;
-                        }
-                    case 'DATAFORMAT2':
-                        {
-                            downloadFormat2Link.href = window.URL.createObjectURL(blob);
-                            downloadFormat2Link.download = data.filename;
-                            if ( !! data.download) {
-                                downloadFormat2Link.click();
-                            }
-                            break;
-                        }
-                    default:
-                        {
+                } else {
                             console.error('Don\'t know how to handle content type ' + data.type);
-                            break;
-                        }
                 }
             });
             saveButton = document.querySelector('.save');
@@ -173,7 +173,8 @@
                         type: 'DATAFORMAT2',
                         download: true
                     });
-                    self.port.emit('delete');
+self.port.emit('delete');
+                    //                    location.reload(true);
                 } catch (exception) {
                     // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
                     console.error(exception.message, exception.stack);
@@ -225,7 +226,7 @@
         display(data);
     });
     // TODO Place following code where timed section should end.
-     // console.timeEnd(loading);
-     console.log("Reload it with Ctrl+R or as follows:\nlocation.reload(true)");
-     console.log("injection into " + document.URL + " in\n" + JSON.stringify(navigator.userAgent) + "\nends at\n" + JSON.stringify(Date()));
+    // console.timeEnd(loading);
+    console.log("Reload it with Ctrl+R or as follows:\nlocation.reload(true)");
+    console.log("injection into " + document.URL + " in\n" + JSON.stringify(navigator.userAgent) + "\nends at\n" + JSON.stringify(Date()));
 })();

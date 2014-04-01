@@ -47,13 +47,13 @@ textarea:hover+p.tooltip_activity {
     /*display: inline-block;*/
 }
 
-span:focus {
+*:focus {
     border: 2px solid blue;
 }
 
-a[download] {
+/*a[download] {
     display: inline;
-}
+}*/
 
 /*.timelog_entry {
     padding: 2em;
