@@ -15,10 +15,8 @@
     var preClockin;
     var preClockout;
     var timelogEntry;
-//    var downloadFormat0Link;
-//    var downloadFormat1Link;
-//    var downloadFormat2Link;
     var links = {};
+    var texts = {};
     var saveButton;
     var closeButton;
     var deleteButton;
@@ -39,15 +37,36 @@
 
     function display(data) {
         try {
+            links['DATAFORMAT0'] = document.querySelector('.download_format0');
+            links['DATAFORMAT1'] = document.querySelector('.download_format1');
+            links['DATAFORMAT2'] = document.querySelector('.download_format2');
+            texts['DATAFORMAT0'] = data.format0;
+            texts['DATAFORMAT1'] = data.format1;
+            texts['DATAFORMAT2'] = data.format2;
+            console.log(links);
+            Object.getOwnPropertyNames(links).forEach(function(type) {
+            links[type].textContent = texts[type];
+                links[type].addEventListener('click', function(event) {
+                    try {
+                        window.setTimeout(function() {
+                            // TODO Please note we are showing user that data has already been downloaded.
+                            // console.log('removing href for ', link);
+                            event.target.removeAttribute('href');
+                            // link.href = null;
+                        }, 900);
+                    } catch (exception) {
+                        // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
+                        console.error(exception.message, exception.stack);
+                        // console.error("exception:", exception);
+                    }
+                }, false);
+            });
             document.title = data.self.name + " v" + data.self.version;
             var d = new Date(data.now) || new Date();
             if (d instanceof Date && !isNaN(d.getTime())) {} else {
                 console.error('%o is not a valid Date', d);
                 return;
             }
-//            downloadFormat0Link.textContent = data.format0;
-//            downloadFormat1Link.textContent = data.format1;
-//            downloadFormat2Link.textContent = data.format2;
             self.port.emit('getSnapperEntries', {
                 type: 'DATAFORMAT0'
             });
@@ -70,7 +89,7 @@
             // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
             console.error(exception.message, exception.stack);
         }
-    }
+}
     document.addEventListener('readystatechange', function(event) {
         try {
             if (event.target.readyState !== "complete") {
@@ -82,29 +101,6 @@
             preClockin = document.querySelector('.clockin');
             preClockout = document.querySelector('.clockout');
             timelogEntry = document.querySelector('.timelog_entry');
-//            downloadFormat0Link = document.querySelector('.download_format0');
-//            downloadFormat1Link = document.querySelector('.download_format1');
-//            downloadFormat2Link = document.querySelector('.download_format2');
-            links['DATAFORMAT0'] = document.querySelector('.download_format0');
-            links['DATAFORMAT1'] = document.querySelector('.download_format1');
-            links['DATAFORMAT2'] = document.querySelector('.download_format2');
-            console.log(links);
-            Object.getOwnPropertyNames(links).forEach(function(type) {
-                links[type].addEventListener('click', function(event) {
-                    try {
-                        window.setTimeout(function() {
-                            // TODO Please note we are showing user that data has already been downloaded.
-                            // console.log('removing href for ', link);
-                            event.target.removeAttribute('href');
-                            // link.href = null;
-                        }, 900);
-                    } catch (exception) {
-                        // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-                        console.error(exception.message, exception.stack);
-                        // console.error("exception:", exception);
-                    }
-                }, false);
-            });
             self.port.on('setSnapperEntriesBlob', function(data) {
                 var blob = new window.Blob([data.content], {
                     type: 'text/plain; charset=utf-8'
@@ -222,6 +218,7 @@
             console.error(exception.message, exception.stack);
         }
     }, false);
+
     self.port.on('display', function(data) {
         display(data);
     });

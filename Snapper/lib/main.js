@@ -40,6 +40,7 @@ sp.on('ABOUTDATA', function() {
         title: 'About Snapper Data',
         text: 'Use of storage quota: ' + (new Number(snapperStorage.quotaUsage * 100)).toPrecision(3) + '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text + ' characters\nlongest: ' + max_text + ' characters\noldest: ' + min_start + '\nnewest: ' + max_start
     });
+        console.log('notify:'+'Use of storage quota: ' + (new Number(snapperStorage.quotaUsage * 100)).toPrecision(3) + '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text + ' characters\nlongest: ' + max_text + ' characters\noldest: ' + min_start + '\nnewest: ' + max_start);
 });
 // See https://blog.mozilla.org/addons/2013/06/13/jetpack-fennec-and-nativewindow
 // get a global window reference
@@ -95,15 +96,17 @@ var getSnapperEntries = function(worker, data) {
             title: 'Snapper Notification',
             text: 'There is no data to be downloaded in ' + sp.prefs[data.type] + ' format.'
         });
+            console.log('notify:'+'There is no data to be downloaded in ' + sp.prefs[data.type] + ' format.');
         return;
     }
     switch (data.type) {
         case 'DATAFORMAT0':
             {
-                notifications.notify({
-                    title: 'Snapper Notification',
-                    text: 'Downloading ' + filename
-                });
+//                notifications.notify({
+//                    title: 'Snapper Notification',
+//                    text: 'Downloading ' + filename
+//                });
+                    console.log('notify:'+'Downloading ' + filename);
                 worker.port.emit('setSnapperEntriesBlob', {
                     content: JSON.stringify(snapperStorage.storage.entries, null, 2),
                     filename: filename,
@@ -123,10 +126,11 @@ var getSnapperEntries = function(worker, data) {
                     text = snapperStorage.storage.entries[i].activity;
                     content += formatEntry(entryFormat, start, end, text);
                 }
-                notifications.notify({
-                    title: 'Snapper Notification',
-                    text: 'Downloading ' + filename
-                });
+//                notifications.notify({
+//                    title: 'Snapper Notification',
+//                    text: 'Downloading ' + filename
+//                });
+                    console.log('notify:'+'Downloading ' + filename);
                 worker.port.emit('setSnapperEntriesBlob', {
                     content: content,
                     filename: filename,
@@ -146,10 +150,11 @@ var getSnapperEntries = function(worker, data) {
                     text = snapperStorage.storage.entries[i].activity;
                     content += formatEntry(entryFormat, start, end, text);
                 }
-                notifications.notify({
-                    title: 'Snapper Notification',
-                    text: 'Downloading ' + filename
-                });
+//                notifications.notify({
+//                    title: 'Snapper Notification',
+//                    text: 'Downloading ' + filename
+//                });
+                    console.log('notify:'+'Downloading ' + filename);
                 worker.port.emit('setSnapperEntriesBlob', {
                     content: content,
                     filename: filename,
@@ -164,6 +169,7 @@ var getSnapperEntries = function(worker, data) {
                     title: 'Snapper Notification',
                     text: 'Don\'t know how to download ' + sp.prefs[data.type]
                 });
+                    console.log('notify:'+'Don\'t know how to download ' + sp.prefs[data.type]);
                 break;
             }
     }
@@ -186,6 +192,7 @@ var openSnapperTab = function(data) {
             var worker = tab.attach({
                 contentScriptFile: self.data.url('display.js')
             });
+            worker.port.emit("display", data);
             worker.port.on('close', function(data) {
                 require("sdk/tabs").activeTab.close();
             });
@@ -195,11 +202,13 @@ var openSnapperTab = function(data) {
                         title: 'Snapper Notification',
                         text: 'There is no data to be deleted.'
                     });
+                        console.log('notify:'+'There is no data to be deleted.');
                 } else {
                     notifications.notify({
                         title: 'Snapper Notification',
                         text: 'Deleting all ' + snapperStorage.storage.entries.length + ' entries of snapper data, see browser downloads directory for exported data.'
                     });
+                        console.log('notify:'+'Deleting all ' + snapperStorage.storage.entries.length + ' entries of snapper data, see browser downloads directory for exported data.');
                     snapperStorage.storage.entries = [];
                 }
             });
@@ -215,7 +224,7 @@ var openSnapperTab = function(data) {
                             title: 'Snapper Notification',
                             text: 'Already saved (skipping) ' + JSON.stringify(data)
                         });
-                        // console.log('Already saved (skipping) ' + JSON.stringify(data));
+                            console.log('notify:'+'Already saved (skipping) ' + JSON.stringify(data));
                         return;
                     }
                 }
@@ -223,13 +232,13 @@ var openSnapperTab = function(data) {
                     title: 'Snapper Notification',
                     text: 'Saving ' + JSON.stringify(data)
                 });
+                    console.log('notify:'+'Saving ' + JSON.stringify(data));
                 snapperStorage.storage.entries.push(data);
                 // console.log(snapperStorage.storage.entries);
             });
             worker.port.on('getSnapperEntries', function(data) {
                 getSnapperEntries(worker, data);
             });
-            worker.port.emit("display", data);
         }
         tabs.open({
             url: self.data.url('display.html'),
