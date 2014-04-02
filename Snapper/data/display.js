@@ -15,9 +15,9 @@
     var preClockin;
     var preClockout;
     var timelogEntry;
-    var downloadFormat0Link;
-    var downloadFormat1Link;
-    var downloadFormat2Link;
+//    var downloadFormat0Link;
+//    var downloadFormat1Link;
+//    var downloadFormat2Link;
     var links = {};
     var saveButton;
     var closeButton;
@@ -45,9 +45,9 @@
                 console.error('%o is not a valid Date', d);
                 return;
             }
-            downloadFormat0Link.textContent = data.format0;
-            downloadFormat1Link.textContent = data.format1;
-            downloadFormat2Link.textContent = data.format2;
+//            downloadFormat0Link.textContent = data.format0;
+//            downloadFormat1Link.textContent = data.format1;
+//            downloadFormat2Link.textContent = data.format2;
             self.port.emit('getSnapperEntries', {
                 type: 'DATAFORMAT0'
             });
@@ -82,28 +82,28 @@
             preClockin = document.querySelector('.clockin');
             preClockout = document.querySelector('.clockout');
             timelogEntry = document.querySelector('.timelog_entry');
-            downloadFormat0Link = document.querySelector('.download_format0');
-            downloadFormat1Link = document.querySelector('.download_format1');
-            downloadFormat2Link = document.querySelector('.download_format2');
+//            downloadFormat0Link = document.querySelector('.download_format0');
+//            downloadFormat1Link = document.querySelector('.download_format1');
+//            downloadFormat2Link = document.querySelector('.download_format2');
             links['DATAFORMAT0'] = document.querySelector('.download_format0');
             links['DATAFORMAT1'] = document.querySelector('.download_format1');
             links['DATAFORMAT2'] = document.querySelector('.download_format2');
             console.log(links);
-            Object.getOwnPropertyNames(links).forEach(function (type) {
-            links[type].addEventListener('click', function(event) {
-                try {
-                    window.setTimeout(function() {
-                    // TODO Please note we are showing user that data has already been downloaded.
-                    // console.log('removing href for ', link);
-                    event.target.removeAttribute('href');
-                    // link.href = null;
-                    }, 900);
-                } catch (exception) {
-                    // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-                    console.error(exception.message, exception.stack);
-                    // console.error("exception:", exception);
-                }
-            }, false);
+            Object.getOwnPropertyNames(links).forEach(function(type) {
+                links[type].addEventListener('click', function(event) {
+                    try {
+                        window.setTimeout(function() {
+                            // TODO Please note we are showing user that data has already been downloaded.
+                            // console.log('removing href for ', link);
+                            event.target.removeAttribute('href');
+                            // link.href = null;
+                        }, 900);
+                    } catch (exception) {
+                        // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
+                        console.error(exception.message, exception.stack);
+                        // console.error("exception:", exception);
+                    }
+                }, false);
             });
             self.port.on('setSnapperEntriesBlob', function(data) {
                 var blob = new window.Blob([data.content], {
@@ -113,14 +113,14 @@
                     console.log('we will dowload as well', data);
                 }
                 if (links[data.type]) {
-                            if ( !! data.download) {
-                                links[data.type].click();
-                            } else {
-                                links[data.type].href = window.URL.createObjectURL(blob);
-                                links[data.type].download = data.filename;
-                            }
+                    if ( !! data.download) {
+                        links[data.type].click();
+                    } else {
+                        links[data.type].href = window.URL.createObjectURL(blob);
+                        links[data.type].download = data.filename;
+                    }
                 } else {
-                            console.error('Don\'t know how to handle content type ' + data.type);
+                    console.error('Don\'t know how to handle content type ' + data.type);
                 }
             });
             saveButton = document.querySelector('.save');
@@ -173,7 +173,7 @@
                         type: 'DATAFORMAT2',
                         download: true
                     });
-self.port.emit('delete');
+                    self.port.emit('delete');
                     //                    location.reload(true);
                 } catch (exception) {
                     // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);

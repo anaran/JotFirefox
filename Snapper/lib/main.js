@@ -4,7 +4,7 @@
 let sp = require('sdk/simple-prefs');
 let self = require('sdk/self');
 let snapperStorage = require("sdk/simple-storage");
-let notifications = require("sdk/notifications");
+var notifications = require("sdk/notifications");
 var data = self.data;
 
 var consoleLogLevel = sp.prefs['consoleLogLevel'];
@@ -14,7 +14,7 @@ sp.on('consoleLogLevel', function() {
     var name = "extensions." + self.id + ".sdk.console.logLevel";
     // TODO Using error to make sure message will always be visible -- not ideal.
     console.error('Setting log level for ' + self.name + ' version ' + self.version + ' to ' + consoleLogLevel);
-    console.log('self', self);
+    // console.log('self', self);
     require("sdk/preferences/service").set(name, consoleLogLevel);
 });
 sp.on('ABOUTDATA', function() {
@@ -88,10 +88,11 @@ let replaceDates = function(format, date) {
 var getSnapperEntries = function(worker, data) {
     //TODO Please note that file extensions .csv or .json just cause trouble downloading or opening in Firefox.
     var filename = self.name + '_' + sp.prefs[data.type] + '_' + snapperStorage.storage.entries.length + '@' + Date.now() + '.txt';
-    console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
-    console.log(JSON.stringify(snapperStorage.storage.entries));
+    // console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
+    // console.log(JSON.stringify(snapperStorage.storage.entries));
     if (!snapperStorage.storage.entries || !snapperStorage.storage.entries.length) {
         notifications.notify({
+            title: 'Snapper Notification',
             text: 'There is no data to be downloaded in ' + sp.prefs[data.type] + ' format.'
         });
         return;
@@ -100,6 +101,7 @@ var getSnapperEntries = function(worker, data) {
         case 'DATAFORMAT0':
             {
                 notifications.notify({
+                    title: 'Snapper Notification',
                     text: 'Downloading ' + filename
                 });
                 worker.port.emit('setSnapperEntriesBlob', {
@@ -122,6 +124,7 @@ var getSnapperEntries = function(worker, data) {
                     content += formatEntry(entryFormat, start, end, text);
                 }
                 notifications.notify({
+                    title: 'Snapper Notification',
                     text: 'Downloading ' + filename
                 });
                 worker.port.emit('setSnapperEntriesBlob', {
@@ -144,6 +147,7 @@ var getSnapperEntries = function(worker, data) {
                     content += formatEntry(entryFormat, start, end, text);
                 }
                 notifications.notify({
+                    title: 'Snapper Notification',
                     text: 'Downloading ' + filename
                 });
                 worker.port.emit('setSnapperEntriesBlob', {
@@ -157,6 +161,7 @@ var getSnapperEntries = function(worker, data) {
         default:
             {
                 notifications.notify({
+                    title: 'Snapper Notification',
                     text: 'Don\'t know how to download ' + sp.prefs[data.type]
                 });
                 break;
@@ -165,14 +170,14 @@ var getSnapperEntries = function(worker, data) {
 };
 
 var openSnapperTab = function(data) {
-	// Pass self to content script for it to get self.version, self.id, self.name, etc.
+    // Pass self to content script for it to get self.version, self.id, self.name, etc.
     data.self = self;
     // Add names of user data formats to be sent to content script.
     data.format0 = sp.prefs['DATAFORMAT0'];
     data.format1 = sp.prefs['DATAFORMAT1'];
     data.format2 = sp.prefs['DATAFORMAT2'];
     snapperStorage.on("OverQuota", function() {
-        console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
+        console.error('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
     });
     let activeTab = require("sdk/tabs").activeTab;
     var tabs = require("sdk/tabs");
@@ -187,34 +192,39 @@ var openSnapperTab = function(data) {
             worker.port.on('delete', function(data) {
                 if (!snapperStorage.storage.entries || !snapperStorage.storage.entries.length) {
                     notifications.notify({
+                        title: 'Snapper Notification',
                         text: 'There is no data to be deleted.'
                     });
                 } else {
                     notifications.notify({
+                        title: 'Snapper Notification',
                         text: 'Deleting all ' + snapperStorage.storage.entries.length + ' entries of snapper data, see browser downloads directory for exported data.'
                     });
                     snapperStorage.storage.entries = [];
                 }
             });
             worker.port.on('save', function(data) {
-                console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
+//                console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
                 if (!snapperStorage.storage.entries) {
                     snapperStorage.storage.entries = [];
                 }
-                console.log(snapperStorage.storage.entries);
+//                console.log(snapperStorage.storage.entries);
                 for (var i = 0, len = snapperStorage.storage.entries.length; i < len; i++) {
                     if (JSON.stringify(snapperStorage.storage.entries[i]) === JSON.stringify(data)) {
                         notifications.notify({
+                            title: 'Snapper Notification',
                             text: 'Already saved (skipping) ' + JSON.stringify(data)
                         });
+                        // console.log('Already saved (skipping) ' + JSON.stringify(data));
                         return;
                     }
                 }
                 notifications.notify({
+                    title: 'Snapper Notification',
                     text: 'Saving ' + JSON.stringify(data)
                 });
                 snapperStorage.storage.entries.push(data);
-                console.log(snapperStorage.storage.entries);
+                // console.log(snapperStorage.storage.entries);
             });
             worker.port.on('getSnapperEntries', function(data) {
                 getSnapperEntries(worker, data);
@@ -246,7 +256,7 @@ if (recent.NativeWindow) {
                 url: activeTab.url
             };
             //recent.NativeWindow.toast.show("Snap!" + (activeTab ? ('\n' + activeTab.title + '\n' + activeTab.url) : ('\nNo Title\nNo URL')) + (selection ? '\n' + selection.toString() : ''), "long");
-            console.log(target);
+            // console.log(target);
             openSnapperTab(data);
         }
     });
