@@ -4,8 +4,11 @@
 let sp = require('sdk/simple-prefs');
 let self = require('sdk/self');
 let snapperStorage = require("sdk/simple-storage");
-var notifications = require("sdk/notifications");
+let notifications = require("sdk/notifications");
 var data = self.data;
+var loading = "time loading addon " + self.name + ' v' + self.version + " started at " + new Error().stack.split(/\s+/)[2];
+// TODO Please note that console.time is not available in FireFox addon content script.
+console.time(loading);
 
 var consoleLogLevel = sp.prefs['consoleLogLevel'];
 
@@ -40,7 +43,7 @@ sp.on('ABOUTDATA', function() {
         title: 'About Snapper Data',
         text: 'Use of storage quota: ' + (new Number(snapperStorage.quotaUsage * 100)).toPrecision(3) + '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text + ' characters\nlongest: ' + max_text + ' characters\noldest: ' + min_start + '\nnewest: ' + max_start
     });
-        console.log('notify:'+'Use of storage quota: ' + (new Number(snapperStorage.quotaUsage * 100)).toPrecision(3) + '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text + ' characters\nlongest: ' + max_text + ' characters\noldest: ' + min_start + '\nnewest: ' + max_start);
+    console.log('notify:' + 'Use of storage quota: ' + (new Number(snapperStorage.quotaUsage * 100)).toPrecision(3) + '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text + ' characters\nlongest: ' + max_text + ' characters\noldest: ' + min_start + '\nnewest: ' + max_start);
 });
 // See https://blog.mozilla.org/addons/2013/06/13/jetpack-fennec-and-nativewindow
 // get a global window reference
@@ -56,7 +59,7 @@ let formatEntry = function(entryFormat, start, end, text) {
     entryFormat = entryFormat.replace(/%t\b/g, text);
     entryFormat = entryFormat.replace(/%T\b/g, '"' + JSON.parse(text).replace(/"/g, '""') + '"');
     return entryFormat;
-}
+};
 
 // Modified version of my own function from popchrom in
 // https://code.google.com/p/trnsfrmr/source/browse/Transformer/scripts/date.js?name=v1.8#92
@@ -65,7 +68,7 @@ let replaceDates = function(format, date) {
     if (d instanceof Date && !isNaN(d.getTime())) {} else {
         console.error('%o is not a valid Date', d);
         return format;
-    };
+    }
     //	TODO getDay() returns the day of week,
     //	see http://www.ecma-international.org/ecma-262/5.1/#sec-15.9.5.16
     format = format.replace(/(?:%DAY%|%d)/, (d.getDate() < 10) ? "0" + d.getDate() : d.getDate()); //$NON-NLS-0$
@@ -92,21 +95,11 @@ var getSnapperEntries = function(worker, data) {
     // console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
     // console.log(JSON.stringify(snapperStorage.storage.entries));
     if (!snapperStorage.storage.entries || !snapperStorage.storage.entries.length) {
-        notifications.notify({
-            title: 'Snapper Notification',
-            text: 'There is no data to be downloaded in ' + sp.prefs[data.type] + ' format.'
-        });
-            console.log('notify:'+'There is no data to be downloaded in ' + sp.prefs[data.type] + ' format.');
         return;
     }
     switch (data.type) {
         case 'DATAFORMAT0':
             {
-//                notifications.notify({
-//                    title: 'Snapper Notification',
-//                    text: 'Downloading ' + filename
-//                });
-                    console.log('notify:'+'Downloading ' + filename);
                 worker.port.emit('setSnapperEntriesBlob', {
                     content: JSON.stringify(snapperStorage.storage.entries, null, 2),
                     filename: filename,
@@ -126,11 +119,6 @@ var getSnapperEntries = function(worker, data) {
                     text = snapperStorage.storage.entries[i].activity;
                     content += formatEntry(entryFormat, start, end, text);
                 }
-//                notifications.notify({
-//                    title: 'Snapper Notification',
-//                    text: 'Downloading ' + filename
-//                });
-                    console.log('notify:'+'Downloading ' + filename);
                 worker.port.emit('setSnapperEntriesBlob', {
                     content: content,
                     filename: filename,
@@ -150,11 +138,6 @@ var getSnapperEntries = function(worker, data) {
                     text = snapperStorage.storage.entries[i].activity;
                     content += formatEntry(entryFormat, start, end, text);
                 }
-//                notifications.notify({
-//                    title: 'Snapper Notification',
-//                    text: 'Downloading ' + filename
-//                });
-                    console.log('notify:'+'Downloading ' + filename);
                 worker.port.emit('setSnapperEntriesBlob', {
                     content: content,
                     filename: filename,
@@ -169,7 +152,7 @@ var getSnapperEntries = function(worker, data) {
                     title: 'Snapper Notification',
                     text: 'Don\'t know how to download ' + sp.prefs[data.type]
                 });
-                    console.log('notify:'+'Don\'t know how to download ' + sp.prefs[data.type]);
+                console.log('notify:' + 'Don\'t know how to download ' + sp.prefs[data.type]);
                 break;
             }
     }
@@ -202,29 +185,29 @@ var openSnapperTab = function(data) {
                         title: 'Snapper Notification',
                         text: 'There is no data to be deleted.'
                     });
-                        console.log('notify:'+'There is no data to be deleted.');
+                    console.log('notify:' + 'There is no data to be deleted.');
                 } else {
                     notifications.notify({
                         title: 'Snapper Notification',
-                        text: 'Deleting all ' + snapperStorage.storage.entries.length + ' entries of snapper data, see browser downloads directory for exported data.'
+                        text: 'Deleting all ' + snapperStorage.storage.entries.length + ' entries of snapper data, see browser\'s downloads directory for exported data.'
                     });
-                        console.log('notify:'+'Deleting all ' + snapperStorage.storage.entries.length + ' entries of snapper data, see browser downloads directory for exported data.');
+                    console.log('notify:' + 'Deleting all ' + snapperStorage.storage.entries.length + ' entries of snapper data, see browser downloads directory for exported data.');
                     snapperStorage.storage.entries = [];
                 }
             });
             worker.port.on('save', function(data) {
-//                console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
+                //                console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
                 if (!snapperStorage.storage.entries) {
                     snapperStorage.storage.entries = [];
                 }
-//                console.log(snapperStorage.storage.entries);
+                //                console.log(snapperStorage.storage.entries);
                 for (var i = 0, len = snapperStorage.storage.entries.length; i < len; i++) {
                     if (JSON.stringify(snapperStorage.storage.entries[i]) === JSON.stringify(data)) {
                         notifications.notify({
                             title: 'Snapper Notification',
                             text: 'Already saved (skipping) ' + JSON.stringify(data)
                         });
-                            console.log('notify:'+'Already saved (skipping) ' + JSON.stringify(data));
+                        console.log('notify:' + 'Already saved (skipping) ' + JSON.stringify(data));
                         return;
                     }
                 }
@@ -232,7 +215,7 @@ var openSnapperTab = function(data) {
                     title: 'Snapper Notification',
                     text: 'Saving ' + JSON.stringify(data)
                 });
-                    console.log('notify:'+'Saving ' + JSON.stringify(data));
+                console.log('notify:' + 'Saving ' + JSON.stringify(data));
                 snapperStorage.storage.entries.push(data);
                 // console.log(snapperStorage.storage.entries);
             });
@@ -281,3 +264,4 @@ if (recent.NativeWindow) {
         data: 'snap'
     });
 }
+console.timeEnd(loading);
