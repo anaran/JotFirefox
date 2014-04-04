@@ -1,0 +1,40 @@
+AichnerAd@Kuckuck:~/tmp/mozilla/SnapperFirefox/Snapper$ cmd /c "%HOME%/tmp/mozilla/addon-sdk/bin/activate && cfx testex --force-mobile -b c:/programme/nightly/firefox.exe"
+Welcome to the Add-on SDK. For the docs, visit https://addons.mozilla.org/en-US/developers/docs/sdk/latest/
+Testing annotator...
+Using binary at 'c:/programme/nightly/firefox.exe'.
+Using profile at 'c:\dokume~1\aichne~1\lokale~1\temp\tmps0s2ig.mozrunner'.
+Running tests on Firefox 31.0a1/Gecko 31.0a1 ({ec8030f7-c20a-464f-9b0e-13a3a9e97384}) under winnt/x86-msvc.
+.
+1 of 1 tests passed.
+Total time: 6.781000 seconds
+Program terminated successfully.
+Testing library-detector...
+Using binary at 'c:/programme/nightly/firefox.exe'.
+Using profile at 'c:\dokume~1\aichne~1\lokale~1\temp\tmpvdnmho.mozrunner'.
+Running tests on Firefox 31.0a1/Gecko 31.0a1 ({ec8030f7-c20a-464f-9b0e-13a3a9e97384}) under winnt/x86-msvc.
+.
+1 of 1 tests passed.
+Total time: 6.828000 seconds
+Program terminated successfully.
+Testing reading-data...
+Using binary at 'c:/programme/nightly/firefox.exe'.
+Using profile at 'c:\dokume~1\aichne~1\lokale~1\temp\tmp3mzbzv.mozrunner'.
+Running tests on Firefox 31.0a1/Gecko 31.0a1 ({ec8030f7-c20a-464f-9b0e-13a3a9e97384}) under winnt/x86-msvc.
+
+0 of 0 tests passed.
+No tests were run
+Total time: 6.203000 seconds
+Program terminated successfully.
+Testing reddit-panel...
+Using binary at 'c:/programme/nightly/firefox.exe'.
+Using profile at 'c:\dokume~1\aichne~1\lokale~1\temp\tmphwsoph.mozrunner'.
+Running tests on Firefox 31.0a1/Gecko 31.0a1 ({ec8030f7-c20a-464f-9b0e-13a3a9e97384}) under winnt/x86-msvc.
+
+0 of 0 tests passed.
+No tests were run
+Total time: 5.797000 seconds
+Program terminated successfully.
+Testing toolbar-api...
+AichnerAd@Kuckuck:~/tmp/mozilla/SnapperFirefox/Snapper$ h
+ 1086  20140404T173502+0200 h
+ 1085  20140404T173355+0200 cmd /c "%HOME%/tmp/mozilla/addon-sdk/bin/activate && cfx testex --force-mobile -b c:/programme/nightly/firefox.exe"
