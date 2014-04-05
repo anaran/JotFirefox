@@ -22,7 +22,7 @@ sp.on('consoleLogLevel', function() {
 });
 sp.on('ABOUTDATA', function() {
     let start, end, min_start, max_start, min_end, max_end, text, min_text, max_text;
-    for (var i = 0, len = snapperStorage.storage.entries.length; i < len; i++) {
+    for (var i = 0, len = snapperStorage.storage.entries ? snapperStorage.storage.entries.length : 0; i < len; i++) {
         start = (snapperStorage.storage.entries[i].start);
         end = (snapperStorage.storage.entries[i].end);
         text = snapperStorage.storage.entries[i].activity;
@@ -90,13 +90,13 @@ let replaceDates = function(format, date) {
 };
 
 var getSnapperEntries = function(worker, data) {
+    if (!snapperStorage.storage.entries || !snapperStorage.storage.entries.length) {
+        return;
+    }
     //TODO Please note that file extensions .csv or .json just cause trouble downloading or opening in Firefox.
     var filename = self.name + '_' + sp.prefs[data.type] + '_' + snapperStorage.storage.entries.length + '@' + Date.now() + '.txt';
     // console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
     // console.log(JSON.stringify(snapperStorage.storage.entries));
-    if (!snapperStorage.storage.entries || !snapperStorage.storage.entries.length) {
-        return;
-    }
     switch (data.type) {
         case 'DATAFORMAT0':
             {

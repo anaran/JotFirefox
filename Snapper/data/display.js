@@ -8,7 +8,13 @@
     var loading = "loading started at " + new Error().stack.split(/\s+/)[2] + "\n(" + ") takes";
     console.log(loading);
     // TODO console.time is not available in FireFox addon content script.
-    // console.time(loading);
+    if (console.time) {
+        console.time(loading);
+    }
+    // console.log(JSON.stringify(console, null, 2));
+    // console.log(Console.prototype);
+    console.log(console.log);
+    console.log(console.log.toSource());
     // console.log(self);
     var preActivity;
     var tooltipActivity;
@@ -224,6 +230,9 @@
     });
     // TODO Place following code where timed section should end.
     // console.timeEnd(loading);
+    if (console.timeEnd) {
+        console.timeEnd(loading);
+    }
     console.log("Reload it with Ctrl+R or as follows:\nlocation.reload(true)");
     console.log("injection into " + document.URL + " in\n" + JSON.stringify(navigator.userAgent) + "\nends at\n" + JSON.stringify(Date()));
 })();
