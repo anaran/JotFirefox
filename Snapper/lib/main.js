@@ -170,7 +170,8 @@ var openSnapperTab = function(data) {
     });
     let activeTab = require("sdk/tabs").activeTab;
     var tabs = require("sdk/tabs");
-    if (data.now && data.title && data.url) {
+    // TODO Please note data.title be be undefined
+    if (data.now && data.url) {
         function runScript(tab) {
             var worker = tab.attach({
                 contentScriptFile: self.data.url('display.js')
@@ -257,7 +258,7 @@ if (recent.NativeWindow) {
     cm.Item({
         label: "Snapper",
         context: cm.URLContext("*"),
-        contentScriptFile: data.url("content.js"),
+        // contentScriptFile: data.url("content.js"),
         onMessage: function(data) {
             openSnapperTab(data);
         },
