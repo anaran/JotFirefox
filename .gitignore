@@ -1,0 +1,2 @@
+# ignore temporary directories and files.
+/tmp*

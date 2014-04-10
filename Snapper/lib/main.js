@@ -158,7 +158,14 @@ var getSnapperEntries = function(worker, data) {
     }
 };
 
-var openSnapperTab = function(data) {
+var openSnapperTab = function(selection) {
+            let activeTab = require("sdk/tabs").activeTab;
+            var data = {
+                now: Date.now(),
+                selection: selection,
+                title: activeTab.title,
+                url: activeTab.url
+            };
     // Pass self to content script for it to get self.version, self.id, self.name, etc.
     data.self = self;
     // Add names of user data formats to be sent to content script.
@@ -168,7 +175,6 @@ var openSnapperTab = function(data) {
     snapperStorage.on("OverQuota", function() {
         console.error('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
     });
-    let activeTab = require("sdk/tabs").activeTab;
     var tabs = require("sdk/tabs");
     // TODO Please note data.title be be undefined
     if (data.now && data.url) {
@@ -240,17 +246,17 @@ if (recent.NativeWindow) {
         // TODO Please report mozilla bug to the fact that Fennec contextmenu and text selection are mutually exclusive!
         context: nw.SelectorContext('a'),
         callback: function(target) {
-            let activeTab = require("sdk/tabs").activeTab;
-            var selection = target.ownerDocument.getSelection();
-            var data = {
-                now: Date.now(),
-                selection: selection.toString(),
-                title: activeTab.title,
-                url: activeTab.url
-            };
+//            let activeTab = require("sdk/tabs").activeTab;
+//            var selection = target.ownerDocument.getSelection();
+//            var data = {
+//                now: Date.now(),
+//                selection: selection.toString(),
+//                title: activeTab.title,
+//                url: activeTab.url
+//            };
             //recent.NativeWindow.toast.show("Snap!" + (activeTab ? ('\n' + activeTab.title + '\n' + activeTab.url) : ('\nNo Title\nNo URL')) + (selection ? '\n' + selection.toString() : ''), "long");
             // console.log(target);
-            openSnapperTab(data);
+            openSnapperTab(target.ownerDocument.getSelection().toString());
         }
     });
 } else {
@@ -258,9 +264,12 @@ if (recent.NativeWindow) {
     cm.Item({
         label: "Snapper",
         context: cm.URLContext("*"),
+  contentScript: 'self.on("click", function (node, data) {' +
+                 '  self.postMessage(document.getSelection().toString());' +
+                 '});',
         // contentScriptFile: data.url("content.js"),
-        onMessage: function(data) {
-            openSnapperTab(data);
+        onMessage: function(selection) {
+            openSnapperTab(selection);
         },
         data: 'snap'
     });
