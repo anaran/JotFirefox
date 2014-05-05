@@ -185,11 +185,11 @@
             }, false);
             preActivity.addEventListener('focus', function(event) {
                 try {
-                    // console.log('focus');
-                    //                    event.target.textContent = JSON.parse(event.target.textContent);
-                    //                    tooltipActivity.textContent = "When needed: Insert newline as \\n, return as \\r, tab as \\t.";
-                    // See https://developer.mozilla.org/en-US/docs/Web/Reference/Events/focus#Event_delegation
-                    // }, !!"useCapture");
+                    var rows = event.target.value.split('\n').length;
+                    var cols = Math.max.apply(null, event.target.value.split('\n').map(function(value) { return value.length; }));
+                    // event.target.style = '';
+                    event.target.rows = rows;
+                    event.target.cols = cols;
                 } catch (exception) {
                     // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
                     console.error(exception.message, exception.stack);
@@ -197,6 +197,8 @@
             }, false);
             preActivity.addEventListener('blur', function(event) {
                 try {
+                    event.target.removeAttribute('rows');
+                    event.target.removeAttribute('cols');
                     //                    event.target.textContent = event.target.textContent.replace(/\\n/g, '\n').replace(/\\r/g, '\r').replace(/\\t/g, '\t');
                     //                    console.log('before stringify in blur:', event.target.textContent);
                     // Filter out empty strings (at begin or end) to avoid counting them as words (without trimmig text content).
