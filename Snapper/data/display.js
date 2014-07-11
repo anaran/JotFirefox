@@ -1,6 +1,7 @@
+/* -*- indent-tabs-mode: nil; js-indent-level: 2 -*- */
 /*jslint browser: true, devel: true */
 /*global findRegExpBar: false, chrome: false, console: false, require: false, document: false */
-    'use strict';
+'use strict';
 // Firefox Addon Content Script.
 // require does not seem to be available in content scripts.
 // let sp = require('sdk/simple-prefs');
@@ -43,64 +44,6 @@
 
     function display(data) {
         try {
-            links['DATAFORMAT0'] = document.querySelector('.download_format0');
-            links['DATAFORMAT1'] = document.querySelector('.download_format1');
-            links['DATAFORMAT2'] = document.querySelector('.download_format2');
-            texts['DATAFORMAT0'] = data.format0;
-            texts['DATAFORMAT1'] = data.format1;
-            texts['DATAFORMAT2'] = data.format2;
-            console.log(links);
-            Object.getOwnPropertyNames(links).forEach(function(type) {
-            links[type].textContent = texts[type];
-                links[type].addEventListener('click', function(event) {
-                    try {
-                        window.setTimeout(function() {
-                            // TODO Please note we are showing user that data has already been downloaded.
-                            // console.log('removing href for ', link);
-                            event.target.removeAttribute('href');
-                            // link.href = null;
-                        }, 900);
-                    } catch (exception) {
-                        // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-                        console.error(exception.message, exception.stack);
-                        // console.error("exception:", exception);
-                    }
-                }, false);
-            });
-            document.title = data.self.name + " v" + data.self.version;
-            var d = new Date(data.now) || new Date();
-            if (d instanceof Date && !isNaN(d.getTime())) {} else {
-                console.error('%o is not a valid Date', d);
-                return;
-            }
-            self.port.emit('getSnapperEntries', {
-                type: 'DATAFORMAT0'
-            });
-            self.port.emit('getSnapperEntries', {
-                type: 'DATAFORMAT1'
-            });
-            self.port.emit('getSnapperEntries', {
-                type: 'DATAFORMAT2'
-            });
-            var activity = "Snap!" + (data.title ? '\n# ' + data.title : '\n#') + (data.title ? '\n@ ' + data.url : '\n@') + (data.selection ? '\n' + data.selection : '');
-            if (activity) {
-                //                preActivity.blur();
-                preActivity.value = activity;
-                preClockin.textContent = dateToTimeClock(d);
-                // preClockin.textContent = d.toString();
-                preClockout.textContent = preClockin.textContent;
-                //                timelogEntry.click();
-            }
-        } catch (exception) {
-            // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-            console.error(exception.message, exception.stack);
-        }
-}
-    document.addEventListener('readystatechange', function(event) {
-        try {
-            if (event.target.readyState !== "complete") {
-                return;
-            }
             preActivity = document.querySelector('.activity');
             tooltipActivity = document.querySelector('.tooltip_activity');
             tooltipActivity.textContent = "When needed: Insert newline as \\n, return as \\r, tab as \\t.";
@@ -144,21 +87,19 @@
                     self.port.emit('getSnapperEntries', {
                         type: 'DATAFORMAT2'
                     });
-                } catch (exception) {
-                    // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-                    console.error(exception.message, exception.stack);
-                    // console.error("exception:", exception);
-                }
+        } catch (exception) {
+            // window.alert(exception.toString());
+            console.error(exception);
+        }
             }, false);
             closeButton = document.querySelector('.close');
             closeButton.addEventListener('click', function(event) {
                 try {
                     self.port.emit('close');
-                } catch (exception) {
-                    // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-                    console.error(exception.message, exception.stack);
-                    // console.error("exception:", exception);
-                }
+        } catch (exception) {
+            // window.alert(exception.toString());
+            console.error(exception);
+        }
             }, false);
             deleteButton = document.querySelector('.delete');
             deleteButton.addEventListener('click', function(event) {
@@ -177,11 +118,10 @@
                     });
                     self.port.emit('delete');
                     //                    location.reload(true);
-                } catch (exception) {
-                    // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-                    console.error(exception.message, exception.stack);
-                    // console.error("exception:", exception);
-                }
+        } catch (exception) {
+            // window.alert(exception.toString());
+            console.error(exception);
+        }
             }, false);
             preActivity.addEventListener('focus', function(event) {
                 try {
@@ -190,18 +130,18 @@
                     // event.target.style = '';
                     event.target.rows = rows;
                     event.target.cols = cols;
-                } catch (exception) {
-                    // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-                    console.error(exception.message, exception.stack);
-                }
+        } catch (exception) {
+            // window.alert(exception.toString());
+            console.error(exception);
+        }
             }, false);
             preActivity.addEventListener('blur', function(event) {
                 try {
                     event.target.removeAttribute('rows');
                     event.target.removeAttribute('cols');
-                    //                    event.target.textContent = event.target.textContent.replace(/\\n/g, '\n').replace(/\\r/g, '\r').replace(/\\t/g, '\t');
-                    //                    console.log('before stringify in blur:', event.target.textContent);
-                    // Filter out empty strings (at begin or end) to avoid counting them as words (without trimmig text content).
+                    // Filter out empty strings (at begin or end) to
+                    // avoid counting them as words (without trimmig
+                    // text content).
                     var lines = event.target.value.split(/\n/g).filter(function(value) {
                         if (value.length) {
                             return value;
@@ -213,25 +153,72 @@
                         }
                     }).length;
                     tooltipActivity.textContent = "activity has " + event.target.value.length + " characters, " + words + " words, " + lines + " lines";
-                    //                    event.target.textContent = JSON.stringify(event.target.textContent);
-                    // See https://developer.mozilla.org/en-US/docs/Web/Reference/Events/blur#Event_delegation
-                    // }, !!"useCapture");
-                } catch (exception) {
-                    // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-                    console.error(exception.message, exception.stack);
-                }
-            }, false);
+                    // See
+                    // https://developer.mozilla.org/en-US/docs/Web/Reference/Events/blur#Event_delegation
         } catch (exception) {
-            // window.alert(new Date() + '\n\nexception.stack: ' + exception.stack);
-            console.error(exception.message, exception.stack);
+            // window.alert(exception.toString());
+            console.error(exception);
         }
-    }, false);
-
+            }, false);
+            links['DATAFORMAT0'] = document.querySelector('.download_format0');
+            links['DATAFORMAT1'] = document.querySelector('.download_format1');
+            links['DATAFORMAT2'] = document.querySelector('.download_format2');
+            texts['DATAFORMAT0'] = data.format0;
+            texts['DATAFORMAT1'] = data.format1;
+            texts['DATAFORMAT2'] = data.format2;
+            console.log(links);
+            Object.getOwnPropertyNames(links).forEach(function(type) {
+            links[type].textContent = texts[type];
+                links[type].addEventListener('click', function(event) {
+                    try {
+                        window.setTimeout(function() {
+                            // TODO Please note we are showing user
+                            // that data has already been downloaded.
+                            // https://developer.mozilla.org/en-US/docs/Web/API/Element.removeAttribute#Notes
+                            // notes: You should use removeAttribute
+                            // instead of setting the attribute value
+                            // to null
+                            event.target.removeAttribute('href');
+                        }, 900);
+        } catch (exception) {
+            // window.alert(exception.toString());
+            console.error(exception);
+        }
+                }, false);
+            });
+            document.title = data.self.name + " v" + data.self.version;
+            var d = new Date(data.now) || new Date();
+            if (d instanceof Date && !isNaN(d.getTime())) {} else {
+                console.error('%o is not a valid Date', d);
+                return;
+            }
+            self.port.emit('getSnapperEntries', {
+                type: 'DATAFORMAT0'
+            });
+            self.port.emit('getSnapperEntries', {
+                type: 'DATAFORMAT1'
+            });
+            self.port.emit('getSnapperEntries', {
+                type: 'DATAFORMAT2'
+            });
+            var activity = "Snap!" + (data.title ? '\n# ' + data.title : '\n#') + (data.title ? '\n@ ' + data.url : '\n@') + (data.selection ? '\n' + data.selection : '');
+            if (activity) {
+                //                preActivity.blur();
+                preActivity.value = activity;
+                preClockin.textContent = dateToTimeClock(d);
+                // preClockin.textContent = d.toString();
+                preClockout.textContent = preClockin.textContent;
+                //                timelogEntry.click();
+            }
+        } catch (exception) {
+            // window.alert(exception.toString());
+            console.error(exception);
+        }
+}
     self.port.on('display', function(data) {
         display(data);
     });
     // TODO Place following code where timed section should end.
-    // console.timeEnd(loading);
     if (console.timeEnd) {
         console.timeEnd(loading);
     }

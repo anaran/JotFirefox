@@ -66,7 +66,7 @@
         "name": "ENTRYFORMAT1",
             "type": "string",
             "description": "Set Snapper Entry Format (%i = in or start datetime, %o = out or end datetime, %t = snapper text).",
-            "value": "i %i %t\\\\no %o\\\\n",
+            "value": "i %i %t\\no %o\\n",
             "title": "1. ENTRY FORMAT"
     }, {
         "name": "DATAFORMAT2",
@@ -90,7 +90,7 @@
         "name": "ENTRYFORMAT2",
             "type": "string",
             "description": "Set Snapper Entry Format (%i = in or start datetime, %o = out or end datetime, %t = snapper text).",
-            "value": "%i,%o,%T\\\\n",
+            "value": "%i,%o,%T\\n",
             "title": "2. ENTRY FORMAT"
     }],
         "title": "Snapper",
