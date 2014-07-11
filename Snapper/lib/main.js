@@ -1,5 +1,5 @@
 /* -*- indent-tabs-mode: nil; js-indent-level: 2 -*- */
-'use strict';
+// 'use strict';
 /*global require: false, console: false, gBrowser: false, URL: false */
 
 let sp = require('sdk/simple-prefs');
@@ -121,7 +121,8 @@ var getSnapperEntries = function(worker, data) {
   }
   //TODO Please note that file extensions .csv or .json just cause
   //trouble downloading or opening in Firefox.
-  var filename =
+  let start, end, text, content, dateFormat, infoFormat, entryFormat,
+      filename =
         self.name + '_' + sp.prefs[data.type] + '_' +
         snapperStorage.storage.entries.length + '@' + Date.now() + '.txt';
   // console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
@@ -136,7 +137,7 @@ var getSnapperEntries = function(worker, data) {
     });
     break;
   case 'DATAFORMAT1':
-    let start, end, text, content = '', dateFormat = sp.prefs['DATEFORMAT1'],
+    content = '', dateFormat = sp.prefs['DATEFORMAT1'],
     infoFormat = sp.prefs['INFOFORMAT1'],
     entryFormat = sp.prefs['ENTRYFORMAT1'];
     for (var i = 0, len = snapperStorage.storage.entries.length;
@@ -156,7 +157,7 @@ var getSnapperEntries = function(worker, data) {
     });
     break;
   case 'DATAFORMAT2':
-    let start, end, text, content = '', dateFormat = sp.prefs['DATEFORMAT2'],
+    content = '', dateFormat = sp.prefs['DATEFORMAT2'],
     infoFormat = sp.prefs['INFOFORMAT2'],
     entryFormat = sp.prefs['ENTRYFORMAT2'];
     for (var i = 0, len = snapperStorage.storage.entries.length;
@@ -207,8 +208,8 @@ var openSnapperTab = function(selection) {
   var tabs = require("sdk/tabs");
   // TODO Please note data.title be be undefined
   if (data.now && data.url) {
-    function runScript(tab) {
-      var worker = tab.attach({
+    let runScript = function runScript(tab) {
+      let worker = tab.attach({
         contentScriptFile: self.data.url('display.js')
       });
       worker.port.emit("display", data);
@@ -264,7 +265,7 @@ var openSnapperTab = function(selection) {
       worker.port.on('getSnapperEntries', function(data) {
         getSnapperEntries(worker, data);
       });
-    }
+    };
     tabs.open({
       url: self.data.url('display.html'),
       onReady: runScript,
@@ -274,6 +275,7 @@ var openSnapperTab = function(selection) {
     });
   }
 };
+
 if (recent.NativeWindow) {
   let nw = require('./nativewindow');
   var snapperId = nw.addContextMenu({
