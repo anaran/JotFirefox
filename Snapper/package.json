@@ -1,98 +1,98 @@
 {
-    "author": "adrian.aichner@gmail.com",
-        "dependencies": [],
-        "description": "Snapper Extension for Desktop and Mobile Firefox saves information about the current web page and any active text selection.\n\nThese time-stamped entries can be downloaded as JSON or in user-defined file formats, preset to timeclock and csv format.\n\nContext menu entry on Android is only avaliable on hyperlinks, because text selection is mutually exclusive with a context menu there.",
-        "id": "jid1-HE38Y6vsW9TpHg",
-        "license": "MPL 2.0",
-        "name": "snapper",
-        "preferences": [{
-        "description": "Shows some Information about currently stored snapper data.",
-        "hidden": false,
-            "label": "Show",
-            "name": "ABOUTDATA",
-            "title": "About Snapper Data",
-            "type": "control"
+  "author": "adrian.aichner@gmail.com",
+  "dependencies": [],
+  "description": "Snapper Extension for Desktop and Mobile Firefox saves information about the current web page and any active text selection.\n\nThese time-stamped entries can be downloaded as JSON or in user-defined file formats, preset to timeclock and csv format.\n\nContext menu entry on Android is only avaliable on hyperlinks, because text selection is mutually exclusive with a context menu there.",
+  "id": "jid1-HE38Y6vsW9TpHg",
+  "license": "MPL 2.0",
+  "name": "snapper",
+  "preferences": [{
+    "description": "Shows some Information about currently stored snapper data.",
+    "hidden": false,
+    "label": "Show",
+    "name": "ABOUTDATA",
+    "title": "About Snapper Data",
+    "type": "control"
+  }, {
+    "description": "Controls the amount of logging to the browser console by level, from most to nothing at all.",
+    "name": "consoleLogLevel",
+    "type": "menulist",
+    "title": "Console Logging Level",
+    "value": "off",
+    "options": [{
+      "value": "all",
+      "label": "all"
     }, {
-        "description": "Controls the amount of logging to the browser console by level, from most to nothing at all.",
-            "name": "consoleLogLevel",
-            "type": "menulist",
-            "title": "Console Logging Level",
-            "value": "off",
-            "options": [{
-            "value": "all",
-                "label": "all"
-        }, {
-            "value": "debug",
-                "label": "debug"
-        }, {
-            "value": "info",
-                "label": "info"
-        }, {
-            "value": "warn",
-                "label": "warn"
-        }, {
-            "value": "error",
-                "label": "error"
-        }, {
-            "value": "off",
-                "label": "off"
-        }]
+      "value": "debug",
+      "label": "debug"
     }, {
-        "description": "Name of first user-defined entry format, made available as snapper download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
-            "hidden": true,
-            "name": "DATAFORMAT0",
-            "title": "Hidden Built-In Entry Format",
-            "type": "string",
-            "value": "json"
+      "value": "info",
+      "label": "info"
     }, {
-        "name": "DATAFORMAT1",
-            "type": "string",
-            "description": "Name of first user-defined entry format, made available as snapper download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
-            "value": "timeclock",
-            "title": "1. User-Defined Entry Format"
+      "value": "warn",
+      "label": "warn"
     }, {
-        "name": "DATEFORMAT1",
-            "type": "string",
-            "description": "Set Snapper Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
-            "value": "%Y/%m/%d %H:%M:%S",
-            "title": "1. DATE FORMAT"
+      "value": "error",
+      "label": "error"
     }, {
-        "name": "INFOFORMAT1",
-            "type": "string",
-            "description": "TODO: not used yet! Set Snapper Information Format (%u = URL, %t = title, %s = selection).",
-            "value": "Snap!\\\\n# %t\\\\n@ %u\\\\n%s",
-            "title": "1.INFORMATION FORMAT"
-    }, {
-        "name": "ENTRYFORMAT1",
-            "type": "string",
-            "description": "Set Snapper Entry Format (%i = in or start datetime, %o = out or end datetime, %t = snapper text).",
-            "value": "i %i %t\\no %o\\n",
-            "title": "1. ENTRY FORMAT"
-    }, {
-        "name": "DATAFORMAT2",
-            "type": "string",
-            "description": "Name of second user-defined entry format, made available as snapper download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
-            "value": "csv",
-            "title": "2. User-Defined Entry Format"
-    }, {
-        "name": "DATEFORMAT2",
-            "type": "string",
-            "description": "Set Snapper Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
-            "value": "%m.%d.%y %H:%M",
-            "title": "2. DATE FORMAT"
-    }, {
-        "name": "INFOFORMAT2",
-            "type": "string",
-            "description": "TODO: not used yet! Set Snapper Information Format (%u = URL, %t = title, %s = selection).",
-            "value": "%t %u %s",
-            "title": "2.INFORMATION FORMAT"
-    }, {
-        "name": "ENTRYFORMAT2",
-            "type": "string",
-            "description": "Set Snapper Entry Format (%i = in or start datetime, %o = out or end datetime, %t = snapper text).",
-            "value": "%i,%o,%T\\n",
-            "title": "2. ENTRY FORMAT"
-    }],
-        "title": "Snapper",
-        "version": "4.7"
+      "value": "off",
+      "label": "off"
+    }]
+  }, {
+    "description": "Name of first user-defined entry format, made available as snapper download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
+    "hidden": true,
+    "name": "DATAFORMAT0",
+    "title": "Hidden Built-In Entry Format",
+    "type": "string",
+    "value": "json"
+  }, {
+    "name": "DATAFORMAT1",
+    "type": "string",
+    "description": "Name of first user-defined entry format, made available as snapper download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
+    "value": "timeclock",
+    "title": "1. User-Defined Entry Format"
+  }, {
+    "name": "DATEFORMAT1",
+    "type": "string",
+    "description": "Set Snapper Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
+    "value": "%Y/%m/%d %H:%M:%S",
+    "title": "1. DATE FORMAT"
+  }, {
+    "name": "INFOFORMAT1",
+    "type": "string",
+    "description": "TODO: not used yet! Set Snapper Information Format (%u = URL, %t = title, %s = selection).",
+    "value": "Snap!\\\\n# %t\\\\n@ %u\\\\n%s",
+    "title": "1.INFORMATION FORMAT"
+  }, {
+    "name": "ENTRYFORMAT1",
+    "type": "string",
+    "description": "Set Snapper Entry Format (%i = in or start datetime, %o = out or end datetime, %t = snapper text).",
+    "value": "i %i %t\\no %o\\n",
+    "title": "1. ENTRY FORMAT"
+  }, {
+    "name": "DATAFORMAT2",
+    "type": "string",
+    "description": "Name of second user-defined entry format, made available as snapper download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
+    "value": "csv",
+    "title": "2. User-Defined Entry Format"
+  }, {
+    "name": "DATEFORMAT2",
+    "type": "string",
+    "description": "Set Snapper Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
+    "value": "%m.%d.%y %H:%M",
+    "title": "2. DATE FORMAT"
+  }, {
+    "name": "INFOFORMAT2",
+    "type": "string",
+    "description": "TODO: not used yet! Set Snapper Information Format (%u = URL, %t = title, %s = selection).",
+    "value": "%t %u %s",
+    "title": "2.INFORMATION FORMAT"
+  }, {
+    "name": "ENTRYFORMAT2",
+    "type": "string",
+    "description": "Set Snapper Entry Format (%i = in or start datetime, %o = out or end datetime, %t = snapper text).",
+    "value": "%i,%o,%T\\n",
+    "title": "2. ENTRY FORMAT"
+  }],
+  "title": "Snapper",
+  "version": "4.7"
 }
