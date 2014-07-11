@@ -6,7 +6,7 @@
 // require does not seem to be available in content scripts.
 // let sp = require('sdk/simple-prefs');
 (function() {
-  var loading = "loading started at " + new Error().stack.split(/\s+/)[2] +
+  let loading = "loading started at " + new Error().stack.split(/\s+/)[2] +
         "\n(" + ") takes";
   console.log(loading);
   // TODO console.time is not available in FireFox addon content script.
@@ -18,24 +18,24 @@
   // console.log(console.log);
   // console.log(console.log.toSource());
   console.log('display.js self:', self);
-  var preActivity;
-  var tooltipActivity;
-  var preClockin;
-  var preClockout;
-  var timelogEntry;
-  var links = {};
-  var texts = {};
-  var saveButton;
-  var closeButton;
-  var deleteButton;
+  let preActivity;
+  let tooltipActivity;
+  let preClockin;
+  let preClockout;
+  let timelogEntry;
+  let links = {};
+  let texts = {};
+  let saveButton;
+  let closeButton;
+  let deleteButton;
 
   function dateToTimeClock(d) {
     // Taken from
     // http://sajjadhossain.com/2008/10/31/javascript-string-trimming-and-padding/
     // pads left
     // Changed from String.prototype to function to remain side effect free.
-    var lpad = function(strArg, padString, length) {
-      var str = strArg.toString();
+    let lpad = function(strArg, padString, length) {
+      let str = strArg.toString();
       while (str.length < length) {
         str = padString + str;
       }
@@ -60,7 +60,7 @@
       preClockout = document.querySelector('.clockout');
       timelogEntry = document.querySelector('.timelog_entry');
       self.port.on('setSnapperEntriesBlob', function(data) {
-        var blob = new window.Blob([data.content], {
+        let blob = new window.Blob([data.content], {
           type: 'text/plain; charset=utf-8'
         });
         if ( !! data.download) {
@@ -134,8 +134,8 @@
       }, false);
       preActivity.addEventListener('focus', function(event) {
         try {
-          var rows = event.target.value.split('\n').length;
-          var cols =
+          let rows = event.target.value.split('\n').length;
+          let cols =
                 Math.max.apply(null,
                                event.target.value.split('\n').
                                map(function(value) { return value.length; }));
@@ -154,13 +154,13 @@
           // Filter out empty strings (at begin or end) to
           // avoid counting them as words (without trimmig
           // text content).
-          var lines = event.target.value.split(/\n/g).filter(function(value) {
+          let lines = event.target.value.split(/\n/g).filter(function(value) {
             if (value.length) {
               return true;
             }
             return false;
           }).length;
-          var words = event.target.value.split(/\s+/g).filter(function(value) {
+          let words = event.target.value.split(/\s+/g).filter(function(value) {
             if (value.length) {
               return true;
             }
@@ -203,7 +203,7 @@
         }, false);
       });
       document.title = data.self.name + " v" + data.self.version;
-      var d = new Date(data.now) || new Date();
+      let d = new Date(data.now) || new Date();
       if (d instanceof Date && !isNaN(d.getTime())) {} else {
         console.error('%o is not a valid Date', d);
         return;
@@ -217,7 +217,7 @@
       self.port.emit('getSnapperEntries', {
         type: 'DATAFORMAT2'
       });
-      var activity =
+      let activity =
             "Snap!" + (data.title ? '\n# ' + data.title : '\n#') +
             (data.title ? '\n@ ' + data.url : '\n@') +
             (data.selection ? '\n' + data.selection : '');

@@ -6,19 +6,18 @@ let sp = require('sdk/simple-prefs');
 let self = require('sdk/self');
 let snapperStorage = require("sdk/simple-storage");
 let notifications = require("sdk/notifications");
-// var data = self.data;
-var loading =
+let loading =
       "time loading addon " + self.name + ' v' + self.version +" started at " +
       new Error().stack.split(/\s+/)[2];
 // TODO Please note that console.time is not available in FireFox
 // addon content script.
 console.time(loading);
 
-var consoleLogLevel = sp.prefs['consoleLogLevel'];
+let consoleLogLevel = sp.prefs['consoleLogLevel'];
 
 sp.on('consoleLogLevel', function() {
   consoleLogLevel = sp.prefs['consoleLogLevel'];
-  var name = "extensions." + self.id + ".sdk.console.logLevel";
+  let name = "extensions." + self.id + ".sdk.console.logLevel";
   // TODO Using error to make sure message will always be visible --
   // not ideal.
   console.error('Setting log level for ' + self.name + ' version ' +
@@ -29,7 +28,7 @@ sp.on('consoleLogLevel', function() {
 sp.on('ABOUTDATA', function() {
   let start, end, min_start, max_start, min_end, max_end, text, min_text,
       max_text;
-  for (var i = 0, len = snapperStorage.storage.entries ?
+  for (let i = 0, len = snapperStorage.storage.entries ?
              snapperStorage.storage.entries.length : 0; i < len; i++) {
     start = (snapperStorage.storage.entries[i].start);
     end = (snapperStorage.storage.entries[i].end);
@@ -86,7 +85,7 @@ let formatEntry = function(entryFormat, start, end, text) {
 // Modified version of my own function from popchrom in
 // https://code.google.com/p/trnsfrmr/source/browse/Transformer/scripts/date.js?name=v1.8#92
 let replaceDates = function(format, date) {
-  var d = date || new Date();
+  let d = date || new Date();
   if (d instanceof Date && !isNaN(d.getTime())) {} else {
     console.error('%o is not a valid Date', d);
     return format;
@@ -96,25 +95,25 @@ let replaceDates = function(format, date) {
   format =
     format.replace(/(?:%DAY%|%d)/, (d.getDate() < 10) ? "0" + //$NON-NLS-0$
                    d.getDate() : d.getDate());
-  var month = d.getMonth() + 1;
+  let month = d.getMonth() + 1;
   format =
     format.replace(/(?:%MONTH%|%m)/, (month < 10) ? "0" + month : month); //$NON-NLS-0$
   format = format.replace(/(?:%YEAR%|%Y)/, d.getFullYear());
-  var hours = d.getHours();
+  let hours = d.getHours();
   format = format.replace(/%H/, (hours < 10) ? "0" + hours : hours); //$NON-NLS-0$
-  var minutes = d.getMinutes();
+  let minutes = d.getMinutes();
   format = format.replace(/%M/, (minutes < 10) ? "0" + minutes : minutes);
-  var seconds = d.getSeconds();
+  let seconds = d.getSeconds();
   format = format.replace(/%S/, (seconds < 10) ? "0" + seconds : seconds); //$NON-NLS-0$
-  var timeZoneOffset = -d.getTimezoneOffset();
-  var offsetMinutes = timeZoneOffset % 60;
-  var offsetHours = (timeZoneOffset - offsetMinutes) / 60;
+  let timeZoneOffset = -d.getTimezoneOffset();
+  let offsetMinutes = timeZoneOffset % 60;
+  let offsetHours = (timeZoneOffset - offsetMinutes) / 60;
   format = format.replace(/%z/, (offsetHours > 0 ? "+" : "") + ((offsetHours < 10) ? "0" + offsetHours : offsetHours) + ((offsetMinutes < 10) ? "0" + offsetMinutes : offsetMinutes)); //$NON-NLS-0$
   // format = replaceDate(format);
   return format;
 };
 
-var getSnapperEntries = function(worker, data) {
+let getSnapperEntries = function(worker, data) {
   if (!snapperStorage.storage.entries ||
       !snapperStorage.storage.entries.length) {
     return;
@@ -140,7 +139,7 @@ var getSnapperEntries = function(worker, data) {
     content = '', dateFormat = sp.prefs['DATEFORMAT1'],
     infoFormat = sp.prefs['INFOFORMAT1'],
     entryFormat = sp.prefs['ENTRYFORMAT1'];
-    for (var i = 0, len = snapperStorage.storage.entries.length;
+    for (let i = 0, len = snapperStorage.storage.entries.length;
          i < len; i++) {
       start = (snapperStorage.storage.entries[i].start);
       end = (snapperStorage.storage.entries[i].end);
@@ -160,7 +159,7 @@ var getSnapperEntries = function(worker, data) {
     content = '', dateFormat = sp.prefs['DATEFORMAT2'],
     infoFormat = sp.prefs['INFOFORMAT2'],
     entryFormat = sp.prefs['ENTRYFORMAT2'];
-    for (var i = 0, len = snapperStorage.storage.entries.length;
+    for (let i = 0, len = snapperStorage.storage.entries.length;
          i < len; i++) {
       start = (snapperStorage.storage.entries[i].start);
       end = (snapperStorage.storage.entries[i].end);
@@ -187,9 +186,9 @@ var getSnapperEntries = function(worker, data) {
   }
 };
 
-var openSnapperTab = function(selection) {
+let openSnapperTab = function(selection) {
   let activeTab = require("sdk/tabs").activeTab;
-  var snapData = {
+  let snapData = {
     now: Date.now(),
     selection: selection,
     title: activeTab.title,
@@ -205,14 +204,15 @@ var openSnapperTab = function(selection) {
   snapperStorage.on("OverQuota", function() {
     console.error('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
   });
-  var tabs = require("sdk/tabs");
+  let tabs = require("sdk/tabs");
   // TODO Please note data.title can be undefined
   if (snapData.now && snapData.url) {
-    function runScript(tab) {
+    let runScript = function runScript(tab) {
       let worker = tab.attach({
         contentScriptFile: self.data.url('display.js')/* ,
         onMessage: 'worker.port.emit("display", snapData);'*/
       });
+      worker.port.emit('display', snapData);
       worker.port.on('close', function(data) {
         require("sdk/tabs").activeTab.close();
       });
@@ -242,7 +242,7 @@ var openSnapperTab = function(selection) {
         if (!snapperStorage.storage.entries) {
           snapperStorage.storage.entries = [];
         }
-        for (var i = 0, len = snapperStorage.storage.entries.length; i < len;
+        for (let i = 0, len = snapperStorage.storage.entries.length; i < len;
              i++) {
           if (JSON.stringify(snapperStorage.storage.entries[i]) ===
               JSON.stringify(data)) {
@@ -265,7 +265,7 @@ var openSnapperTab = function(selection) {
       worker.port.on('getSnapperEntries', function(data) {
         getSnapperEntries(worker, data);
       });
-    }
+    };
     tabs.open({
       url: self.data.url('display.html'),
       onReady: runScript,
@@ -273,15 +273,12 @@ var openSnapperTab = function(selection) {
         activeTab.activate();
       }
     });
-    // worker.port.on('load', function(data) {
-    worker.port.emit("display", snapData);
-    // });
   }
 };
 
 if (recent.NativeWindow) {
   let nw = require('./nativewindow');
-  var snapperId = nw.addContextMenu({
+  let snapperId = nw.addContextMenu({
     name: 'Snapper',
     // TODO Please report mozilla bug to the fact that Fennec
     // contextmenu and text selection are mutually exclusive!
@@ -291,7 +288,7 @@ if (recent.NativeWindow) {
     }
   });
 } else {
-  var cm = require("sdk/context-menu");
+  let cm = require("sdk/context-menu");
   cm.Item({
     label: "Snapper",
     context: cm.URLContext("*"),

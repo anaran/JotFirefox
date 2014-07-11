@@ -1,5 +1,5 @@
 /* -*- indent-tabs-mode: nil; js-indent-level: 2 -*- */
-var main = require("./main");
+let main = require("./main");
 
 exports["test main"] = function(assert) {
   assert.pass("Unit test running!");
