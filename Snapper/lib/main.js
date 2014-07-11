@@ -6,7 +6,7 @@ let sp = require('sdk/simple-prefs');
 let self = require('sdk/self');
 let snapperStorage = require("sdk/simple-storage");
 let notifications = require("sdk/notifications");
-var data = self.data;
+// var data = self.data;
 var loading =
       "time loading addon " + self.name + ' v' + self.version +" started at " +
       new Error().stack.split(/\s+/)[2];
@@ -189,30 +189,30 @@ var getSnapperEntries = function(worker, data) {
 
 var openSnapperTab = function(selection) {
   let activeTab = require("sdk/tabs").activeTab;
-  var data = {
+  var snapData = {
     now: Date.now(),
     selection: selection,
     title: activeTab.title,
-    url: activeTab.url
+    url: activeTab.url,
+    // Pass self to content script for it to get self.version, self.id,
+    // self.name, etc.
+    self: self,
+    // Add names of user data formats to be sent to content script.
+    format0: sp.prefs['DATAFORMAT0'],
+    format1: sp.prefs['DATAFORMAT1'],
+    format2: sp.prefs['DATAFORMAT2']
   };
-  // Pass self to content script for it to get self.version, self.id,
-  // self.name, etc.
-  data.self = self;
-  // Add names of user data formats to be sent to content script.
-  data.format0 = sp.prefs['DATAFORMAT0'];
-  data.format1 = sp.prefs['DATAFORMAT1'];
-  data.format2 = sp.prefs['DATAFORMAT2'];
   snapperStorage.on("OverQuota", function() {
     console.error('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
   });
   var tabs = require("sdk/tabs");
-  // TODO Please note data.title be be undefined
-  if (data.now && data.url) {
-    let runScript = function runScript(tab) {
+  // TODO Please note data.title can be undefined
+  if (snapData.now && snapData.url) {
+    function runScript(tab) {
       let worker = tab.attach({
-        contentScriptFile: self.data.url('display.js')
+        contentScriptFile: self.data.url('display.js')/* ,
+        onMessage: 'worker.port.emit("display", snapData);'*/
       });
-      worker.port.emit("display", data);
       worker.port.on('close', function(data) {
         require("sdk/tabs").activeTab.close();
       });
@@ -265,7 +265,7 @@ var openSnapperTab = function(selection) {
       worker.port.on('getSnapperEntries', function(data) {
         getSnapperEntries(worker, data);
       });
-    };
+    }
     tabs.open({
       url: self.data.url('display.html'),
       onReady: runScript,
@@ -273,6 +273,9 @@ var openSnapperTab = function(selection) {
         activeTab.activate();
       }
     });
+    // worker.port.on('load', function(data) {
+    worker.port.emit("display", snapData);
+    // });
   }
 };
 
@@ -293,9 +296,7 @@ if (recent.NativeWindow) {
     label: "Snapper",
     context: cm.URLContext("*"),
     contentScript: 'self.on("click", function (node, data) {' +
-      '  self.postMessage(document.getSelection().toString());' +
-      '});',
-    // contentScriptFile: data.url("content.js"),
+      ' self.postMessage(document.getSelection().toString()); });',
     onMessage: function(selection) {
       openSnapperTab(selection);
     },

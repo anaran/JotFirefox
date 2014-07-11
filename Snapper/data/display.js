@@ -15,9 +15,9 @@
   }
   // console.log(JSON.stringify(console, null, 2));
   // console.log(Console.prototype);
-  console.log(console.log);
-  console.log(console.log.toSource());
-  // console.log(self);
+  // console.log(console.log);
+  // console.log(console.log.toSource());
+  console.log('display.js self:', self);
   var preActivity;
   var tooltipActivity;
   var preClockin;
