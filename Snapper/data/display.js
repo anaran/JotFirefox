@@ -48,7 +48,10 @@
   }
 
   function display(data) {
-    try {
+    // TODO: This try catch colsole.log message never appears in the
+    // console. Right now it's better not to catch and log exceptions
+    // since the addon debugger console will show them.
+    // try {
       preActivity = document.querySelector('.activity');
       tooltipActivity = document.querySelector('.tooltip_activity');
       tooltipActivity.textContent =
@@ -179,7 +182,7 @@
       texts['DATAFORMAT0'] = data.format0;
       texts['DATAFORMAT1'] = data.format1;
       texts['DATAFORMAT2'] = data.format2;
-      console.log(links);
+      // console.log(links);
       Object.getOwnPropertyNames(links).forEach(function(type) {
         links[type].textContent = texts[type];
         links[type].addEventListener('click', function(event) {
@@ -216,7 +219,7 @@
       });
       var activity =
             "Snap!" + (data.title ? '\n# ' + data.title : '\n#') +
-            (data.title ? '\n@ ' + daxta.url : '\n@') +
+            (data.title ? '\n@ ' + data.url : '\n@') +
             (data.selection ? '\n' + data.selection : '');
       if (activity) {
         //                preActivity.blur();
@@ -226,12 +229,13 @@
         preClockout.textContent = preClockin.textContent;
         //                timelogEntry.click();
       }
-    } catch (exception) {
-      // window.alert(exception.toString());
-      console.error(exception);
-    }
+    // } catch (exception) {
+    //   // window.alert(exception.toString());
+    //   console.log(exception);
+    // }
   }
   self.port.on('display', function(data) {
+    console.log('display.js on display data:', data);
     display(data);
   });
   // TODO Place following code where timed section should end.

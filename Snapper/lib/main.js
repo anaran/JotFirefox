@@ -1,5 +1,5 @@
 /* -*- indent-tabs-mode: nil; js-indent-level: 2 -*- */
-// 'use strict';
+'use strict';
 /*global require: false, console: false, gBrowser: false, URL: false */
 
 let sp = require('sdk/simple-prefs');
