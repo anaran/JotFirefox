@@ -4,7 +4,7 @@
 
 let sp = require('sdk/simple-prefs');
 let self = require('sdk/self');
-let snapperStorage = require("sdk/simple-storage");
+let jotStorage = require("sdk/simple-storage");
 let notifications = require("sdk/notifications");
 let loading =
       "time loading addon " + self.name + ' v' + self.version +" started at " +
@@ -26,13 +26,13 @@ sp.on('consoleLogLevel', function() {
   require("sdk/preferences/service").set(name, consoleLogLevel);
 });
 sp.on('ABOUTDATA', function() {
-  let start, end, min_start, max_start, min_end, max_end, text, min_text,
-      max_text;
-  for (let i = 0, len = snapperStorage.storage.entries ?
-             snapperStorage.storage.entries.length : 0; i < len; i++) {
-    start = (snapperStorage.storage.entries[i].start);
-    end = (snapperStorage.storage.entries[i].end);
-    text = snapperStorage.storage.entries[i].activity;
+  let len = jotStorage.storage.entries ? jotStorage.storage.entries.length : 0,
+      start, end, min_start, max_start, min_end, max_end,
+      text, min_text, max_text;
+  for (let i = 0; i < len; i++) {
+    start = (jotStorage.storage.entries[i].start);
+    end = (jotStorage.storage.entries[i].end);
+    text = jotStorage.storage.entries[i].activity;
     if (!max_text || (text.length > max_text)) {
       max_text = text.length;
     }
@@ -47,15 +47,15 @@ sp.on('ABOUTDATA', function() {
     }
   }
   notifications.notify({
-    title: 'About Snapper Data',
+    title: 'About Jot Data',
     text: 'Use of storage quota: ' +
-      (new Number(snapperStorage.quotaUsage * 100)).toPrecision(3) +
+      (new Number(jotStorage.quotaUsage * 100)).toPrecision(3) +
       '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
       ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
       min_start + '\nnewest: ' + max_start
   });
   console.log('notify:' + 'Use of storage quota: ' +
-              (new Number(snapperStorage.quotaUsage * 100)).toPrecision(3) +
+              (new Number(jotStorage.quotaUsage * 100)).toPrecision(3) +
               '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
               ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
               min_start + '\nnewest: ' + max_start);
@@ -72,6 +72,7 @@ let formatEntry = function(entryFormat, start, end, text) {
   // replaced.
   entryFormat = entryFormat.replace(/\\n/g, '\n').replace(/\\r/g, '\r').
     replace(/\\t/g, '\t');
+  entryFormat = entryFormat.replace(/%e\b/g, self.title);
   entryFormat = entryFormat.replace(/%i\b/g, start);
   entryFormat = entryFormat.replace(/%o\b/g, end);
   entryFormat = entryFormat.replace(/%t\b/g, text);
@@ -113,9 +114,9 @@ let replaceDates = function(format, date) {
   return format;
 };
 
-let getSnapperEntries = function(worker, data) {
-  if (!snapperStorage.storage.entries ||
-      !snapperStorage.storage.entries.length) {
+let getJotEntries = function(worker, data) {
+  if (!jotStorage.storage.entries ||
+      !jotStorage.storage.entries.length) {
     return;
   }
   //TODO Please note that file extensions .csv or .json just cause
@@ -123,13 +124,13 @@ let getSnapperEntries = function(worker, data) {
   let start, end, text, content, dateFormat, infoFormat, entryFormat,
       filename =
         self.name + '_' + sp.prefs[data.type] + '_' +
-        snapperStorage.storage.entries.length + '@' + Date.now() + '.txt';
-  // console.log('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
-  // console.log(JSON.stringify(snapperStorage.storage.entries));
+        jotStorage.storage.entries.length + '@' + Date.now() + '.txt';
+  // console.log('jotStorage.quotaUsage:', jotStorage.quotaUsage);
+  // console.log(JSON.stringify(jotStorage.storage.entries));
   switch (data.type) {
   case 'DATAFORMAT0':
-    worker.port.emit('setSnapperEntriesBlob', {
-      content: JSON.stringify(snapperStorage.storage.entries, null, 2),
+    worker.port.emit('setJotEntriesBlob', {
+      content: JSON.stringify(jotStorage.storage.entries, null, 2),
       filename: filename,
       type: data.type,
       download: !! data.download
@@ -139,16 +140,16 @@ let getSnapperEntries = function(worker, data) {
     content = '', dateFormat = sp.prefs['DATEFORMAT1'],
     infoFormat = sp.prefs['INFOFORMAT1'],
     entryFormat = sp.prefs['ENTRYFORMAT1'];
-    for (let i = 0, len = snapperStorage.storage.entries.length;
+    for (let i = 0, len = jotStorage.storage.entries.length;
          i < len; i++) {
-      start = (snapperStorage.storage.entries[i].start);
-      end = (snapperStorage.storage.entries[i].end);
-      //                                start = replaceDates(dateFormat, snapperStorage.storage.entries[i].start);
-      //                                end = replaceDates(dateFormat, snapperStorage.storage.entries[i].end);
-      text = snapperStorage.storage.entries[i].activity;
+      start = (jotStorage.storage.entries[i].start);
+      end = (jotStorage.storage.entries[i].end);
+      //                                start = replaceDates(dateFormat, jotStorage.storage.entries[i].start);
+      //                                end = replaceDates(dateFormat, jotStorage.storage.entries[i].end);
+      text = jotStorage.storage.entries[i].activity;
       content += formatEntry(entryFormat, start, end, text);
     }
-    worker.port.emit('setSnapperEntriesBlob', {
+    worker.port.emit('setJotEntriesBlob', {
       content: content,
       filename: filename,
       type: data.type,
@@ -159,16 +160,16 @@ let getSnapperEntries = function(worker, data) {
     content = '', dateFormat = sp.prefs['DATEFORMAT2'],
     infoFormat = sp.prefs['INFOFORMAT2'],
     entryFormat = sp.prefs['ENTRYFORMAT2'];
-    for (let i = 0, len = snapperStorage.storage.entries.length;
+    for (let i = 0, len = jotStorage.storage.entries.length;
          i < len; i++) {
-      start = (snapperStorage.storage.entries[i].start);
-      end = (snapperStorage.storage.entries[i].end);
-      // start = replaceDates(dateFormat, snapperStorage.storage.entries[i].start);
-      // end = replaceDates(dateFormat, snapperStorage.storage.entries[i].end);
-      text = snapperStorage.storage.entries[i].activity;
+      start = (jotStorage.storage.entries[i].start);
+      end = (jotStorage.storage.entries[i].end);
+      // start = replaceDates(dateFormat, jotStorage.storage.entries[i].start);
+      // end = replaceDates(dateFormat, jotStorage.storage.entries[i].end);
+      text = jotStorage.storage.entries[i].activity;
       content += formatEntry(entryFormat, start, end, text);
     }
-    worker.port.emit('setSnapperEntriesBlob', {
+    worker.port.emit('setJotEntriesBlob', {
       content: content,
       filename: filename,
       type: data.type,
@@ -177,7 +178,7 @@ let getSnapperEntries = function(worker, data) {
     break;
   default:
     notifications.notify({
-      title: 'Snapper Notification',
+      title: 'Jot Notification',
       text: 'Don\'t know how to download ' + sp.prefs[data.type]
     });
     console.log('notify:' + 'Don\'t know how to download ' +
@@ -186,7 +187,7 @@ let getSnapperEntries = function(worker, data) {
   }
 };
 
-let openSnapperTab = function(selection) {
+let openJotTab = function(selection) {
   let activeTab = require("sdk/tabs").activeTab;
   let snapData = {
     now: Date.now(),
@@ -201,8 +202,8 @@ let openSnapperTab = function(selection) {
     format1: sp.prefs['DATAFORMAT1'],
     format2: sp.prefs['DATAFORMAT2']
   };
-  snapperStorage.on("OverQuota", function() {
-    console.error('snapperStorage.quotaUsage:', snapperStorage.quotaUsage);
+  jotStorage.on("OverQuota", function() {
+    console.error('jotStorage.quotaUsage:', jotStorage.quotaUsage);
   });
   let tabs = require("sdk/tabs");
   // TODO Please note data.title can be undefined
@@ -217,37 +218,37 @@ let openSnapperTab = function(selection) {
         require("sdk/tabs").activeTab.close();
       });
       worker.port.on('delete', function(data) {
-        if (!snapperStorage.storage.entries ||
-            !snapperStorage.storage.entries.length) {
+        if (!jotStorage.storage.entries ||
+            !jotStorage.storage.entries.length) {
           notifications.notify({
-            title: 'Snapper Notification',
+            title: 'Jot Notification',
             text: 'There is no data to be deleted.'
           });
           console.log('notify:' + 'There is no data to be deleted.');
         } else {
           notifications.notify({
-            title: 'Snapper Notification',
-            text: 'Deleting all ' + snapperStorage.storage.entries.length +
-              ' entries of snapper data, see browser\'s downloads directory' +
+            title: 'Jot Notification',
+            text: 'Deleting all ' + jotStorage.storage.entries.length +
+              ' entries of jot data, see browser\'s downloads directory' +
               ' for exported data.'
           });
           console.log('notify:' + 'Deleting all ' +
-                      snapperStorage.storage.entries.length +
-                      ' entries of snapper data, see browser downloads' +
+                      jotStorage.storage.entries.length +
+                      ' entries of jot data, see browser downloads' +
                       ' directory for exported data.');
-          snapperStorage.storage.entries = [];
+          jotStorage.storage.entries = [];
         }
       });
       worker.port.on('save', function(data) {
-        if (!snapperStorage.storage.entries) {
-          snapperStorage.storage.entries = [];
+        if (!jotStorage.storage.entries) {
+          jotStorage.storage.entries = [];
         }
-        for (let i = 0, len = snapperStorage.storage.entries.length; i < len;
+        for (let i = 0, len = jotStorage.storage.entries.length; i < len;
              i++) {
-          if (JSON.stringify(snapperStorage.storage.entries[i]) ===
+          if (JSON.stringify(jotStorage.storage.entries[i]) ===
               JSON.stringify(data)) {
             notifications.notify({
-              title: 'Snapper Notification',
+              title: 'Jot Notification',
               text: 'Already saved (skipping) ' + JSON.stringify(data)
             });
             console.log('notify:' + 'Already saved (skipping) ' +
@@ -256,14 +257,14 @@ let openSnapperTab = function(selection) {
           }
         }
         notifications.notify({
-          title: 'Snapper Notification',
+          title: 'Jot Notification',
           text: 'Saving ' + JSON.stringify(data)
         });
         console.log('notify:' + 'Saving ' + JSON.stringify(data));
-        snapperStorage.storage.entries.push(data);
+        jotStorage.storage.entries.push(data);
       });
-      worker.port.on('getSnapperEntries', function(data) {
-        getSnapperEntries(worker, data);
+      worker.port.on('getJotEntries', function(data) {
+        getJotEntries(worker, data);
       });
     };
     tabs.open({
@@ -278,24 +279,24 @@ let openSnapperTab = function(selection) {
 
 if (recent.NativeWindow) {
   let nw = require('./nativewindow');
-  let snapperId = nw.addContextMenu({
-    name: 'Snapper',
+  let jotId = nw.addContextMenu({
+    name: 'Jot',
     // TODO Please report mozilla bug to the fact that Fennec
     // contextmenu and text selection are mutually exclusive!
     context: nw.SelectorContext('a'),
     callback: function(target) {
-      openSnapperTab(target.ownerDocument.getSelection().toString());
+      openJotTab(target.ownerDocument.getSelection().toString());
     }
   });
 } else {
   let cm = require("sdk/context-menu");
   cm.Item({
-    label: "Snapper",
+    label: "Jot",
     context: cm.URLContext("*"),
     contentScript: 'self.on("click", function (node, data) {' +
       ' self.postMessage(document.getSelection().toString()); });',
     onMessage: function(selection) {
-      openSnapperTab(selection);
+      openJotTab(selection);
     },
     data: 'snap'
   });

@@ -1,16 +1,16 @@
 {
   "author": "adrian.aichner@gmail.com",
   "dependencies": [],
-  "description": "Snapper Extension for Desktop and Mobile Firefox saves information about the current web page and any active text selection.\n\nThese time-stamped entries can be downloaded as JSON or in user-defined file formats, preset to timeclock and csv format.\n\nContext menu entry on Android is only avaliable on hyperlinks, because text selection is mutually exclusive with a context menu there.",
+  "description": "Jot Extension for Desktop and Mobile Firefox saves information about the current web page and any active text selection.\n\nThese time-stamped entries can be downloaded as JSON or in user-defined file formats, preset to timeclock and csv format.\n\nContext menu entry on Android is only avaliable on hyperlinks, because text selection is mutually exclusive with a context menu there.",
   "id": "jid1-HE38Y6vsW9TpHg",
   "license": "MPL 2.0",
-  "name": "snapper",
+  "name": "jot",
   "preferences": [{
-    "description": "Shows some Information about currently stored snapper data.",
+    "description": "Shows some Information about currently stored jot data.",
     "hidden": false,
     "label": "Show",
     "name": "ABOUTDATA",
-    "title": "About Snapper Data",
+    "title": "About Jot Data",
     "type": "control"
   }, {
     "description": "Controls the amount of logging to the browser console by level, from most to nothing at all.",
@@ -38,7 +38,7 @@
       "label": "off"
     }]
   }, {
-    "description": "Name of first user-defined entry format, made available as snapper download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
+    "description": "Name of first user-defined entry format, made available as jot download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
     "hidden": true,
     "name": "DATAFORMAT0",
     "title": "Hidden Built-In Entry Format",
@@ -47,52 +47,52 @@
   }, {
     "name": "DATAFORMAT1",
     "type": "string",
-    "description": "Name of first user-defined entry format, made available as snapper download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
+    "description": "Name of first user-defined entry format, made available as jot download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
     "value": "timeclock",
     "title": "1. User-Defined Entry Format"
   }, {
     "name": "DATEFORMAT1",
     "type": "string",
-    "description": "Set Snapper Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
+    "description": "Set Jot Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
     "value": "%Y/%m/%d %H:%M:%S",
     "title": "1. DATE FORMAT"
   }, {
     "name": "INFOFORMAT1",
     "type": "string",
-    "description": "TODO: not used yet! Set Snapper Information Format (%u = URL, %t = title, %s = selection).",
-    "value": "Snap!\\\\n# %t\\\\n@ %u\\\\n%s",
-    "title": "1.INFORMATION FORMAT"
+    "description": "TODO: not used yet! Set Jot Information Format (%e = extension title, %s = selection, %t = title, %u = URL).",
+    "value": "%e!\\\\n# %t\\\\n@ %u\\\\n%s",
+    "title": "1. INFORMATION FORMAT"
   }, {
     "name": "ENTRYFORMAT1",
     "type": "string",
-    "description": "Set Snapper Entry Format (%i = in or start datetime, %o = out or end datetime, %t = snapper text).",
+    "description": "Set Jot Entry Format (%i = in or start datetime, %o = out or end datetime, %t = jot text).",
     "value": "i %i %t\\no %o\\n",
     "title": "1. ENTRY FORMAT"
   }, {
     "name": "DATAFORMAT2",
     "type": "string",
-    "description": "Name of second user-defined entry format, made available as snapper download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
+    "description": "Name of second user-defined entry format, made available as jot download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
     "value": "csv",
     "title": "2. User-Defined Entry Format"
   }, {
     "name": "DATEFORMAT2",
     "type": "string",
-    "description": "Set Snapper Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
+    "description": "Set Jot Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
     "value": "%m.%d.%y %H:%M",
     "title": "2. DATE FORMAT"
   }, {
     "name": "INFOFORMAT2",
     "type": "string",
-    "description": "TODO: not used yet! Set Snapper Information Format (%u = URL, %t = title, %s = selection).",
+    "description": "TODO: not used yet! Set Jot Information Format (%u = URL, %t = title, %s = selection).",
     "value": "%t %u %s",
-    "title": "2.INFORMATION FORMAT"
+    "title": "2. INFORMATION FORMAT"
   }, {
     "name": "ENTRYFORMAT2",
     "type": "string",
-    "description": "Set Snapper Entry Format (%i = in or start datetime, %o = out or end datetime, %t = snapper text).",
+    "description": "Set Jot Entry Format (%i = in or start datetime, %o = out or end datetime, %t = jot text).",
     "value": "%i,%o,%T\\n",
     "title": "2. ENTRY FORMAT"
   }],
-  "title": "Snapper",
+  "title": "Jot",
   "version": "4.7"
 }

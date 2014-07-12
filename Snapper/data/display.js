@@ -59,7 +59,7 @@
       preClockin = document.querySelector('.clockin');
       preClockout = document.querySelector('.clockout');
       timelogEntry = document.querySelector('.timelog_entry');
-      self.port.on('setSnapperEntriesBlob', function(data) {
+      self.port.on('setJotEntriesBlob', function(data) {
         let blob = new window.Blob([data.content], {
           type: 'text/plain; charset=utf-8'
         });
@@ -87,13 +87,13 @@
             // start: Date.parse(preClockin.textContent),
             // end: Date.parse(preClockout.textContent)
           });
-          self.port.emit('getSnapperEntries', {
+          self.port.emit('getJotEntries', {
             type: 'DATAFORMAT0'
           });
-          self.port.emit('getSnapperEntries', {
+          self.port.emit('getJotEntries', {
             type: 'DATAFORMAT1'
           });
-          self.port.emit('getSnapperEntries', {
+          self.port.emit('getJotEntries', {
             type: 'DATAFORMAT2'
           });
         } catch (exception) {
@@ -113,15 +113,15 @@
       deleteButton = document.querySelector('.delete');
       deleteButton.addEventListener('click', function(event) {
         try {
-          self.port.emit('getSnapperEntries', {
+          self.port.emit('getJotEntries', {
             type: 'DATAFORMAT0',
             download: true
           });
-          self.port.emit('getSnapperEntries', {
+          self.port.emit('getJotEntries', {
             type: 'DATAFORMAT1',
             download: true
           });
-          self.port.emit('getSnapperEntries', {
+          self.port.emit('getJotEntries', {
             type: 'DATAFORMAT2',
             download: true
           });
@@ -208,17 +208,17 @@
         console.error('%o is not a valid Date', d);
         return;
       }
-      self.port.emit('getSnapperEntries', {
+      self.port.emit('getJotEntries', {
         type: 'DATAFORMAT0'
       });
-      self.port.emit('getSnapperEntries', {
+      self.port.emit('getJotEntries', {
         type: 'DATAFORMAT1'
       });
-      self.port.emit('getSnapperEntries', {
+      self.port.emit('getJotEntries', {
         type: 'DATAFORMAT2'
       });
       let activity =
-            "Snap!" + (data.title ? '\n# ' + data.title : '\n#') +
+            data.self.name + '!\n#' + (data.title ? ' ' + data.title : '') +
             (data.title ? '\n@ ' + data.url : '\n@') +
             (data.selection ? '\n' + data.selection : '');
       if (activity) {
