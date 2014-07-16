@@ -11,19 +11,7 @@
         <link rel="stylesheet"  href="display.css"/>
     </head>
     <body class="timelog_entry">
-        <input type="button" class="save" value="Add"/>
-        <input type="button" class="edit" value="Edit"/>
-        <input type="button" class="close" value="Close"/>
-        <input type="button" class="delete" value="Delete All"/> which first downloads
-        <a download="" class="download_format0">$LINK_FORMAT0$</a>
-        <a download="" class="download_format1">$LINK_FORMAT1$</a>
-        <a download="" class="download_format2">$LINK_FORMAT2$</a>
-        formats.
-        <p>
-        Bookmark <a href="about:addons">about:addons</a>, visit it to learn more about this addon and its options.
-        </p>
-        <hr/>
-        <div>
+        <div class="entry">
         <!-- Keep following line intact to avoid introducig additional space characters in text representation -->
         <span class="pre">i </span><span class="clockin pre" contenteditable="true">$CLOCKIN$</span>
         <span class="pre"> </span>
@@ -36,5 +24,18 @@
         <textarea class="activity" contenteditable="true">$ACTIVITY$</textarea>
         <p class="tooltip_activity">$TOOLTIP_ACTIVITY$</p>
         </div>
+        <p>
+        <input type="button" class="save" value="Add"/>
+        <!-- <input type="button" class="edit" value="Edit"/> -->
+        <input type="button" class="close" value="Close"/>
+        <input type="button" class="delete" value="Delete All"/> which first downloads
+        <a download="" class="download_format0">$LINK_FORMAT0$</a>
+        <a download="" class="download_format1">$LINK_FORMAT1$</a>
+        <a download="" class="download_format2">$LINK_FORMAT2$</a>
+        formats.
+        <hr/>
+        Bookmark <a href="about:addons">about:addons</a>, visit it to learn more about this addon and its options.
+        </p>
+        <pre class="about"></pre>
     </body>
 </html>

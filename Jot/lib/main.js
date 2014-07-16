@@ -2,10 +2,26 @@
 'use strict';
 /*global require: false, console: false, gBrowser: false, URL: false */
 
+var observer = {
+  observe: function(aSubject, aTopic, aData) {
+    if (aTopic == "addon-options-displayed" && aData == "MY_ADDON@MY_DOMAIN") {
+      var doc = aSubject;
+      var control = doc.getElementById("myaddon-pref-control");
+      control.value = "test";
+    }
+  }
+};
+
+// const { Cu } = require("chrome");
+// const { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
+// Services.obs.addObserver(observer, "addon-options-displayed", false);
+// Don't forget to remove your observer when your add-on is shut down.
+
 let sp = require('sdk/simple-prefs');
 let self = require('sdk/self');
 let jotStorage = require("sdk/simple-storage");
 let notifications = require("sdk/notifications");
+let tabs = require("sdk/tabs");
 let loading =
       "time loading addon " + self.name + ' v' + self.version +" started at " +
       new Error().stack.split(/\s+/)[2];
@@ -13,20 +29,26 @@ let loading =
 // addon content script.
 console.time(loading);
 
-let consoleLogLevel = sp.prefs['consoleLogLevel'];
-
-sp.on('consoleLogLevel', function() {
-  consoleLogLevel = sp.prefs['consoleLogLevel'];
-  let name = "extensions." + self.id + ".sdk.console.logLevel";
-  // TODO Using error to make sure message will always be visible --
-  // not ideal.
-  console.error('Setting log level for ' + self.name + ' version ' +
-                self.version + ' to ' + consoleLogLevel);
-  // console.log('self', self);
-  require("sdk/preferences/service").set(name, consoleLogLevel);
+sp.on('consoleLogLevel', function(prefName) {
+  console.error('Setting ' + prefName + ' for ' + self.name + ' version ' +
+                self.version + ' to ' + sp.prefs[prefName]);
 });
-sp.on('ABOUTDATA', function() {
-  let len = jotStorage.storage.entries ? jotStorage.storage.entries.length : 0,
+
+sp.on('REPORT_ISSUE', function() {
+    tabs.open({
+      url: self.data.url(sp.prefs['REPORT_ISSUE_URL']),
+      inNewWindow: true
+      // inBackground: true
+/*,
+      onClose: function() {
+        tabs.activeTab.activate();
+      }*/
+    });
+});
+
+let getAboutData = function getAboutData() {
+  let quotaUse = (new Number(jotStorage.quotaUsage * 100)).toPrecision(3),
+      len = jotStorage.storage.entries ? jotStorage.storage.entries.length : 0,
       start, end, min_start, max_start, min_end, max_end,
       text, min_text, max_text;
   for (let i = 0; i < len; i++) {
@@ -46,16 +68,22 @@ sp.on('ABOUTDATA', function() {
       max_start = start;
     }
   }
+  return { quotaUse, len, min_text, max_text, min_start, max_start };
+};
+
+sp.on('ABOUTDATA', function () {
+let { quotaUse, len,
+      min_text, max_text, min_start, max_start } = getAboutData();
   notifications.notify({
     title: 'About Jot Data',
     text: 'Use of storage quota: ' +
-      (new Number(jotStorage.quotaUsage * 100)).toPrecision(3) +
+      quotaUse +
       '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
       ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
       min_start + '\nnewest: ' + max_start
   });
   console.log('notify:' + 'Use of storage quota: ' +
-              (new Number(jotStorage.quotaUsage * 100)).toPrecision(3) +
+              quotaUse +
               '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
               ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
               min_start + '\nnewest: ' + max_start);
@@ -190,6 +218,7 @@ let getJotEntries = function(worker, data) {
 let openJotTab = function(selection) {
   let activeTab = require("sdk/tabs").activeTab;
   let snapData = {
+    about: getAboutData(),
     now: Date.now(),
     selection: selection,
     title: activeTab.title,
@@ -210,8 +239,7 @@ let openJotTab = function(selection) {
   if (snapData.now && snapData.url) {
     let runScript = function runScript(tab) {
       let worker = tab.attach({
-        contentScriptFile: self.data.url('display.js')/* ,
-        onMessage: 'worker.port.emit("display", snapData);'*/
+        contentScriptFile: self.data.url('display.js')
       });
       worker.port.emit('display', snapData);
       worker.port.on('close', function(data) {

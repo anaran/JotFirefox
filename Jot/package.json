@@ -6,94 +6,102 @@
   "license": "MPL 2.0",
   "name": "jot",
   "main": "lib/main.js",
-  "preferences": [{
-    "description": "Shows some Information about currently stored jot data.",
-    "hidden": false,
-    "label": "Show",
-    "name": "ABOUTDATA",
-    "title": "About Jot Data",
-    "type": "control"
-  }, {
-    "description": "Controls the amount of logging to the browser console by level, from most to nothing at all.",
-    "name": "consoleLogLevel",
-    "type": "menulist",
-    "title": "Console Logging Level",
-    "value": "off",
-    "options": [{
-      "value": "all",
-      "label": "all"
-    }, {
-      "value": "debug",
-      "label": "debug"
-    }, {
-      "value": "info",
-      "label": "info"
-    }, {
-      "value": "warn",
-      "label": "warn"
-    }, {
+  "preferences": [
+    {
+      "description": "Please search list of existing issues before you report bugs and suggest features.",
+      "hidden": false,
+      "label": "Report Bugs, Suggest Features",
+      "name": "REPORT_ISSUE",
+      "title": "Report Bugs, Suggest Features",
+      "type": "control"
+    },
+    {
+      "description": "Where to report bugs and suggest features.",
+      "hidden": true,
+      "name": "REPORT_ISSUE_URL",
+      "title": "Hidden Bug and Feature Reporting URL",
+      "type": "string",
+      "value": "https://github.com/anaran/JotFirefox/search?q=no+such&type=Issues"
+    },
+    {
+      "description": "Controls the amount of logging to the browser console by level, from all to errors only. Increase the log level when investigating problems.",
+      "name": "sdk.console.logLevel",
+      "type": "menulist",
+      "title": "Console Logging Level",
       "value": "error",
-      "label": "error"
+      "options": [{
+        "value": "all",
+        "label": "all"
+      }, {
+        "value": "debug",
+        "label": "debug"
+      }, {
+        "value": "info",
+        "label": "info"
+      }, {
+        "value": "warn",
+        "label": "warn"
+      }, {
+        "value": "error",
+        "label": "error"
+      }]
+    },
+    {
+      "description": "Name of first user-defined entry format, made available as jot download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
+      "hidden": true,
+      "name": "DATAFORMAT0",
+      "title": "Hidden Built-In Entry Format",
+      "type": "string",
+      "value": "json"
     }, {
-      "value": "off",
-      "label": "off"
-    }]
-  }, {
-    "description": "Name of first user-defined entry format, made available as jot download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
-    "hidden": true,
-    "name": "DATAFORMAT0",
-    "title": "Hidden Built-In Entry Format",
-    "type": "string",
-    "value": "json"
-  }, {
-    "name": "DATAFORMAT1",
-    "type": "string",
-    "description": "Name of first user-defined entry format, made available as jot download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
-    "value": "timeclock",
-    "title": "1. User-Defined Entry Format"
-  }, {
-    "name": "DATEFORMAT1",
-    "type": "string",
-    "description": "Set Jot Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
-    "value": "%Y/%m/%d %H:%M:%S",
-    "title": "1. DATE FORMAT"
-  }, {
-    "name": "INFOFORMAT1",
-    "type": "string",
-    "description": "TODO: not used yet! Set Jot Information Format (%e = extension title, %s = selection, %t = title, %u = URL).",
-    "value": "%e!\\\\n# %t\\\\n@ %u\\\\n%s",
-    "title": "1. INFORMATION FORMAT"
-  }, {
-    "name": "ENTRYFORMAT1",
-    "type": "string",
-    "description": "Set Jot Entry Format (%i = in or start datetime, %o = out or end datetime, %t = jot text).",
-    "value": "i %i %t\\no %o\\n",
-    "title": "1. ENTRY FORMAT"
-  }, {
-    "name": "DATAFORMAT2",
-    "type": "string",
-    "description": "Name of second user-defined entry format, made available as jot download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
-    "value": "csv",
-    "title": "2. User-Defined Entry Format"
-  }, {
-    "name": "DATEFORMAT2",
-    "type": "string",
-    "description": "Set Jot Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
-    "value": "%m.%d.%y %H:%M",
-    "title": "2. DATE FORMAT"
-  }, {
-    "name": "INFOFORMAT2",
-    "type": "string",
-    "description": "TODO: not used yet! Set Jot Information Format (%u = URL, %t = title, %s = selection).",
-    "value": "%t %u %s",
-    "title": "2. INFORMATION FORMAT"
-  }, {
-    "name": "ENTRYFORMAT2",
-    "type": "string",
-    "description": "Set Jot Entry Format (%i = in or start datetime, %o = out or end datetime, %t = jot text).",
-    "value": "%i,%o,%T\\n",
-    "title": "2. ENTRY FORMAT"
-  }],
+      "name": "DATAFORMAT1",
+      "type": "string",
+      "description": "Name of first user-defined entry format, made available as jot download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
+      "value": "timeclock",
+      "title": "1. User-Defined Entry Format"
+    }, {
+      "name": "DATEFORMAT1",
+      "type": "string",
+      "description": "Set Jot Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
+      "value": "%Y/%m/%d %H:%M:%S",
+      "title": "1. DATE FORMAT"
+    }, {
+      "name": "INFOFORMAT1",
+      "type": "string",
+      "description": "TODO: not used yet! Set Jot Information Format (%e = extension title, %s = selection, %t = title, %u = URL).",
+      "value": "%e!\\\\n# %t\\\\n@ %u\\\\n%s",
+      "title": "1. INFORMATION FORMAT"
+    }, {
+      "name": "ENTRYFORMAT1",
+      "type": "string",
+      "description": "Set Jot Entry Format (%i = in or start datetime, %o = out or end datetime, %t = jot text).",
+      "value": "i %i %t\\no %o\\n",
+      "title": "1. ENTRY FORMAT"
+    }, {
+      "name": "DATAFORMAT2",
+      "type": "string",
+      "description": "Name of second user-defined entry format, made available as jot download format.\nThe data format is described by three format components: DATE FORMAT, INFORMATION FORMAT, and ENTRY FORMAT.",
+      "value": "csv",
+      "title": "2. User-Defined Entry Format"
+    }, {
+      "name": "DATEFORMAT2",
+      "type": "string",
+      "description": "Set Jot Date and Time Format (%Y = Year, %m = Month, %d = Day, %H = Hour, %M = Minute, %S = Second, %z = Timezone Offset).",
+      "value": "%m.%d.%y %H:%M",
+      "title": "2. DATE FORMAT"
+    }, {
+      "name": "INFOFORMAT2",
+      "type": "string",
+      "description": "TODO: not used yet! Set Jot Information Format (%u = URL, %t = title, %s = selection).",
+      "value": "%t %u %s",
+      "title": "2. INFORMATION FORMAT"
+    }, {
+      "name": "ENTRYFORMAT2",
+      "type": "string",
+      "description": "Set Jot Entry Format (%i = in or start datetime, %o = out or end datetime, %t = jot text).",
+      "value": "%i,%o,%T\\n",
+      "title": "2. ENTRY FORMAT"
+    }],
   "title": "Jot",
   "version": "0.3"
 }

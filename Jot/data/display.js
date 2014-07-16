@@ -18,6 +18,7 @@
   // console.log(console.log);
   // console.log(console.log.toSource());
   console.log('display.js self:', self);
+  let divAboutData;
   let preActivity;
   let tooltipActivity;
   let preClockin;
@@ -48,166 +49,54 @@
   }
 
   function display(data) {
-    // TODO: This try catch colsole.log message never appears in the
-    // console. Right now it's better not to catch and log exceptions
-    // since the addon debugger console will show them.
-    // try {
-      preActivity = document.querySelector('.activity');
-      tooltipActivity = document.querySelector('.tooltip_activity');
-      tooltipActivity.textContent =
-        "When needed: Insert newline as \\n, return as \\r, tab as \\t.";
-      preClockin = document.querySelector('.clockin');
-      preClockout = document.querySelector('.clockout');
-      timelogEntry = document.querySelector('.timelog_entry');
-      self.port.on('setJotEntriesBlob', function(data) {
-        let blob = new window.Blob([data.content], {
-          type: 'text/plain; charset=utf-8'
-        });
-        if ( !! data.download) {
-          console.log('we will dowload as well', data);
-        }
-        if (links[data.type]) {
-          if ( !! data.download) {
-            links[data.type].click();
-          } else {
-            links[data.type].href = window.URL.createObjectURL(blob);
-            links[data.type].download = data.filename;
-          }
-        } else {
-          console.error('Don\'t know how to handle content type ' + data.type);
-        }
+    let { quotaUse, len, 
+          min_text, max_text, min_start, max_start } = data.about;
+    divAboutData = document.querySelector('.about');
+    divAboutData.textContent = '\nUse of storage quota: ' + quotaUse +
+      '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
+      ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
+      min_start + '\nnewest: ' + max_start + '\n';
+    var selectAll = function(event) {
+      var selection = getSelection();
+      var range = document.createRange();
+      range.selectNode(event.target);
+      selection.addRange(range);
+    };
+    divAboutData.addEventListener('click', selectAll, false);
+    preActivity = document.querySelector('.activity');
+    tooltipActivity = document.querySelector('.tooltip_activity');
+    tooltipActivity.textContent =
+      "When needed: Insert newline as \\n, return as \\r, tab as \\t.";
+    preClockin = document.querySelector('.clockin');
+    preClockout = document.querySelector('.clockout');
+    timelogEntry = document.querySelector('.timelog_entry');
+    self.port.on('setJotEntriesBlob', function(data) {
+      let blob = new window.Blob([data.content], {
+        type: 'text/plain; charset=utf-8'
       });
-      saveButton = document.querySelector('.save');
-      saveButton.addEventListener('click', function(event) {
-        try {
-          self.port.emit('save', {
-            activity: JSON.stringify(preActivity.value),
-            start: preClockin.textContent,
-            end: preClockout.textContent
-            // start: Date.parse(preClockin.textContent),
-            // end: Date.parse(preClockout.textContent)
-          });
-          self.port.emit('getJotEntries', {
-            type: 'DATAFORMAT0'
-          });
-          self.port.emit('getJotEntries', {
-            type: 'DATAFORMAT1'
-          });
-          self.port.emit('getJotEntries', {
-            type: 'DATAFORMAT2'
-          });
-        } catch (exception) {
-          // window.alert(exception.toString());
-          console.error(exception);
-        }
-      }, false);
-      closeButton = document.querySelector('.close');
-      closeButton.addEventListener('click', function(event) {
-        try {
-          self.port.emit('close');
-        } catch (exception) {
-          // window.alert(exception.toString());
-          console.error(exception);
-        }
-      }, false);
-      deleteButton = document.querySelector('.delete');
-      deleteButton.addEventListener('click', function(event) {
-        try {
-          self.port.emit('getJotEntries', {
-            type: 'DATAFORMAT0',
-            download: true
-          });
-          self.port.emit('getJotEntries', {
-            type: 'DATAFORMAT1',
-            download: true
-          });
-          self.port.emit('getJotEntries', {
-            type: 'DATAFORMAT2',
-            download: true
-          });
-          self.port.emit('delete');
-          //                    location.reload(true);
-        } catch (exception) {
-          // window.alert(exception.toString());
-          console.error(exception);
-        }
-      }, false);
-      preActivity.addEventListener('focus', function(event) {
-        try {
-          let rows = event.target.value.split('\n').length;
-          let cols =
-                Math.max.apply(null,
-                               event.target.value.split('\n').
-                               map(function(value) { return value.length; }));
-          // event.target.style = '';
-          event.target.rows = rows;
-          event.target.cols = cols;
-        } catch (exception) {
-          // window.alert(exception.toString());
-          console.error(exception);
-        }
-      }, false);
-      preActivity.addEventListener('blur', function(event) {
-        try {
-          event.target.removeAttribute('rows');
-          event.target.removeAttribute('cols');
-          // Filter out empty strings (at begin or end) to
-          // avoid counting them as words (without trimmig
-          // text content).
-          let lines = event.target.value.split(/\n/g).filter(function(value) {
-            if (value.length) {
-              return true;
-            }
-            return false;
-          }).length;
-          let words = event.target.value.split(/\s+/g).filter(function(value) {
-            if (value.length) {
-              return true;
-            }
-            return false;
-          }).length;
-          tooltipActivity.textContent =
-            "activity has " + event.target.value.length + " characters, " +
-            words + " words, " + lines + " lines";
-          // See
-          // https://developer.mozilla.org/en-US/docs/Web/Reference/Events/blur#Event_delegation
-        } catch (exception) {
-          // window.alert(exception.toString());
-          console.error(exception);
-        }
-      }, false);
-      links['DATAFORMAT0'] = document.querySelector('.download_format0');
-      links['DATAFORMAT1'] = document.querySelector('.download_format1');
-      links['DATAFORMAT2'] = document.querySelector('.download_format2');
-      texts['DATAFORMAT0'] = data.format0;
-      texts['DATAFORMAT1'] = data.format1;
-      texts['DATAFORMAT2'] = data.format2;
-      // console.log(links);
-      Object.getOwnPropertyNames(links).forEach(function(type) {
-        links[type].textContent = texts[type];
-        links[type].addEventListener('click', function(event) {
-          try {
-            window.setTimeout(function() {
-              // TODO Please note we are showing user
-              // that data has already been downloaded.
-              // https://developer.mozilla.org/en-US/docs/Web/API/Element.removeAttribute#Notes
-              // notes: You should use removeAttribute
-              // instead of setting the attribute value
-              // to null
-              event.target.removeAttribute('href');
-            }, 900);
-          } catch (exception) {
-            // window.alert(exception.toString());
-            console.error(exception);
-          }
-        }, false);
-      });
-      document.title = data.self.name + " v" + data.self.version;
-      let d = new Date(data.now) || new Date();
-      if (d instanceof Date && !isNaN(d.getTime())) {} else {
-        console.error('%o is not a valid Date', d);
-        return;
+      if ( !! data.download) {
+        console.log('we will dowload as well', data);
       }
+      if (links[data.type]) {
+        if ( !! data.download) {
+          links[data.type].click();
+        } else {
+          links[data.type].href = window.URL.createObjectURL(blob);
+          links[data.type].download = data.filename;
+        }
+      } else {
+        console.error('Don\'t know how to handle content type ' + data.type);
+      }
+    });
+    saveButton = document.querySelector('.save');
+    saveButton.addEventListener('click', function(event) {
+      self.port.emit('save', {
+        activity: JSON.stringify(preActivity.value),
+        start: preClockin.textContent,
+        end: preClockout.textContent
+        // start: Date.parse(preClockin.textContent),
+        // end: Date.parse(preClockout.textContent)
+      });
       self.port.emit('getJotEntries', {
         type: 'DATAFORMAT0'
       });
@@ -217,22 +106,108 @@
       self.port.emit('getJotEntries', {
         type: 'DATAFORMAT2'
       });
-      let activity =
-            data.self.name + '!\n#' + (data.title ? ' ' + data.title : '') +
-            (data.title ? '\n@ ' + data.url : '\n@') +
-            (data.selection ? '\n' + data.selection : '');
-      if (activity) {
-        //                preActivity.blur();
-        preActivity.value = activity;
-        preClockin.textContent = dateToTimeClock(d);
-        // preClockin.textContent = d.toString();
-        preClockout.textContent = preClockin.textContent;
-        //                timelogEntry.click();
-      }
-    // } catch (exception) {
-    //   // window.alert(exception.toString());
-    //   console.log(exception);
-    // }
+    }, false);
+    closeButton = document.querySelector('.close');
+    closeButton.addEventListener('click', function(event) {
+      self.port.emit('close');
+    }, false);
+    deleteButton = document.querySelector('.delete');
+    deleteButton.addEventListener('click', function(event) {
+      self.port.emit('getJotEntries', {
+        type: 'DATAFORMAT0',
+        download: true
+      });
+      self.port.emit('getJotEntries', {
+        type: 'DATAFORMAT1',
+        download: true
+      });
+      self.port.emit('getJotEntries', {
+        type: 'DATAFORMAT2',
+        download: true
+      });
+      self.port.emit('delete');
+    }, false);
+    preActivity.addEventListener('focus', function(event) {
+      let rows = event.target.value.split('\n').length;
+      let cols =
+            Math.max.apply(null,
+                           event.target.value.split('\n').
+                           map(function(value) { return value.length; }));
+      // event.target.style = '';
+      event.target.rows = rows;
+      event.target.cols = cols;
+    }, false);
+    // See
+    // https://developer.mozilla.org/en-US/docs/Web/Reference/Events/blur#Event_delegation
+    preActivity.addEventListener('blur', function(event) {
+      event.target.removeAttribute('rows');
+      event.target.removeAttribute('cols');
+      // Filter out empty strings (at begin or end) to
+      // avoid counting them as words (without trimmig
+      // text content).
+      let lines = event.target.value.split(/\n/g).filter(function(value) {
+        if (value.length) {
+          return true;
+        }
+        return false;
+      }).length;
+      let words = event.target.value.split(/\s+/g).filter(function(value) {
+        if (value.length) {
+          return true;
+        }
+        return false;
+      }).length;
+      tooltipActivity.textContent =
+        "activity has " + event.target.value.length + " characters, " +
+        words + " words, " + lines + " lines";
+    }, false);
+    links['DATAFORMAT0'] = document.querySelector('.download_format0');
+    links['DATAFORMAT1'] = document.querySelector('.download_format1');
+    links['DATAFORMAT2'] = document.querySelector('.download_format2');
+    texts['DATAFORMAT0'] = data.format0;
+    texts['DATAFORMAT1'] = data.format1;
+    texts['DATAFORMAT2'] = data.format2;
+    Object.getOwnPropertyNames(links).forEach(function(type) {
+      links[type].textContent = texts[type];
+      links[type].addEventListener('click', function(event) {
+        window.setTimeout(function() {
+          // TODO Please note we are showing user
+          // that data has already been downloaded.
+          // https://developer.mozilla.org/en-US/docs/Web/API/Element.removeAttribute#Notes
+          // notes: You should use removeAttribute
+          // instead of setting the attribute value
+          // to null
+          event.target.removeAttribute('href');
+        }, 900);
+      }, false);
+    });
+    document.title = data.self.name + " v" + data.self.version;
+    let d = new Date(data.now) || new Date();
+    if (d instanceof Date && !isNaN(d.getTime())) {} else {
+      console.error('%o is not a valid Date', d);
+      return;
+    }
+    self.port.emit('getJotEntries', {
+      type: 'DATAFORMAT0'
+    });
+    self.port.emit('getJotEntries', {
+      type: 'DATAFORMAT1'
+    });
+    self.port.emit('getJotEntries', {
+      type: 'DATAFORMAT2'
+    });
+    let activity =
+          data.self.name + '!\n#' + (data.title ? ' ' + data.title : '') +
+          (data.title ? '\n@ ' + data.url : '\n@') +
+          (data.selection ? '\n' + data.selection : '');
+    if (activity) {
+      //                preActivity.blur();
+      preActivity.value = activity;
+      preClockin.textContent = dateToTimeClock(d);
+      // preClockin.textContent = d.toString();
+      preClockout.textContent = preClockin.textContent;
+      //                timelogEntry.click();
+    }
   }
   self.port.on('display', function(data) {
     console.log('display.js on display data:', data);
