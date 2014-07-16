@@ -8,6 +8,15 @@
   "main": "lib/main.js",
   "preferences": [
     {
+      "description": "You may want to hide options after you have adjusted them, to avoid accidental changes.",
+      "hidden": false,
+      "label": "Hide options when you have adjusted them.",
+      "name": "SHOW_OPTIONS",
+      "title": "Show Options",
+      "type": "bool",
+      "value": false
+    },
+    {
       "description": "Please search list of existing issues before you report bugs and suggest features.",
       "hidden": false,
       "label": "Report Bugs, Suggest Features",

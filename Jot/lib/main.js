@@ -2,21 +2,6 @@
 'use strict';
 /*global require: false, console: false, gBrowser: false, URL: false */
 
-var observer = {
-  observe: function(aSubject, aTopic, aData) {
-    if (aTopic == "addon-options-displayed" && aData == "MY_ADDON@MY_DOMAIN") {
-      var doc = aSubject;
-      var control = doc.getElementById("myaddon-pref-control");
-      control.value = "test";
-    }
-  }
-};
-
-// const { Cu } = require("chrome");
-// const { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
-// Services.obs.addObserver(observer, "addon-options-displayed", false);
-// Don't forget to remove your observer when your add-on is shut down.
-
 let sp = require('sdk/simple-prefs');
 let self = require('sdk/self');
 let jotStorage = require("sdk/simple-storage");
@@ -28,6 +13,32 @@ let loading =
 // TODO Please note that console.time is not available in FireFox
 // addon content script.
 console.time(loading);
+
+var observer = {
+  observe: function(aSubject, aTopic, aData) {
+    if (aTopic == "addon-options-displayed" && aData == self.id) {
+      var doc = aSubject;
+      var prefs = doc.querySelectorAll('setting[pref-name]');
+      var showOptions = sp.prefs['SHOW_OPTIONS'];
+      console.log(prefs);
+      for (let i = 0, len = prefs.length; i < len; i++) {
+        // prefs[i].hidden = true;
+        console.error(prefs[i].collapsed);
+        if (prefs[i].getAttribute('pref-name') !== 'SHOW_OPTIONS' &&
+            prefs[i].getAttribute('pref-name') !== 'REPORT_ISSUE') {
+          prefs[i].collapsed = !showOptions;
+        }
+      }
+      // var control = doc.getElementById("myaddon-pref-control");
+      // control.value = "test";
+    }
+  }
+};
+
+const { Cu } = require("chrome");
+const { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
+Services.obs.addObserver(observer, "addon-options-displayed", false);
+// Don't forget to remove your observer when your add-on is shut down.
 
 sp.on('consoleLogLevel', function(prefName) {
   console.error('Setting ' + prefName + ' for ' + self.name + ' version ' +
