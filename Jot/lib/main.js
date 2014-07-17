@@ -2,59 +2,117 @@
 'use strict';
 /*global require: false, console: false, gBrowser: false, URL: false */
 
-let sp = require('sdk/simple-prefs');
 let self = require('sdk/self');
-let jotStorage = require("sdk/simple-storage");
-let notifications = require("sdk/notifications");
-let tabs = require("sdk/tabs");
 let loading =
       "time loading addon " + self.name + ' v' + self.version +" started at " +
       new Error().stack.split(/\s+/)[2];
-// TODO Please note that console.time is not available in FireFox
-// addon content script.
-console.time(loading);
-
-var observer = {
-  observe: function(aSubject, aTopic, aData) {
-    if (aTopic == "addon-options-displayed" && aData == self.id) {
-      var doc = aSubject;
-      var prefs = doc.querySelectorAll('setting[pref-name]');
-      var showOptions = sp.prefs['SHOW_OPTIONS'];
-      console.log(prefs);
-      for (let i = 0, len = prefs.length; i < len; i++) {
-        // prefs[i].hidden = true;
-        console.error(prefs[i].collapsed);
-        if (prefs[i].getAttribute('pref-name') !== 'SHOW_OPTIONS' &&
-            prefs[i].getAttribute('pref-name') !== 'REPORT_ISSUE') {
-          prefs[i].collapsed = !showOptions;
-        }
-      }
-      // var control = doc.getElementById("myaddon-pref-control");
-      // control.value = "test";
-    }
-  }
-};
+let sp = require('sdk/simple-prefs');
+let jotStorage = require("sdk/simple-storage");
+let notifications = require("sdk/notifications");
+let tabs = require("sdk/tabs");
+// TODO Place following code where timed section should start.
+if (console.time) {
+  console.time(loading);
+}
 
 const { Cu } = require("chrome");
 const { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
-Services.obs.addObserver(observer, "addon-options-displayed", false);
-// Don't forget to remove your observer when your add-on is shut down.
 
-sp.on('consoleLogLevel', function(prefName) {
+let inlineOptionsDocument;
+let observer = {
+  observe: function(aSubject, aTopic, aData) {
+    console.log(aSubject, aTopic, aData, self, this);
+    // Prepared for handling other notification types
+    switch (aTopic) {
+    case "addon-options-displayed":
+      if (self && aData === self.id) {
+        inlineOptionsDocument = aSubject;
+        var prefs = inlineOptionsDocument.querySelectorAll('setting[pref-name]');
+        var collapseOptions = !sp.prefs['SHOW_OPTIONS'];
+        for (let i = 0, len = prefs.length; i < len; i++) {
+          console.log(prefs[i].collapsed);
+          if (prefs[i].getAttribute('pref-name') !== 'SHOW_OPTIONS' &&
+              prefs[i].getAttribute('pref-name') !== 'REPORT_ISSUE' &&
+              prefs[i].collapsed !== collapseOptions) {
+            prefs[i].collapsed = collapseOptions;
+          }
+        }
+      }
+      break;
+    default:
+    }
+    return;
+  }
+};
+
+let observableNotifications = {
+  OPTIONS_NOTIFICATION_DISPLAYED: "addon-options-displayed",
+  // Options notification will be hidden
+  OPTIONS_NOTIFICATION_HIDDEN: "addon-options-hidden",
+
+  // Constants for getStartupChanges, addStartupChange and removeStartupChange
+  // Add-ons that were detected as installed during startup. Doesn't include
+  // add-ons that were pending installation the last time the application ran.
+  STARTUP_CHANGE_INSTALLED: "installed",
+  // Add-ons that were detected as changed during startup. This includes an
+  // add-on moving to a different location, changing version or just having
+  // been detected as possibly changed.
+  STARTUP_CHANGE_CHANGED: "changed",
+  // Add-ons that were detected as uninstalled during startup. Doesn't include
+  // add-ons that were pending uninstallation the last time the application ran.
+  STARTUP_CHANGE_UNINSTALLED: "uninstalled",
+  // Add-ons that were detected as disabled during startup, normally because of
+  // an application change making an add-on incompatible. Doesn't include
+  // add-ons that were pending being disabled the last time the application ran.
+  STARTUP_CHANGE_DISABLED: "disabled",
+  // Add-ons that were detected as enabled during startup, normally because of
+  // an application change making an add-on compatible. Doesn't include
+  // add-ons that were pending being enabled the last time the application ran.
+  STARTUP_CHANGE_ENABLED: "enabled",
+
+  // Constants for the Addon.userDisabled property
+  // Indicates that the userDisabled state of this add-on is currently
+  // ask-to-activate. That is, it can be conditionally enabled on a
+  // case-by-case basis.
+  STATE_ASK_TO_ACTIVATE: "askToActivate"
+};
+
+// Not ready to use Object.values shim directly. See
+// http://stackoverflow.com/questions/7306669/how-to-get-all-properties-values-of-a-javascript-object-without-knowing-the-key
+let getObjectValues = obj => Object.keys(obj).map(key => obj[key]);
+
+exports.main = function myMain(options, callbacks) {
+  console.log(exports.main.name + ' of version ' + self.version +
+              ' of addon ' + self.name, options, callbacks);
+  getObjectValues(observableNotifications).forEach(function (name) {
+    Services.obs.addObserver(observer, name, false);
+  });
+};
+exports.onUnload = function myOnUnload(reason) {
+  console.log(exports.onUnload.name + ' of version ' + self.version +
+              ' of addon ' + self.name, reason);
+  getObjectValues(observableNotifications).forEach(function (name) {
+    Services.obs.removeObserver(observer, name);
+  });
+};
+require('sdk/system/unload').when(exports.onUnload);
+
+sp.on('sdk.console.logLevel', function(prefName) {
   console.error('Setting ' + prefName + ' for ' + self.name + ' version ' +
                 self.version + ' to ' + sp.prefs[prefName]);
 });
 
+sp.on('SHOW_OPTIONS', function(prefName) {
+  console.error('Setting ' + prefName + ' for ' + self.name + ' version ' +
+                self.version + ' to ' + sp.prefs[prefName]);
+  inlineOptionsDocument.location.reload();
+});
+
 sp.on('REPORT_ISSUE', function() {
-    tabs.open({
-      url: self.data.url(sp.prefs['REPORT_ISSUE_URL']),
-      inNewWindow: true
-      // inBackground: true
-/*,
-      onClose: function() {
-        tabs.activeTab.activate();
-      }*/
-    });
+  tabs.open({
+    url: self.data.url(sp.prefs['REPORT_ISSUE_URL']),
+    inNewWindow: true
+  });
 });
 
 let getAboutData = function getAboutData() {
@@ -340,4 +398,7 @@ if (recent.NativeWindow) {
     data: 'snap'
   });
 }
-console.timeEnd(loading);
+// TODO Place following code where timed section should end.
+if (console.timeEnd) {
+  console.timeEnd(loading);
+}

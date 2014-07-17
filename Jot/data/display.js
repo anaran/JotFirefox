@@ -9,7 +9,7 @@
   let loading = "loading started at " + new Error().stack.split(/\s+/)[2] +
         "\n(" + ") takes";
   console.log(loading);
-  // TODO console.time is not available in FireFox addon content script.
+  // TODO Place following code where timed section should start.
   if (console.time) {
     console.time(loading);
   }
@@ -27,6 +27,7 @@
   let links = {};
   let texts = {};
   let saveButton;
+  let editButton;
   let closeButton;
   let deleteButton;
 
@@ -106,6 +107,16 @@
       self.port.emit('getJotEntries', {
         type: 'DATAFORMAT2'
       });
+    }, false);
+    editButton = document.querySelector('.edit');
+    editButton.addEventListener('click', function(event) {
+      // self.port.emit('save', {
+      //   activity: JSON.stringify(preActivity.value),
+      //   start: preClockin.textContent,
+      //   end: preClockout.textContent
+      //   // start: Date.parse(preClockin.textContent),
+      //   // end: Date.parse(preClockout.textContent)
+      // });
     }, false);
     closeButton = document.querySelector('.close');
     closeButton.addEventListener('click', function(event) {
