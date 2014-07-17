@@ -65,31 +65,21 @@ textarea+p.tooltip_activity {
     margin: 0.5em; /*display: flex;
     justify-content: flex-end;*/
     position: fixed;
-    left: -80em;
+    display: none;
     border-radius: 0.5em;
     padding: 0.5em;
     background-color: black;
     color: white;
-    transition: left 1s ease-in-out 3s;
 }
 
 /* touch */
 textarea:active+p.tooltip_activity {
-    /* background-color: black; */
-    left: 0;
-    transition: left 0s ease-in-out 0.2s;
+    display: inline;
 }
 
 /* mouse */
 textarea:hover+p.tooltip_activity {
-    /* background-color: black; */
-    left: 0;
-    transition: left 0s ease-in-out 0.2s;
-}
-
-textarea:focus+p.tooltip_activity {
-    left: -80em;
-    transition: left 0s ease-in-out;
+    display: inline;
 }
 
 /*textarea:+p.tooltip_activity {
