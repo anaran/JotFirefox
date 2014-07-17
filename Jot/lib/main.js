@@ -16,7 +16,7 @@ if (console.time) {
 }
 
 const { Cu } = require("chrome");
-const { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
+const { Services } = Cu.import("resource://gre/modules/Services.jsm", this);
 
 let inlineOptionsDocument;
 let observer = {
@@ -313,6 +313,41 @@ let openJotTab = function(selection) {
       worker.port.emit('display', snapData);
       worker.port.on('close', function(data) {
         require("sdk/tabs").activeTab.close();
+      });
+      worker.port.on('options', function(data) {
+        // TODO: Remove button does not properly hide preferences,
+        // which I got working for my SHOW_OPTIONS logic.
+        // Services.wm.getMostRecentWindow('navigator:browser').
+        //   BrowserOpenAddonsMgr('addons://detail/' + self.id + '/preferences');
+        // So let's close it again now that it has set
+        // inlineOptionsDocument.
+        for (let i = 0, len = tabs.length; i < len; i++) {
+          console.log(tabs[i].title, tabs[i].url);
+          if (/^about:addons\b/.test(tabs[i].url)) {
+            tabs[i].activate();
+            return;
+          }
+        }
+        // aSubject.querySelector('richlistitem[name=Jot]')
+        // aSubject.querySelector('richlistitem[value="' + self.id + '"]')
+        tabs.open({
+          onReady: function (tab) {
+            // let worker = tab.attach({
+            contentScript:
+            'console.log(gViewController); gViewController.loadView("addons://detail/"' +
+              encodeURIComponent(self.id) + '"/preferences"));'
+            //   contentScript: 'if (console.log) { console.log(document.documentElement.collapse); }'
+            // });
+            // console.log(inlineOptionsDocument);
+            // Services.wm.getMostRecentWindow('navigator:browser').
+            //   BrowserCloseTabOrWindow();
+          },
+          // url: inlineOptionsDocument.URL
+          // url: encodeURI('addons://detail/' + self.id + '/preferences')
+          // inNewWindow: true,
+          url: 'about:addons'
+          // url: 'about:addons://detail/jid1-HE38Y6vsW9TpHg%40jetpack/preferences'
+        });
       });
       worker.port.on('delete', function(data) {
         if (!jotStorage.storage.entries ||

@@ -27,7 +27,7 @@
   let links = {};
   let texts = {};
   let saveButton;
-  let editButton;
+  let optionsButton;
   let closeButton;
   let deleteButton;
 
@@ -108,15 +108,9 @@
         type: 'DATAFORMAT2'
       });
     }, false);
-    editButton = document.querySelector('.edit');
-    editButton.addEventListener('click', function(event) {
-      // self.port.emit('save', {
-      //   activity: JSON.stringify(preActivity.value),
-      //   start: preClockin.textContent,
-      //   end: preClockout.textContent
-      //   // start: Date.parse(preClockin.textContent),
-      //   // end: Date.parse(preClockout.textContent)
-      // });
+    optionsButton = document.querySelector('.options');
+    optionsButton.addEventListener('click', function(event) {
+      self.port.emit('options');
     }, false);
     closeButton = document.querySelector('.close');
     closeButton.addEventListener('click', function(event) {
