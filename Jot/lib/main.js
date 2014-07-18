@@ -4,8 +4,8 @@
 
 let self = require('sdk/self');
 let loading =
-      "time loading addon " + self.name + ' v' + self.version +" started at " +
-      new Error().stack.split(/\s+/)[2];
+      "addon load time $Format:%h$ $Format:%d$" +
+      (new Error).stack;
 let sp = require('sdk/simple-prefs');
 let jotStorage = require("sdk/simple-storage");
 let notifications = require("sdk/notifications");
@@ -105,6 +105,7 @@ sp.on('sdk.console.logLevel', function(prefName) {
 sp.on('SHOW_OPTIONS', function(prefName) {
   console.error('Setting ' + prefName + ' for ' + self.name + ' version ' +
                 self.version + ' to ' + sp.prefs[prefName]);
+  console.log('reloading ' + inlineOptionsDocument.location);
   inlineOptionsDocument.location.reload(true);
 });
 
@@ -340,7 +341,7 @@ let openJotTab = function(selection) {
           onReady: function (tab) {
             // let worker = tab.attach({
             contentScript:
-            'console.log(gViewController); gViewController.loadView("addons://detail/"' +
+            'console.error("gViewController"); console.log(gViewController); gViewController.loadView("addons://detail/"' +
               encodeURIComponent(self.id) + '"/preferences"));'
             //   contentScript: 'if (console.log) { console.log(document.documentElement.collapse); }'
             // });
@@ -348,12 +349,14 @@ let openJotTab = function(selection) {
             // Services.wm.getMostRecentWindow('navigator:browser').
             //   BrowserCloseTabOrWindow();
           },
-          // url: inlineOptionsDocument.URL
           // url: encodeURI('addons://detail/' + self.id + '/preferences')
           // inNewWindow: true,
           // gViewController.currentViewId
-          url: 'about:addons'
           // url: 'addons://detail/jid1-HE38Y6vsW9TpHg%40jetpack/preferences'
+          url: 'about:addons',
+          onClose: function() {
+            require("sdk/tabs").activeTab.activate();
+          }
         });
       });
       worker.port.on('delete', function(data) {

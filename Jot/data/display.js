@@ -6,18 +6,18 @@
 // require does not seem to be available in content scripts.
 // let sp = require('sdk/simple-prefs');
 (function() {
-  let loading = "loading started at " + new Error().stack.split(/\s+/)[2] +
-        "\n(" + ") takes";
-  console.log(loading);
+  let loading =
+        "content script load time " + (new Error).stack;
+  // let loading = "time loading content script started at " + new Error().stack.split(/\s+/)[2] +
+  //       "\n(" + ") takes";
   // TODO Place following code where timed section should start.
   if (console.time) {
     console.time(loading);
   }
-  // console.log(JSON.stringify(console, null, 2));
-  // console.log(Console.prototype);
-  // console.log(console.log);
-  // console.log(console.log.toSource());
-  console.log('display.js self:', self);
+  else {
+    console.log(loading);
+  }
+  // console.log('display.js self:', self);
   let divAboutData;
   let preActivity;
   let tooltipActivity;
