@@ -16,6 +16,10 @@
   if (console.time) {
     console.time('load time');
   }
+  if (console.profile) {
+    console.log('start profiling');
+    console.profile('content script profile');
+  }
   // console.log('display.js self:', self);
   let divAboutData;
   let preActivity;
@@ -220,5 +224,9 @@
   // TODO Place following code where timed section should end.
   if (console.timeEnd) {
     console.timeEnd('load time');
+  }
+  if (console.profileEnd) {
+    console.log('end profiling');
+    console.profileEnd();
   }
 })();
