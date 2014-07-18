@@ -4,7 +4,7 @@
 
 let self = require('sdk/self');
 let loading =
-      "addon load time $Format:%h$ $Format:%d$" +
+      "addon load time $Format:%h%d$ " +
       (new Error).stack;
 let sp = require('sdk/simple-prefs');
 let jotStorage = require("sdk/simple-storage");

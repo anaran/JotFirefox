@@ -7,7 +7,7 @@
 // let sp = require('sdk/simple-prefs');
 (function() {
   let loading =
-        "content script load time " + (new Error).stack;
+        "content script load time $Format:%h%d$ " + (new Error).stack;
   // let loading = "time loading content script started at " + new Error().stack.split(/\s+/)[2] +
   //       "\n(" + ") takes";
   // TODO Place following code where timed section should start.

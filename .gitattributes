@@ -1,3 +1,4 @@
 .gitignore export-ignore
 .gitattributes export-ignore
-lib/main.js export-subst
+Jot/lib/main.js export-subst
+Jot/data/display.js export-subst
