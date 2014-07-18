@@ -105,7 +105,7 @@ sp.on('sdk.console.logLevel', function(prefName) {
 sp.on('SHOW_OPTIONS', function(prefName) {
   console.error('Setting ' + prefName + ' for ' + self.name + ' version ' +
                 self.version + ' to ' + sp.prefs[prefName]);
-  inlineOptionsDocument.location.reload();
+  inlineOptionsDocument.location.reload(true);
 });
 
 sp.on('REPORT_ISSUE', function() {
@@ -303,7 +303,6 @@ let openJotTab = function(selection) {
   jotStorage.on("OverQuota", function() {
     console.error('jotStorage.quotaUsage:', jotStorage.quotaUsage);
   });
-  let tabs = require("sdk/tabs");
   // TODO Please note data.title can be undefined
   if (snapData.now && snapData.url) {
     let runScript = function runScript(tab) {
@@ -315,18 +314,25 @@ let openJotTab = function(selection) {
         require("sdk/tabs").activeTab.close();
       });
       worker.port.on('options', function(data) {
-        // TODO: Remove button does not properly hide preferences,
-        // which I got working for my SHOW_OPTIONS logic.
+        // TODO: Remove button does not properly hide preferences when
+        // opened by BrowserOpenAddonsMgr().
+        // I got it working for my SHOW_OPTIONS logic using location.reload().
         // Services.wm.getMostRecentWindow('navigator:browser').
-        //   BrowserOpenAddonsMgr('addons://detail/' + self.id + '/preferences');
-        // So let's close it again now that it has set
-        // inlineOptionsDocument.
-        for (let i = 0, len = tabs.length; i < len; i++) {
-          console.log(tabs[i].title, tabs[i].url);
-          if (/^about:addons\b/.test(tabs[i].url)) {
-            tabs[i].activate();
-            return;
+        //   BrowserOpenAddonsMgr('addons://detail/' + self.id +
+        //   '/preferences');
+        let tabs = require("sdk/tabs");
+        try {
+          for each (var tab in tabs) {
+            console.log(tab.url);
+            if (tab && tab.url &&
+                /^about:addons\b/.test(tab.url)) {
+              tab.activate();
+              return;
+            }
           }
+        }
+        catch (exception) {
+          console.error(exception);
         }
         // aSubject.querySelector('richlistitem[name=Jot]')
         // aSubject.querySelector('richlistitem[value="' + self.id + '"]')
@@ -345,8 +351,9 @@ let openJotTab = function(selection) {
           // url: inlineOptionsDocument.URL
           // url: encodeURI('addons://detail/' + self.id + '/preferences')
           // inNewWindow: true,
+          // gViewController.currentViewId
           url: 'about:addons'
-          // url: 'about:addons://detail/jid1-HE38Y6vsW9TpHg%40jetpack/preferences'
+          // url: 'addons://detail/jid1-HE38Y6vsW9TpHg%40jetpack/preferences'
         });
       });
       worker.port.on('delete', function(data) {
@@ -399,7 +406,7 @@ let openJotTab = function(selection) {
         getJotEntries(worker, data);
       });
     };
-    tabs.open({
+    require("sdk/tabs").open({
       url: self.data.url('display.html'),
       onReady: runScript,
       onClose: function() {
