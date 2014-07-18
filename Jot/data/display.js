@@ -6,9 +6,9 @@
 // require does not seem to be available in content scripts.
 // let sp = require('sdk/simple-prefs');
 (function() {
-  let loading =
-        "content script load time $Format:%h%d$ " + (new Error).stack;
-  // let loading = "time loading content script started at " + new Error().stack.split(/\s+/)[2] +
+  let loading = "content script load time $Format:%h%d$ in " + document.URL +
+        " using " + JSON.stringify(navigator.userAgent) + ' ' +
+        (new Error).stack;
   //       "\n(" + ") takes";
   // TODO Place following code where timed section should start.
   if (console.time) {
@@ -215,15 +215,11 @@
     }
   }
   self.port.on('display', function(data) {
-    console.log('display.js on display data:', data);
+    // console.log('display.js on display data:', data);
     display(data);
   });
   // TODO Place following code where timed section should end.
   if (console.timeEnd) {
     console.timeEnd(loading);
   }
-  console.log("Reload it with Ctrl+R or as follows:\nlocation.reload(true)");
-  console.log("injection into " + document.URL + " in\n" +
-              JSON.stringify(navigator.userAgent) + "\nends at\n" +
-              JSON.stringify(Date()));
 })();
