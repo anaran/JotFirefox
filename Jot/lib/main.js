@@ -4,16 +4,17 @@
 
 let self = require('sdk/self');
 let loading =
-      "addon load time $Format:%h%d$ " +
+      'addon ' + self.name + ' ' + self.version + ' $Format:%h%d$ loads ' +
       (new Error).stack;
+console.log(loading);
+if (console.time) {
+  console.time('load time');
+}
 let sp = require('sdk/simple-prefs');
 let jotStorage = require("sdk/simple-storage");
 let notifications = require("sdk/notifications");
 let tabs = require("sdk/tabs");
 // TODO Place following code where timed section should start.
-if (console.time) {
-  console.time(loading);
-}
 
 const { Cu } = require("chrome");
 const { Services } = Cu.import("resource://gre/modules/Services.jsm", this);
@@ -324,7 +325,7 @@ let openJotTab = function(selection) {
         let tabs = require("sdk/tabs");
         try {
           for each (var tab in tabs) {
-            console.log(tab.url);
+            console.debug(tab.url);
             if (tab && tab.url &&
                 /^about:addons\b/.test(tab.url)) {
               tab.activate();
@@ -445,5 +446,5 @@ if (recent.NativeWindow) {
 }
 // TODO Place following code where timed section should end.
 if (console.timeEnd) {
-  console.timeEnd(loading);
+  console.timeEnd('load time');
 }

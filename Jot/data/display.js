@@ -6,16 +6,13 @@
 // require does not seem to be available in content scripts.
 // let sp = require('sdk/simple-prefs');
 (function() {
-  let loading = "content script load time $Format:%h%d$ in " + document.URL +
+  let loading = "content script $Format:%h%d$ loads in " + document.URL +
         " using " + JSON.stringify(navigator.userAgent) + ' ' +
         (new Error).stack;
-  //       "\n(" + ") takes";
+  console.log(loading);
   // TODO Place following code where timed section should start.
   if (console.time) {
-    console.time(loading);
-  }
-  else {
-    console.log(loading);
+    console.time('load time');
   }
   // console.log('display.js self:', self);
   let divAboutData;
@@ -220,6 +217,6 @@
   });
   // TODO Place following code where timed section should end.
   if (console.timeEnd) {
-    console.timeEnd(loading);
+    console.timeEnd('load time');
   }
 })();
