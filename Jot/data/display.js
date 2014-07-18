@@ -5,10 +5,12 @@
 // Firefox Addon Content Script.
 // require does not seem to be available in content scripts.
 // let sp = require('sdk/simple-prefs');
-(function() {
+;(function() {
   let loading = "content script $Format:%h%d$ loads in " + document.URL +
         " using " + JSON.stringify(navigator.userAgent) + ' ' +
-        (new Error).stack;
+        // NOTE: Introduce fragment specifier before line spec to make
+        // clickable link work in console.log.
+        (new Error).stack.replace(/:(\d+):(\d+)/g, '#L$1C$2');
   console.log(loading);
   // TODO Place following code where timed section should start.
   if (console.time) {
