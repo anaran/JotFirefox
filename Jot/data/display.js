@@ -148,6 +148,9 @@
     // See
     // https://developer.mozilla.org/en-US/docs/Web/Reference/Events/blur#Event_delegation
     preActivity.addEventListener('blur', function(event) {
+      // FIX: https://github.com/anaran/JotFirefox/issues/1
+      returnValue = true;
+      // this.returnValue = true;
       event.target.removeAttribute('rows');
       event.target.removeAttribute('cols');
       // Filter out empty strings (at begin or end) to
