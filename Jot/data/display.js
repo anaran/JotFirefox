@@ -6,6 +6,10 @@
 // require does not seem to be available in content scripts.
 // let sp = require('sdk/simple-prefs');
 ;(function() {
+  // FIX: https://github.com/anaran/JotFirefox/issues/1
+  // Delay of 50ms was only sufficient when debugging addon, apparently.
+  const BLUR_DELAY = 300;
+  const LINK_REMOVAL_DELAY = 900;
   let loading = "content script $Format:%h%d$ loads in " + document.URL +
         " using " + JSON.stringify(navigator.userAgent) + ' ' +
         // NOTE: Introduce fragment specifier before line spec to make
@@ -154,7 +158,7 @@
       window.setTimeout(function() {
         event.target.removeAttribute('rows');
         event.target.removeAttribute('cols');
-      }, 50);
+      }, BLUR_DELAY);
       // Filter out empty strings (at begin or end) to
       // avoid counting them as words (without trimmig
       // text content).
@@ -191,7 +195,7 @@
           // instead of setting the attribute value
           // to null
           event.target.removeAttribute('href');
-        }, 900);
+        }, LINK_REMOVAL_DELAY);
       }, false);
     });
     document.title = data.self.name + " v" + data.self.version;
