@@ -117,7 +117,7 @@
     }],
   "title": "Jot",
   "// See http://semver.org/": " for jpm version requirements.",
-  "version": "0.3.1",
+  "version": "0.3.3",
 "homepage": "https://github.com/anaran/JotFirefox",
   "repository" : {
     "type" : "git",
