@@ -149,10 +149,12 @@
     // https://developer.mozilla.org/en-US/docs/Web/Reference/Events/blur#Event_delegation
     preActivity.addEventListener('blur', function(event) {
       // FIX: https://github.com/anaran/JotFirefox/issues/1
-      returnValue = true;
-      // this.returnValue = true;
-      event.target.removeAttribute('rows');
-      event.target.removeAttribute('cols');
+      // Delay collapsing textarea to allow originalExplicitTarget to
+      // be acted upon before it possibly moves position.
+      window.setTimeout(function() {
+        event.target.removeAttribute('rows');
+        event.target.removeAttribute('cols');
+      }, 50);
       // Filter out empty strings (at begin or end) to
       // avoid counting them as words (without trimmig
       // text content).

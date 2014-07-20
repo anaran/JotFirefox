@@ -34,7 +34,7 @@
       "name": "REPORT_ISSUE_URL",
       "title": "Hidden Bug and Feature Reporting URL",
       "type": "string",
-      "value": "https://github.com/anaran/JotFirefox/search?q=no+such&type=Issues"
+      "value": "https://github.com/anaran/JotFirefox/search?q=What+is+your+problem?&type=Issues"
     },
     {
       "description": "Controls the amount of logging to the browser console by level, from all to errors only. Increase the log level when investigating problems.",
@@ -118,7 +118,7 @@
   "title": "Jot",
   "// See http://semver.org/": " for jpm version requirements.",
   "version": "0.3.1",
-"homepage": "https://addons.mozilla.org/en-US/firefox/addon/jot/",
+"homepage": "https://github.com/anaran/JotFirefox",
   "repository" : {
     "type" : "git",
     "url" : "https://github.com/anaran/JotFirefox.git"

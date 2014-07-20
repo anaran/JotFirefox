@@ -146,7 +146,8 @@
         max_start = start;
       }
     }
-    return { quotaUse, len, min_text, max_text, min_start, max_start };
+    return { quotaUse: quotaUse, len: len, min_text: min_text,
+              max_text: max_text, min_start: min_start, max_start: max_start };
   };
 
   sp.on('ABOUTDATA', function () {
