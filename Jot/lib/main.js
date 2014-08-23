@@ -436,7 +436,12 @@
       // contextmenu and text selection are mutually exclusive!
       context: nw.SelectorContext('a'),
       callback: function(target) {
-        openJotTab(target.ownerDocument.getSelection().toString());
+        let s = target.ownerDocument.getSelection();
+        let rangesText = "";
+        for (var i = 0; i < s.rangeCount; i++) {
+          rangesText += s.getRangeAt(i).toString();
+        }
+        openJotTab(rangesText);
       }
     });
   } else {
@@ -445,7 +450,12 @@
       label: "Jot",
       context: cm.URLContext("*"),
       contentScript: 'self.on("click", function (node, data) {' +
-        ' self.postMessage(document.getSelection().toString()); });',
+        'let s = document.getSelection();' +
+        'let rangesText = "";' +
+        'for (var i = 0; i < s.rangeCount; i++) {' +
+        '  rangesText += s.getRangeAt(i).toString();' +
+        '}' +
+        ' self.postMessage(rangesText); });',
       onMessage: function(selection) {
         openJotTab(selection);
       },
