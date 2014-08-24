@@ -9,16 +9,17 @@
         // NOTE: Introduce fragment specifier before line spec to make
         // clickable link work in console.log.
         (new Error).stack.replace(/:(\d+):(\d+)/g, '#L$1C$2');
-  console.log(loading);
+  // console.log(loading);
   if (console.time) {
-    console.time('load time');
+    // console.time('load time');
   }
   if (console.profile) {
-    console.log('start profiling');
-    console.profile('addon ' + self.name + ' ' + self.version + 'profile');
+    // console.log('start profiling');
+    // console.profile('addon ' + self.name + ' ' + self.version + 'profile');
   }
   let sp = require('sdk/simple-prefs');
-  let jotStorage = require("sdk/simple-storage");
+  let ss = require("sdk/simple-storage");
+  let prefs = require("sdk/preferences/service");
   let notifications = require("sdk/notifications");
   let tabs = require("sdk/tabs");
   // TODO Place following code where timed section should start.
@@ -29,7 +30,7 @@
   let inlineOptionsDocument;
   let observer = {
     observe: function(aSubject, aTopic, aData) {
-      console.log(aSubject, aTopic, aData, self, this);
+      // console.log(aSubject, aTopic, aData, self, this);
       // Prepared for handling other notification types
       switch (aTopic) {
       case "addon-options-displayed":
@@ -38,7 +39,7 @@
           var prefs = inlineOptionsDocument.querySelectorAll('setting[pref-name]');
           var collapseOptions = !sp.prefs['SHOW_OPTIONS'];
           for (let i = 0, len = prefs.length; i < len; i++) {
-            console.log(prefs[i].collapsed);
+            // console.log(prefs[i].collapsed);
             if (prefs[i].getAttribute('pref-name') !== 'SHOW_OPTIONS' &&
                 prefs[i].getAttribute('pref-name') !== 'REPORT_ISSUE' &&
                 prefs[i].collapsed !== collapseOptions) {
@@ -90,15 +91,15 @@
   let getObjectValues = obj => Object.keys(obj).map(key => obj[key]);
 
   exports.main = function myMain(options, callbacks) {
-    console.log(exports.main.name + ' of version ' + self.version +
-                ' of addon ' + self.name, options, callbacks);
+    // console.log(exports.main.name + ' of version ' + self.version +
+    //             ' of addon ' + self.name, options, callbacks);
     getObjectValues(observableNotifications).forEach(function (name) {
       Services.obs.addObserver(observer, name, false);
     });
   };
   exports.onUnload = function myOnUnload(reason) {
-    console.log(exports.onUnload.name + ' of version ' + self.version +
-                ' of addon ' + self.name, reason);
+    // console.log(exports.onUnload.name + ' of version ' + self.version +
+    //             ' of addon ' + self.name, reason);
     getObjectValues(observableNotifications).forEach(function (name) {
       Services.obs.removeObserver(observer, name);
     });
@@ -106,14 +107,14 @@
   require('sdk/system/unload').when(exports.onUnload);
 
   sp.on('sdk.console.logLevel', function(prefName) {
-    console.error('Setting ' + prefName + ' for ' + self.name + ' version ' +
-                  self.version + ' to ' + sp.prefs[prefName]);
+    // console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
+    //               self.version + ' to ' + sp.prefs[prefName]);
   });
 
   sp.on('SHOW_OPTIONS', function(prefName) {
-    console.error('Setting ' + prefName + ' for ' + self.name + ' version ' +
-                  self.version + ' to ' + sp.prefs[prefName]);
-    console.log('reloading ' + inlineOptionsDocument.location);
+    // console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
+    //               self.version + ' to ' + sp.prefs[prefName]);
+    // console.log('reloading ' + inlineOptionsDocument.location);
     inlineOptionsDocument.location.reload(true);
   });
 
@@ -124,15 +125,52 @@
     });
   });
 
+  sp.on('SYNC_DATA', function(prefName) {
+    // console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
+    //               self.version + ' to ' + sp.prefs[prefName]);
+    prefs.set("services.sync.prefs.sync.extensions." + self.id + ".syncstorage", sp.prefs[prefName]);
+  });
+
+  sp.on("syncstorage", function(prefname) {
+    try {
+      let syncstorage = JSON.parse(sp.prefs["syncstorage"]);
+      let mergeFrom, mergeTo;
+      if (syncstorage && syncstorage.length && ss.storage.entries && ss.storage.entries.length) {
+        if (syncstorage.length > ss.storage.entries.length) {
+          mergeFrom = ss.storage.entries;
+          mergeTo = syncstorage;
+        }
+        else {
+          mergeFrom = syncstorage;
+          mergeTo = ss.storage.entries;
+        }
+        mergeFrom.foreach(function(fromValue, fromIndex, fromObject) {
+          if(!mergeTo.some(function(toValue, toIndex, toObject) {
+            return fromValue.start == toValue.start
+              && fromValue.end == toValue.end
+              && fromValue.activity == toValue.activity;
+          })) {
+            mergeTo.push(fromValue);
+          }
+        });
+      }
+      ss.storage.entries = mergeTo;
+      sp.prefs["syncstorage"] = JSON.stringify(ss.storage.entries);
+    }
+    catch (exception) {
+      // console.error(exception);
+    }
+  });
+
   let getAboutData = function getAboutData() {
-    let quotaUse = (new Number(jotStorage.quotaUsage * 100)).toPrecision(3),
-        len = jotStorage.storage.entries ? jotStorage.storage.entries.length : 0,
+    let quotaUse = (new Number(ss.quotaUsage * 100)).toPrecision(3),
+        len = ss.storage.entries ? ss.storage.entries.length : 0,
         start, end, min_start, max_start, min_end, max_end,
         text, min_text, max_text;
     for (let i = 0; i < len; i++) {
-      start = (jotStorage.storage.entries[i].start);
-      end = (jotStorage.storage.entries[i].end);
-      text = jotStorage.storage.entries[i].activity;
+      start = (ss.storage.entries[i].start);
+      end = (ss.storage.entries[i].end);
+      text = ss.storage.entries[i].activity;
       if (!max_text || (text.length > max_text)) {
         max_text = text.length;
       }
@@ -161,11 +199,11 @@
         ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
         min_start + '\nnewest: ' + max_start
     });
-    console.log('notify:' + 'Use of storage quota: ' +
-                quotaUse +
-                '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
-                ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
-                min_start + '\nnewest: ' + max_start);
+    // console.log('notify:' + 'Use of storage quota: ' +
+    //             quotaUse +
+    //             '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
+    //             ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
+    //             min_start + '\nnewest: ' + max_start);
   });
   // See https://blog.mozilla.org/addons/2013/06/13/jetpack-fennec-and-nativewindow
   // get a global window reference
@@ -195,7 +233,7 @@
   let replaceDates = function(format, date) {
     let d = date || new Date();
     if (d instanceof Date && !isNaN(d.getTime())) {} else {
-      console.error('%o is not a valid Date', d);
+      // console.error('%o is not a valid Date', d);
       return format;
     }
     // TODO getDay() returns the day of week,
@@ -222,8 +260,8 @@
   };
 
   let getJotEntries = function(worker, data) {
-    if (!jotStorage.storage.entries ||
-        !jotStorage.storage.entries.length) {
+    if (!ss.storage.entries ||
+        !ss.storage.entries.length) {
       return;
     }
     //TODO Please note that file extensions .csv or .json just cause
@@ -231,13 +269,13 @@
     let start, end, text, content, dateFormat, infoFormat, entryFormat,
         filename =
           self.name + '_' + sp.prefs[data.type] + '_' +
-          jotStorage.storage.entries.length + '@' + Date.now() + '.txt';
-    // console.log('jotStorage.quotaUsage:', jotStorage.quotaUsage);
-    // console.log(JSON.stringify(jotStorage.storage.entries));
+          ss.storage.entries.length + '@' + Date.now() + '.txt';
+    // console.log('ss.quotaUsage:', ss.quotaUsage);
+    // console.log(JSON.stringify(ss.storage.entries));
     switch (data.type) {
     case 'DATAFORMAT0':
       worker.port.emit('setJotEntriesBlob', {
-        content: JSON.stringify(jotStorage.storage.entries, null, 2),
+        content: JSON.stringify(ss.storage.entries, null, 2),
         filename: filename,
         type: data.type,
         download: !! data.download
@@ -247,13 +285,13 @@
       content = '', dateFormat = sp.prefs['DATEFORMAT1'],
       infoFormat = sp.prefs['INFOFORMAT1'],
       entryFormat = sp.prefs['ENTRYFORMAT1'];
-      for (let i = 0, len = jotStorage.storage.entries.length;
+      for (let i = 0, len = ss.storage.entries.length;
            i < len; i++) {
-        start = (jotStorage.storage.entries[i].start);
-        end = (jotStorage.storage.entries[i].end);
-        //                                start = replaceDates(dateFormat, jotStorage.storage.entries[i].start);
-        //                                end = replaceDates(dateFormat, jotStorage.storage.entries[i].end);
-        text = jotStorage.storage.entries[i].activity;
+        start = (ss.storage.entries[i].start);
+        end = (ss.storage.entries[i].end);
+        //                                start = replaceDates(dateFormat, ss.storage.entries[i].start);
+        //                                end = replaceDates(dateFormat, ss.storage.entries[i].end);
+        text = ss.storage.entries[i].activity;
         content += formatEntry(entryFormat, start, end, text);
       }
       worker.port.emit('setJotEntriesBlob', {
@@ -267,13 +305,13 @@
       content = '', dateFormat = sp.prefs['DATEFORMAT2'],
       infoFormat = sp.prefs['INFOFORMAT2'],
       entryFormat = sp.prefs['ENTRYFORMAT2'];
-      for (let i = 0, len = jotStorage.storage.entries.length;
+      for (let i = 0, len = ss.storage.entries.length;
            i < len; i++) {
-        start = (jotStorage.storage.entries[i].start);
-        end = (jotStorage.storage.entries[i].end);
-        // start = replaceDates(dateFormat, jotStorage.storage.entries[i].start);
-        // end = replaceDates(dateFormat, jotStorage.storage.entries[i].end);
-        text = jotStorage.storage.entries[i].activity;
+        start = (ss.storage.entries[i].start);
+        end = (ss.storage.entries[i].end);
+        // start = replaceDates(dateFormat, ss.storage.entries[i].start);
+        // end = replaceDates(dateFormat, ss.storage.entries[i].end);
+        text = ss.storage.entries[i].activity;
         content += formatEntry(entryFormat, start, end, text);
       }
       worker.port.emit('setJotEntriesBlob', {
@@ -288,8 +326,8 @@
         title: 'Jot Notification',
         text: 'Don\'t know how to download ' + sp.prefs[data.type]
       });
-      console.log('notify:' + 'Don\'t know how to download ' +
-                  sp.prefs[data.type]);
+      // console.log('notify:' + 'Don\'t know how to download ' +
+      //             sp.prefs[data.type]);
       break;
     }
   };
@@ -310,8 +348,18 @@
       format1: sp.prefs['DATAFORMAT1'],
       format2: sp.prefs['DATAFORMAT2']
     };
-    jotStorage.on("OverQuota", function() {
-      console.error('jotStorage.quotaUsage:', jotStorage.quotaUsage);
+    ss.on("OverQuota", function() {
+      let { quotaUse, len,
+            min_text, max_text, min_start, max_start } = getAboutData();
+      notifications.notify({
+        title: 'Jot Quota Exceeded!',
+        text: 'Use of storage quota: ' +
+          quotaUse +
+          '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
+          ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
+          min_start + '\nnewest: ' + max_start
+      });
+      // console.error('ss.quotaUsage:', ss.quotaUsage);
     });
     // TODO Please note data.title can be undefined
     if (snapData.now && snapData.url) {
@@ -333,7 +381,7 @@
           let tabs = require("sdk/tabs");
           try {
             for each (var tab in tabs) {
-              console.debug(tab.url);
+              // console.debug(tab.url);
               if (tab && tab.url &&
                   /^about:addons\b/.test(tab.url)) {
                 tab.activate();
@@ -342,22 +390,9 @@
             }
           }
           catch (exception) {
-            console.error(exception);
+            // console.error(exception);
           }
-          // aSubject.querySelector('richlistitem[name=Jot]')
-          // aSubject.querySelector('richlistitem[value="' + self.id + '"]')
           tabs.open({
-            onReady: function (tab) {
-              // let worker = tab.attach({
-              contentScript:
-              'console.error("gViewController"); console.log(gViewController); gViewController.loadView("addons://detail/"' +
-                encodeURIComponent(self.id) + '"/preferences"));'
-              //   contentScript: 'if (console.log) { console.log(document.documentElement.collapse); }'
-              // });
-              // console.log(inlineOptionsDocument);
-              // Services.wm.getMostRecentWindow('navigator:browser').
-              //   BrowserCloseTabOrWindow();
-            },
             // url: encodeURI('addons://detail/' + self.id + '/preferences')
             // inNewWindow: true,
             // gViewController.currentViewId
@@ -369,41 +404,41 @@
           });
         });
         worker.port.on('delete', function(data) {
-          if (!jotStorage.storage.entries ||
-              !jotStorage.storage.entries.length) {
+          if (!ss.storage.entries ||
+              !ss.storage.entries.length) {
             notifications.notify({
               title: 'Jot Notification',
               text: 'There is no data to be deleted.'
             });
-            console.log('notify:' + 'There is no data to be deleted.');
+            // console.log('notify:' + 'There is no data to be deleted.');
           } else {
             notifications.notify({
               title: 'Jot Notification',
-              text: 'Deleting all ' + jotStorage.storage.entries.length +
+              text: 'Deleting all ' + ss.storage.entries.length +
                 ' entries of jot data, see browser\'s downloads directory' +
                 ' for exported data.'
             });
-            console.log('notify:' + 'Deleting all ' +
-                        jotStorage.storage.entries.length +
-                        ' entries of jot data, see browser downloads' +
-                        ' directory for exported data.');
-            jotStorage.storage.entries = [];
+            // console.log('notify:' + 'Deleting all ' +
+            //             ss.storage.entries.length +
+            //             ' entries of jot data, see browser downloads' +
+            //             ' directory for exported data.');
+            ss.storage.entries = [];
           }
         });
         worker.port.on('save', function(data) {
-          if (!jotStorage.storage.entries) {
-            jotStorage.storage.entries = [];
+          if (!ss.storage.entries) {
+            ss.storage.entries = [];
           }
-          for (let i = 0, len = jotStorage.storage.entries.length; i < len;
+          for (let i = 0, len = ss.storage.entries.length; i < len;
                i++) {
-            if (JSON.stringify(jotStorage.storage.entries[i]) ===
+            if (JSON.stringify(ss.storage.entries[i]) ===
                 JSON.stringify(data)) {
               notifications.notify({
                 title: 'Jot Notification',
                 text: 'Already saved (skipping) ' + JSON.stringify(data)
               });
-              console.log('notify:' + 'Already saved (skipping) ' +
-                          JSON.stringify(data));
+              // console.log('notify:' + 'Already saved (skipping) ' +
+              //             JSON.stringify(data));
               return;
             }
           }
@@ -411,8 +446,9 @@
             title: 'Jot Notification',
             text: 'Saving ' + JSON.stringify(data)
           });
-          console.log('notify:' + 'Saving ' + JSON.stringify(data));
-          jotStorage.storage.entries.push(data);
+          // console.log('notify:' + 'Saving ' + JSON.stringify(data));
+          ss.storage.entries.push(data);
+          sp.prefs["syncstorage"] = JSON.stringify(ss.storage.entries);
         });
         worker.port.on('getJotEntries', function(data) {
           getJotEntries(worker, data);
@@ -464,10 +500,10 @@
   }
   // TODO Place following code where timed section should end.
   if (console.timeEnd) {
-    console.timeEnd('load time');
+    // console.timeEnd('load time');
   }
   if (console.profileEnd) {
-    console.log('end profiling');
-    console.profileEnd();
+    // console.log('end profiling');
+    // console.profileEnd();
   }
 })();

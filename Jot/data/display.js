@@ -15,14 +15,14 @@
         // NOTE: Introduce fragment specifier before line spec to make
         // clickable link work in console.log.
         (new Error).stack.replace(/:(\d+):(\d+)/g, '#L$1C$2');
-  console.log(loading);
+  // console.log(loading);
   // TODO Place following code where timed section should start.
   if (console.time) {
-    console.time('load time');
+    // console.time('load time');
   }
   if (console.profile) {
-    console.log('start profiling');
-    console.profile('content script profile');
+    // console.log('start profiling');
+    // console.profile('content script profile');
   }
   // console.log('display.js self:', self);
   let divAboutData;
@@ -83,7 +83,7 @@
         type: 'text/plain; charset=utf-8'
       });
       if ( !! data.download) {
-        console.log('we will dowload as well', data);
+        // console.log('we will dowload as well', data);
       }
       if (links[data.type]) {
         if ( !! data.download) {
@@ -93,7 +93,7 @@
           links[data.type].download = data.filename;
         }
       } else {
-        console.error('Don\'t know how to handle content type ' + data.type);
+        // console.error('Don\'t know how to handle content type ' + data.type);
       }
     });
     saveButton = document.querySelector('.save');
@@ -201,7 +201,7 @@
     document.title = data.self.name + " v" + data.self.version;
     let d = new Date(data.now) || new Date();
     if (d instanceof Date && !isNaN(d.getTime())) {} else {
-      console.error('%o is not a valid Date', d);
+      // console.error('%o is not a valid Date', d);
       return;
     }
     self.port.emit('getJotEntries', {
@@ -232,10 +232,10 @@
   });
   // TODO Place following code where timed section should end.
   if (console.timeEnd) {
-    console.timeEnd('load time');
+    // console.timeEnd('load time');
   }
   if (console.profileEnd) {
-    console.log('end profiling');
-    console.profileEnd();
+    // console.log('end profiling');
+    // console.profileEnd();
   }
 })();

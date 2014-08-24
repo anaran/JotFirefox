@@ -38,6 +38,22 @@
       "value": "https://github.com/anaran/JotFirefox/search?q=What+is+your+problem?&type=Issues"
     },
     {
+      "description": "Turns on syncing of your saved jot entries in this firefox installation with your Firefox Sync account.",
+      "label": "Synchronize Jot Entries with Firefox Sync Account",
+      "name": "SYNC_DATA",
+      "title": "Sync Data",
+      "type": "bool",
+      "value": false
+    },
+    {
+      "description": "Hidden preference used for syncing data with Firefox Sync Account.",
+      "hidden": true,
+      "name": "syncstorage",
+      "title": "Hidden preference for syncing data with Firefox Sync Account",
+      "type": "string",
+      "value": ""
+    },
+    {
       "description": "Controls the amount of logging to the browser console by level, from all to errors only. Increase the log level when investigating problems.",
       "name": "sdk.console.logLevel",
       "type": "menulist",
@@ -118,7 +134,7 @@
     }],
   "title": "Jot",
   "// See http://semver.org/": " for jpm version requirements.",
-  "version": "0.3.4",
+  "version": "0.3.10",
 "homepage": "https://github.com/anaran/JotFirefox",
   "repository" : {
     "type" : "git",
