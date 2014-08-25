@@ -134,6 +134,11 @@
   sp.on("syncstorage", function(prefname) {
     try {
       let syncstorage = JSON.parse(sp.prefs["syncstorage"]);
+      if (syncstorage.hasOwnProperty('entries')) {
+        console.error('converting legacy format ', syncstorage);
+        syncstorage = syncstorage.entries;
+      }
+      console.error(syncstorage);
       let mergeFrom, mergeTo;
       if (syncstorage && syncstorage.length && ss.storage.entries && ss.storage.entries.length) {
         if (syncstorage.length > ss.storage.entries.length) {
