@@ -149,7 +149,7 @@
           mergeFrom = syncstorage;
           mergeTo = ss.storage.entries;
         }
-        mergeFrom.foreach(function(fromValue, fromIndex, fromObject) {
+        mergeFrom.forEach(function(fromValue, fromIndex, fromObject) {
           if(!mergeTo.some(function(toValue, toIndex, toObject) {
             return fromValue.start == toValue.start
               && fromValue.end == toValue.end
@@ -163,6 +163,37 @@
       sp.prefs["syncstorage"] = JSON.stringify(ss.storage.entries);
     }
     catch (exception) {
+      // NOTE Anonymize user profile in stack trace
+      exception.stack = exception.stack.replace(new RegExp("\\S+(/extensions/" + self.id + ")", "g"), "PROFILE_PATH$1");
+      let profilePath = exception.fileName.match(new RegExp("(\\S+)/extensions/" + self.id))[0];
+      exception.fileName = exception.fileName.replace(new RegExp("\\S+(/extensions/" + self.id + ")", "g"), "PROFILE_PATH$1");
+      let system = require("sdk/system");
+      let qs = require("sdk/querystring");
+      let title = 'Jot Sync Error';
+      let exceptionText = JSON.stringify(exception,
+                                         Object.getOwnPropertyNames(exception),
+                                         2);
+      let systemText = JSON.stringify(system,
+                                         Object.getOwnPropertyNames(system),
+                                         2);
+      notifications.notify({
+        title: title,
+        text: exceptionText,
+        data: qs.stringify({
+          title:
+          title + ' in ' + self.version,
+          body:
+          "(Please review for any private data you may want to remove before submitting)\n\nPROFILE_PATH:\n\n" + profilePath + "\n\n"
+          + "Sytem: " + systemText + "\n\nException: " + exceptionText + "\n"
+        }),
+        onClick: function (data) {
+          tabs.open({
+            inNewWindow: true,
+            url: 'https://github.com/anaran/JotFirefox/issues/new?' + data,
+            onClose: function() {
+              require("sdk/tabs").activeTab.activate();
+            }});
+        }});
       // console.error(exception);
     }
   });
