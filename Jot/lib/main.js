@@ -533,11 +533,12 @@
       context: nw.SelectorContext('a'),
       callback: function(target) {
         let s = target.ownerDocument.getSelection();
+        let selectionText = s.toString();
         let rangesText = "";
         for (var i = 0; i < s.rangeCount; i++) {
           rangesText += s.getRangeAt(i).toString();
         }
-        openJotTab(rangesText);
+        openJotTab(rangesText.contains("\n") && !selectionText.contains("\n") ? rangesText : selectionText);
       }
     });
   } else {
@@ -547,11 +548,12 @@
       context: cm.URLContext("*"),
       contentScript: 'self.on("click", function (node, data) {' +
         'let s = document.getSelection();' +
+        'let selectionText = s.toString();' +
         'let rangesText = "";' +
         'for (var i = 0; i < s.rangeCount; i++) {' +
         '  rangesText += s.getRangeAt(i).toString();' +
         '}' +
-        ' self.postMessage(rangesText); });',
+        ' self.postMessage(rangesText.contains("\\n") && !selectionText.contains("\\n") ? rangesText : selectionText); });',
       onMessage: function(selection) {
         openJotTab(selection);
       },
