@@ -3,28 +3,32 @@
 /*global findRegExpBar: false, chrome: false, console: false, require: false, document: false */
 'use strict';
 // Firefox Addon Content Script.
-// require does not seem to be available in content scripts.
+// require is not available in content scripts.
 // let sp = require('sdk/simple-prefs');
 ;(function() {
   // FIX: https://github.com/anaran/JotFirefox/issues/1
   // Delay of 50ms was only sufficient when debugging addon, apparently.
   const BLUR_DELAY = 300;
   const LINK_REMOVAL_DELAY = 900;
+  const DEBUG_ADDON = true;
   let loading = "content script $Format:%h%d$ loads in " + document.URL +
         " using " + JSON.stringify(navigator.userAgent) + ' ' +
         // NOTE: Introduce fragment specifier before line spec to make
         // clickable link work in console.log.
         (new Error).stack.replace(/:(\d+):(\d+)/g, '#L$1C$2');
-  // console.log(loading);
+  DEBUG_ADDON &&
+    console.log(loading);
   // TODO Place following code where timed section should start.
   if (console.time) {
-    // console.time('load time');
+    DEBUG_ADDON &&
+      console.time('load time');
   }
   if (console.profile) {
-    // console.log('start profiling');
-    // console.profile('content script profile');
+    DEBUG_ADDON &&
+      console.log('start profiling');
+    DEBUG_ADDON &&
+      console.profile('content script profile');
   }
-  // console.log('display.js self:', self);
   let divAboutData;
   let preActivity;
   let tooltipActivity;
@@ -59,6 +63,8 @@
   function display(data) {
     let { quotaUse, len, 
           min_text, max_text, min_start, max_start } = data.about;
+    DEBUG_ADDON &&
+      console.log('display.js self:', self);
     divAboutData = document.querySelector('.about');
     divAboutData.textContent = '\nUse of storage quota: ' + quotaUse +
       '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
@@ -83,7 +89,8 @@
         type: 'text/plain; charset=utf-8'
       });
       if ( !! data.download) {
-        // console.log('we will dowload as well', data);
+        DEBUG_ADDON &&
+          console.log('we will dowload as well', data);
       }
       if (links[data.type]) {
         if ( !! data.download) {
@@ -93,7 +100,8 @@
           links[data.type].download = data.filename;
         }
       } else {
-        // console.error('Don\'t know how to handle content type ' + data.type);
+        DEBUG_ADDON &&
+          console.error('Don\'t know how to handle content type ' + data.type);
       }
     });
     saveButton = document.querySelector('.save');
@@ -201,7 +209,8 @@
     document.title = data.self.name + " v" + data.self.version;
     let d = new Date(data.now) || new Date();
     if (d instanceof Date && !isNaN(d.getTime())) {} else {
-      // console.error('%o is not a valid Date', d);
+      DEBUG_ADDON &&
+        console.error('%o is not a valid Date', d);
       return;
     }
     self.port.emit('getJotEntries', {
@@ -227,15 +236,19 @@
     }
   }
   self.port.on('display', function(data) {
-    // console.log('display.js on display data:', data);
+    DEBUG_ADDON &&
+      console.log('display.js on display data:', data);
     display(data);
   });
   // TODO Place following code where timed section should end.
   if (console.timeEnd) {
-    // console.timeEnd('load time');
+    DEBUG_ADDON &&
+      console.timeEnd('load time');
   }
   if (console.profileEnd) {
-    // console.log('end profiling');
-    // console.profileEnd();
+    DEBUG_ADDON &&
+      console.log('end profiling');
+    DEBUG_ADDON &&
+      console.profileEnd();
   }
 })();

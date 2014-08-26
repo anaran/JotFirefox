@@ -54,11 +54,11 @@
       "value": ""
     },
     {
-      "description": "Controls the amount of logging to the browser console by level, from all to errors only. Increase the log level when investigating problems.",
+      "description": "Controls the amount of logging to the browser console by level, from all to errors only to nothing at all. Increase the log level when investigating problems.",
       "name": "sdk.console.logLevel",
       "type": "menulist",
       "title": "Console Logging Level",
-      "value": "error",
+      "value": "off",
       "options": [{
         "value": "all",
         "label": "all"
@@ -74,6 +74,9 @@
       }, {
         "value": "error",
         "label": "error"
+      }, {
+        "value": "off",
+        "label": "off"
       }]
     },
     {
@@ -134,7 +137,7 @@
     }],
   "title": "Jot",
   "// See http://semver.org/": " for jpm version requirements.",
-  "version": "0.3.12",
+  "version": "0.3.13",
 "homepage": "https://github.com/anaran/JotFirefox",
   "repository" : {
     "type" : "git",

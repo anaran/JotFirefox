@@ -4,20 +4,25 @@
 
 ;(function() {
   let self = require('sdk/self');
+  let sp = require('sdk/simple-prefs');
+  let DEBUG_ADDON = true;
   let loading =
         'addon ' + self.name + ' ' + self.version + ' $Format:%h%d$ loads ' +
         // NOTE: Introduce fragment specifier before line spec to make
         // clickable link work in console.log.
         (new Error).stack.replace(/:(\d+):(\d+)/g, '#L$1C$2');
-  // console.log(loading);
+  DEBUG_ADDON &&
+    console.log(loading);
   if (console.time) {
-    // console.time('load time');
+    DEBUG_ADDON &&
+      console.time('load time');
   }
   if (console.profile) {
-    // console.log('start profiling');
-    // console.profile('addon ' + self.name + ' ' + self.version + 'profile');
+    DEBUG_ADDON &&
+      console.log('start profiling');
+    DEBUG_ADDON &&
+      console.profile('addon ' + self.name + ' ' + self.version + 'profile');
   }
-  let sp = require('sdk/simple-prefs');
   let ss = require("sdk/simple-storage");
   let prefs = require("sdk/preferences/service");
   let notifications = require("sdk/notifications");
@@ -30,7 +35,8 @@
   let inlineOptionsDocument;
   let observer = {
     observe: function(aSubject, aTopic, aData) {
-      // console.log(aSubject, aTopic, aData, self, this);
+      DEBUG_ADDON &&
+        console.log(aSubject, aTopic, aData, self, this);
       // Prepared for handling other notification types
       switch (aTopic) {
       case "addon-options-displayed":
@@ -39,7 +45,8 @@
           var prefs = inlineOptionsDocument.querySelectorAll('setting[pref-name]');
           var collapseOptions = !sp.prefs['SHOW_OPTIONS'];
           for (let i = 0, len = prefs.length; i < len; i++) {
-            // console.log(prefs[i].collapsed);
+            DEBUG_ADDON &&
+              console.log(prefs[i].collapsed);
             if (prefs[i].getAttribute('pref-name') !== 'SHOW_OPTIONS' &&
                 prefs[i].getAttribute('pref-name') !== 'REPORT_ISSUE' &&
                 prefs[i].collapsed !== collapseOptions) {
@@ -91,15 +98,17 @@
   let getObjectValues = obj => Object.keys(obj).map(key => obj[key]);
 
   exports.main = function myMain(options, callbacks) {
-    // console.log(exports.main.name + ' of version ' + self.version +
-    //             ' of addon ' + self.name, options, callbacks);
+    DEBUG_ADDON &&
+      console.log(exports.main.name + ' of version ' + self.version +
+                  ' of addon ' + self.name, options, callbacks);
     getObjectValues(observableNotifications).forEach(function (name) {
       Services.obs.addObserver(observer, name, false);
     });
   };
   exports.onUnload = function myOnUnload(reason) {
-    // console.log(exports.onUnload.name + ' of version ' + self.version +
-    //             ' of addon ' + self.name, reason);
+    DEBUG_ADDON &&
+      console.log(exports.onUnload.name + ' of version ' + self.version +
+                  ' of addon ' + self.name, reason);
     getObjectValues(observableNotifications).forEach(function (name) {
       Services.obs.removeObserver(observer, name);
     });
@@ -107,14 +116,17 @@
   require('sdk/system/unload').when(exports.onUnload);
 
   sp.on('sdk.console.logLevel', function(prefName) {
-    // console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
-    //               self.version + ' to ' + sp.prefs[prefName]);
+    DEBUG_ADDON &&
+      console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
+                    self.version + ' to ' + sp.prefs[prefName]);
   });
 
   sp.on('SHOW_OPTIONS', function(prefName) {
-    // console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
-    //               self.version + ' to ' + sp.prefs[prefName]);
-    // console.log('reloading ' + inlineOptionsDocument.location);
+    DEBUG_ADDON &&
+      console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
+                    self.version + ' to ' + sp.prefs[prefName]);
+    DEBUG_ADDON &&
+      console.log('reloading ' + inlineOptionsDocument.location);
     inlineOptionsDocument.location.reload(true);
   });
 
@@ -126,8 +138,9 @@
   });
 
   sp.on('SYNC_DATA', function(prefName) {
-    // console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
-    //               self.version + ' to ' + sp.prefs[prefName]);
+    DEBUG_ADDON &&
+      console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
+                    self.version + ' to ' + sp.prefs[prefName]);
     prefs.set("services.sync.prefs.sync.extensions." + self.id + ".syncstorage", sp.prefs[prefName]);
   });
 
@@ -194,7 +207,8 @@
               require("sdk/tabs").activeTab.activate();
             }});
         }});
-      // console.error(exception);
+      DEBUG_ADDON &&
+        console.error(exception);
     }
   });
 
@@ -235,11 +249,12 @@
         ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
         min_start + '\nnewest: ' + max_start
     });
-    // console.log('notify:' + 'Use of storage quota: ' +
-    //             quotaUse +
-    //             '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
-    //             ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
-    //             min_start + '\nnewest: ' + max_start);
+    DEBUG_ADDON &&
+      console.log('notify:' + 'Use of storage quota: ' +
+                  quotaUse +
+                  '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
+                  ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
+                  min_start + '\nnewest: ' + max_start);
   });
   // See https://blog.mozilla.org/addons/2013/06/13/jetpack-fennec-and-nativewindow
   // get a global window reference
@@ -269,7 +284,8 @@
   let replaceDates = function(format, date) {
     let d = date || new Date();
     if (d instanceof Date && !isNaN(d.getTime())) {} else {
-      // console.error('%o is not a valid Date', d);
+      DEBUG_ADDON &&
+        console.error('%o is not a valid Date', d);
       return format;
     }
     // TODO getDay() returns the day of week,
@@ -306,8 +322,8 @@
         filename =
           self.name + '_' + sp.prefs[data.type] + '_' +
           ss.storage.entries.length + '@' + Date.now() + '.txt';
-    // console.log('ss.quotaUsage:', ss.quotaUsage);
-    // console.log(JSON.stringify(ss.storage.entries));
+    DEBUG_ADDON &&
+      console.log('ss.quotaUsage:', ss.quotaUsage);
     switch (data.type) {
     case 'DATAFORMAT0':
       worker.port.emit('setJotEntriesBlob', {
@@ -362,8 +378,9 @@
         title: 'Jot Notification',
         text: 'Don\'t know how to download ' + sp.prefs[data.type]
       });
-      // console.log('notify:' + 'Don\'t know how to download ' +
-      //             sp.prefs[data.type]);
+      DEBUG_ADDON &&
+        console.log('notify:' + 'Don\'t know how to download ' +
+                    sp.prefs[data.type]);
       break;
     }
   };
@@ -395,7 +412,8 @@
           ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
           min_start + '\nnewest: ' + max_start
       });
-      // console.error('ss.quotaUsage:', ss.quotaUsage);
+      DEBUG_ADDON &&
+        console.error('ss.quotaUsage:', ss.quotaUsage);
     });
     // TODO Please note data.title can be undefined
     if (snapData.now && snapData.url) {
@@ -417,7 +435,8 @@
           let tabs = require("sdk/tabs");
           try {
             for each (var tab in tabs) {
-              // console.debug(tab.url);
+              DEBUG_ADDON &&
+                console.debug(tab.url);
               if (tab && tab.url &&
                   /^about:addons\b/.test(tab.url)) {
                 tab.activate();
@@ -426,7 +445,8 @@
             }
           }
           catch (exception) {
-            // console.error(exception);
+            DEBUG_ADDON &&
+              console.error(exception);
           }
           tabs.open({
             // url: encodeURI('addons://detail/' + self.id + '/preferences')
@@ -446,7 +466,8 @@
               title: 'Jot Notification',
               text: 'There is no data to be deleted.'
             });
-            // console.log('notify:' + 'There is no data to be deleted.');
+            DEBUG_ADDON &&
+              console.log('notify:' + 'There is no data to be deleted.');
           } else {
             notifications.notify({
               title: 'Jot Notification',
@@ -454,10 +475,11 @@
                 ' entries of jot data, see browser\'s downloads directory' +
                 ' for exported data.'
             });
-            // console.log('notify:' + 'Deleting all ' +
-            //             ss.storage.entries.length +
-            //             ' entries of jot data, see browser downloads' +
-            //             ' directory for exported data.');
+            DEBUG_ADDON &&
+              console.log('notify:' + 'Deleting all ' +
+                          ss.storage.entries.length +
+                          ' entries of jot data, see browser downloads' +
+                          ' directory for exported data.');
             ss.storage.entries = [];
           }
         });
@@ -473,8 +495,9 @@
                 title: 'Jot Notification',
                 text: 'Already saved (skipping) ' + JSON.stringify(data)
               });
-              // console.log('notify:' + 'Already saved (skipping) ' +
-              //             JSON.stringify(data));
+              DEBUG_ADDON &&
+                console.log('notify:' + 'Already saved (skipping) ' +
+                            JSON.stringify(data));
               return;
             }
           }
@@ -482,7 +505,8 @@
             title: 'Jot Notification',
             text: 'Saving ' + JSON.stringify(data)
           });
-          // console.log('notify:' + 'Saving ' + JSON.stringify(data));
+          DEBUG_ADDON &&
+            console.log('notify:' + 'Saving ' + JSON.stringify(data));
           ss.storage.entries.push(data);
           sp.prefs["syncstorage"] = JSON.stringify(ss.storage.entries);
         });
@@ -536,10 +560,13 @@
   }
   // TODO Place following code where timed section should end.
   if (console.timeEnd) {
-    // console.timeEnd('load time');
+    DEBUG_ADDON &&
+      console.timeEnd('load time');
   }
   if (console.profileEnd) {
-    // console.log('end profiling');
-    // console.profileEnd();
+    DEBUG_ADDON &&
+      console.log('end profiling');
+    DEBUG_ADDON &&
+      console.profileEnd();
   }
 })();
