@@ -6,11 +6,14 @@
 // require is not available in content scripts.
 // let sp = require('sdk/simple-prefs');
 ;(function() {
-  // FIX: https://github.com/anaran/JotFirefox/issues/1
-  // Delay of 50ms was only sufficient when debugging addon, apparently.
-  const BLUR_DELAY = 300;
-  const LINK_REMOVAL_DELAY = 900;
-  const DEBUG_ADDON = true;
+  let DEBUG_ADDON = false;
+  //
+  // NOTE Set "DEBUG_ADDON = true" in the debugger before continuing to get console messages logged.
+  // Make sure option "Console Logging Level" is not set to "off".
+  //
+  debugger;
+  DEBUG_ADDON &&
+    console.log('Logging enabled via debugger');
   let loading = "content script $Format:%h%d$ loads in " + document.URL +
         " using " + JSON.stringify(navigator.userAgent) + ' ' +
         // NOTE: Introduce fragment specifier before line spec to make
@@ -29,6 +32,10 @@
     DEBUG_ADDON &&
       console.profile('content script profile');
   }
+  // FIX: https://github.com/anaran/JotFirefox/issues/1
+  // Delay of 50ms was only sufficient when debugging addon, apparently.
+  const BLUR_DELAY = 300;
+  const LINK_REMOVAL_DELAY = 900;
   let divAboutData;
   let preActivity;
   let tooltipActivity;

@@ -1,16 +1,24 @@
 /* -*- indent-tabs-mode: nil; js-indent-level: 2 -*- */
-'use strict';
 /*global require: false, console: false, gBrowser: false, URL: false */
-
+'use strict';
 ;(function() {
-  let self = require('sdk/self');
+  let DEBUG_ADDON = false;
+  //
+  // NOTE Change Function Scope variable DEBUG_ADDON from false to true in the debugger variables panel before continuing to get console messages logged.
+  // Make sure option "Console Logging Level" is not set to "off".
+  //
+  debugger;
+  DEBUG_ADDON &&
+    console.log('Logging enabled via debugger');
   let sp = require('sdk/simple-prefs');
-  let DEBUG_ADDON = true;
+  const self = require('sdk/self');
+  const { metadata } = require("@loader/options");
+  const myTitle = myTitle;
   let loading =
-        'addon ' + self.name + ' ' + self.version + ' $Format:%h%d$ loads ' +
-        // NOTE: Introduce fragment specifier before line spec to make
-        // clickable link work in console.log.
-        (new Error).stack.replace(/:(\d+):(\d+)/g, '#L$1C$2');
+      'addon ' + myTitle + ' ' + self.version + ' $Format:%h%d$ loads ' +
+      // NOTE: Introduce fragment specifier before line spec to make
+      // clickable link work in console.log.
+      (new Error).stack.replace(/:(\d+):(\d+)/g, '#L$1C$2');
   DEBUG_ADDON &&
     console.log(loading);
   if (console.time) {
@@ -24,7 +32,7 @@
       console.profile('addon ' + self.name + ' ' + self.version + 'profile');
   }
   let ss = require("sdk/simple-storage");
-  let prefs = require("sdk/preferences/service");
+  let ps = require("sdk/preferences/service");
   let notifications = require("sdk/notifications");
   let tabs = require("sdk/tabs");
   // TODO Place following code where timed section should start.
@@ -42,15 +50,15 @@
       case "addon-options-displayed":
         if (self && aData === self.id) {
           inlineOptionsDocument = aSubject;
-          var prefs = inlineOptionsDocument.querySelectorAll('setting[pref-name]');
+          var spn = inlineOptionsDocument.querySelectorAll('setting[pref-name]');
           var collapseOptions = !sp.prefs['SHOW_OPTIONS'];
-          for (let i = 0, len = prefs.length; i < len; i++) {
+          for (let i = 0, len = spn.length; i < len; i++) {
             DEBUG_ADDON &&
-              console.log(prefs[i].collapsed);
-            if (prefs[i].getAttribute('pref-name') !== 'SHOW_OPTIONS' &&
-                prefs[i].getAttribute('pref-name') !== 'REPORT_ISSUE' &&
-                prefs[i].collapsed !== collapseOptions) {
-              prefs[i].collapsed = collapseOptions;
+              console.log(spn[i].collapsed);
+            if (spn[i].getAttribute('pref-name') !== 'SHOW_OPTIONS' &&
+                spn[i].getAttribute('pref-name') !== 'REPORT_ISSUE' &&
+                spn[i].collapsed !== collapseOptions) {
+              spn[i].collapsed = collapseOptions;
             }
           }
         }
@@ -141,7 +149,7 @@
     DEBUG_ADDON &&
       console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
                     self.version + ' to ' + sp.prefs[prefName]);
-    prefs.set("services.sync.prefs.sync.extensions." + self.id + ".syncstorage", sp.prefs[prefName]);
+    ps.set("services.sync.prefs.sync.extensions." + self.id + ".syncstorage", sp.prefs[prefName]);
   });
 
   sp.on("syncstorage", function(prefname) {
