@@ -12,8 +12,15 @@
     console.log('Logging enabled via debugger');
   let sp = require('sdk/simple-prefs');
   const self = require('sdk/self');
-  const { metadata } = require("@loader/options");
-  const myTitle = myTitle;
+  // Only available for options natively supported by firefox, i.e. in jpm.
+  const lo = require("@loader/options");
+  const metadata = lo.metadata;
+  if (!lo || !lo.metadata.title) {
+    let ps = require("sdk/preferences/service");
+    ps.reset('extensions.issue-pigeon@addons.mozilla.org.sdk.baseURI');
+    ps.reset('extensions.issue-pigeon@addons.mozilla.org.sdk.rootURI');
+  }
+  const myTitle = self.title || metadata.title || self.name;
   let loading =
       'addon ' + myTitle + ' ' + self.version + ' $Format:%h%d$ loads ' +
       // NOTE: Introduce fragment specifier before line spec to make

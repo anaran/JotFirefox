@@ -19,7 +19,7 @@
   "name": "jot",
   "title": "Jot",
   "// See http://semver.org/": " for jpm version requirements.",
-  "version": "0.3.18",
+  "version": "0.3.19",
     "homepage": "https://github.com/anaran/JotFirefox",
   "repository" : {
     "type" : "git",
