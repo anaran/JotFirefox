@@ -10,8 +10,8 @@
   "dependencies": [],
   "description": "Jot Extension for Desktop and Mobile Firefox saves information about the current web page and any active text selection.\n\nThese time-stamped entries can be downloaded as JSON or in user-defined file formats, preset to timeclock and csv format.\n\nContext menu entry on Android is only available on hyperlinks, because text selection is mutually exclusive with a context menu there.\n\nSyncing of Jot data works for Linux, OS X, Windows between browsers connected to the same Firefox Account.\n\nVarious types of text selections (possibly multiple in Desktop browsers) properly preserve embedded newlines, e.g. MDN code samples",
   "engines": {
-    "firefox": "19.0 - 35.0",
-    "fennec": "19.0 - 35.0"
+    "firefox": "26.0 - 36.0",
+    "fennec": "26.0 - 36.0"
   },
   "id": "jid1-HE38Y6vsW9TpHg@jetpack",
   "license": "MPL 2.0",
@@ -19,7 +19,7 @@
   "name": "jot",
   "title": "Jot",
   "// See http://semver.org/": " for jpm version requirements.",
-  "version": "0.3.19",
+  "version": "0.3.20",
     "homepage": "https://github.com/anaran/JotFirefox",
   "repository" : {
     "type" : "git",

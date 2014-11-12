@@ -17,8 +17,9 @@
   const metadata = lo.metadata;
   if (!lo || !lo.metadata.title) {
     let ps = require("sdk/preferences/service");
-    ps.reset('extensions.issue-pigeon@addons.mozilla.org.sdk.baseURI');
-    ps.reset('extensions.issue-pigeon@addons.mozilla.org.sdk.rootURI');
+    ps.reset('extensions.' + self.id + '.sdk.baseURI');
+    ps.reset('extensions.' + self.id + '.sdk.rootURI');
+    ps.reset('extensions.' + self.id + '.sdk.version');
   }
   const myTitle = self.title || metadata.title || self.name;
   let loading =
