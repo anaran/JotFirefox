@@ -1,5 +1,4 @@
 const data = require('sdk/self').data;
-const menuId;
 const utils = require('sdk/window/utils');
 const recent = utils.getMostRecentBrowserWindow();
 
