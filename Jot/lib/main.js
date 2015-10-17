@@ -7,9 +7,18 @@
   // NOTE Change Function Scope variable DEBUG_ADDON from false to true in the debugger variables panel before continuing to get console messages logged.
   // Make sure option "Console Logging Level" is not set to "off".
   //
-  debugger;
+  // debugger;
   DEBUG_ADDON &&
     console.log('Logging enabled via debugger');
+  let tabs;
+  // Workaround for https://bugzil.la/1102504
+  // let bad = require('./reference-error');
+  // if (false && "https://bugzil.la/1102504 NOT FIXED" &&
+  //     require("sdk/system/xul-app").is("Fennec")) {
+  //   tabs = require("./addon-sdk-patches/tabs");
+  // } else {
+  tabs = require("sdk/tabs");
+  // }
   let sp = require('sdk/simple-prefs');
   const self = require('sdk/self');
   // Only available for options natively supported by firefox, i.e. in jpm.
@@ -29,6 +38,7 @@
       (new Error).stack.replace(/:(\d+):(\d+)/g, '#L$1C$2');
   DEBUG_ADDON &&
     console.log(loading);
+  // TODO Place following code where timed section should start.
   if (console.time) {
     DEBUG_ADDON &&
       console.time('load time');
@@ -42,94 +52,91 @@
   let ss = require("sdk/simple-storage");
   let ps = require("sdk/preferences/service");
   let notifications = require("sdk/notifications");
-  let tabs = require("sdk/tabs");
-  // TODO Place following code where timed section should start.
+//   const { Cu } = require("chrome");
+//   const { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
 
-  const { Cu } = require("chrome");
-  const { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
+//   let inlineOptionsDocument;
+//   let observer = {
+//     observe: function(aSubject, aTopic, aData) {
+//       DEBUG_ADDON &&
+//         console.log(aSubject, aTopic, aData, self, this);
+//       // Prepared for handling other notification types
+//       switch (aTopic) {
+//       case "addon-options-displayed":
+//         if (self && aData === self.id) {
+//           inlineOptionsDocument = aSubject;
+//           var spn = inlineOptionsDocument.querySelectorAll('setting[pref-name]');
+//           var collapseOptions = !sp.prefs['SHOW_OPTIONS'];
+//           for (let i = 0, len = spn.length; i < len; i++) {
+//             DEBUG_ADDON &&
+//               console.log(spn[i].collapsed);
+//             if (spn[i].getAttribute('pref-name') !== 'SHOW_OPTIONS' &&
+//                 spn[i].getAttribute('pref-name') !== 'REPORT_ISSUE' &&
+//                 spn[i].collapsed !== collapseOptions) {
+//               spn[i].collapsed = collapseOptions;
+//             }
+//           }
+//         }
+//         break;
+//       default:
+//       }
+//       return;
+//     }
+//   };
 
-  let inlineOptionsDocument;
-  let observer = {
-    observe: function(aSubject, aTopic, aData) {
-      DEBUG_ADDON &&
-        console.log(aSubject, aTopic, aData, self, this);
-      // Prepared for handling other notification types
-      switch (aTopic) {
-      case "addon-options-displayed":
-        if (self && aData === self.id) {
-          inlineOptionsDocument = aSubject;
-          var spn = inlineOptionsDocument.querySelectorAll('setting[pref-name]');
-          var collapseOptions = !sp.prefs['SHOW_OPTIONS'];
-          for (let i = 0, len = spn.length; i < len; i++) {
-            DEBUG_ADDON &&
-              console.log(spn[i].collapsed);
-            if (spn[i].getAttribute('pref-name') !== 'SHOW_OPTIONS' &&
-                spn[i].getAttribute('pref-name') !== 'REPORT_ISSUE' &&
-                spn[i].collapsed !== collapseOptions) {
-              spn[i].collapsed = collapseOptions;
-            }
-          }
-        }
-        break;
-      default:
-      }
-      return;
-    }
-  };
+//   let observableNotifications = {
+//     OPTIONS_NOTIFICATION_DISPLAYED: "addon-options-displayed",
+//     // Options notification will be hidden
+//     OPTIONS_NOTIFICATION_HIDDEN: "addon-options-hidden",
 
-  let observableNotifications = {
-    OPTIONS_NOTIFICATION_DISPLAYED: "addon-options-displayed",
-    // Options notification will be hidden
-    OPTIONS_NOTIFICATION_HIDDEN: "addon-options-hidden",
+//     // Constants for getStartupChanges, addStartupChange and removeStartupChange
+//     // Add-ons that were detected as installed during startup. Doesn't include
+//     // add-ons that were pending installation the last time the application ran.
+//     STARTUP_CHANGE_INSTALLED: "installed",
+//     // Add-ons that were detected as changed during startup. This includes an
+//     // add-on moving to a different location, changing version or just having
+//     // been detected as possibly changed.
+//     STARTUP_CHANGE_CHANGED: "changed",
+//     // Add-ons that were detected as uninstalled during startup. Doesn't include
+//     // add-ons that were pending uninstallation the last time the application ran.
+//     STARTUP_CHANGE_UNINSTALLED: "uninstalled",
+//     // Add-ons that were detected as disabled during startup, normally because of
+//     // an application change making an add-on incompatible. Doesn't include
+//     // add-ons that were pending being disabled the last time the application ran.
+//     STARTUP_CHANGE_DISABLED: "disabled",
+//     // Add-ons that were detected as enabled during startup, normally because of
+//     // an application change making an add-on compatible. Doesn't include
+//     // add-ons that were pending being enabled the last time the application ran.
+//     STARTUP_CHANGE_ENABLED: "enabled",
 
-    // Constants for getStartupChanges, addStartupChange and removeStartupChange
-    // Add-ons that were detected as installed during startup. Doesn't include
-    // add-ons that were pending installation the last time the application ran.
-    STARTUP_CHANGE_INSTALLED: "installed",
-    // Add-ons that were detected as changed during startup. This includes an
-    // add-on moving to a different location, changing version or just having
-    // been detected as possibly changed.
-    STARTUP_CHANGE_CHANGED: "changed",
-    // Add-ons that were detected as uninstalled during startup. Doesn't include
-    // add-ons that were pending uninstallation the last time the application ran.
-    STARTUP_CHANGE_UNINSTALLED: "uninstalled",
-    // Add-ons that were detected as disabled during startup, normally because of
-    // an application change making an add-on incompatible. Doesn't include
-    // add-ons that were pending being disabled the last time the application ran.
-    STARTUP_CHANGE_DISABLED: "disabled",
-    // Add-ons that were detected as enabled during startup, normally because of
-    // an application change making an add-on compatible. Doesn't include
-    // add-ons that were pending being enabled the last time the application ran.
-    STARTUP_CHANGE_ENABLED: "enabled",
+//     // Constants for the Addon.userDisabled property
+//     // Indicates that the userDisabled state of this add-on is currently
+//     // ask-to-activate. That is, it can be conditionally enabled on a
+//     // case-by-case basis.
+//     STATE_ASK_TO_ACTIVATE: "askToActivate"
+//   };
 
-    // Constants for the Addon.userDisabled property
-    // Indicates that the userDisabled state of this add-on is currently
-    // ask-to-activate. That is, it can be conditionally enabled on a
-    // case-by-case basis.
-    STATE_ASK_TO_ACTIVATE: "askToActivate"
-  };
+//   // Not ready to use Object.values shim directly. See
+//   // http://stackoverflow.com/questions/7306669/how-to-get-all-properties-values-of-a-javascript-object-without-knowing-the-key
+//   let getObjectValues = obj => Object.keys(obj).map(key => obj[key]);
 
-  // Not ready to use Object.values shim directly. See
-  // http://stackoverflow.com/questions/7306669/how-to-get-all-properties-values-of-a-javascript-object-without-knowing-the-key
-  let getObjectValues = obj => Object.keys(obj).map(key => obj[key]);
-
-  exports.main = function myMain(options, callbacks) {
-    DEBUG_ADDON &&
-      console.log(exports.main.name + ' of version ' + self.version +
-                  ' of addon ' + self.name, options, callbacks);
-    getObjectValues(observableNotifications).forEach(function (name) {
-      Services.obs.addObserver(observer, name, false);
-    });
-  };
-  exports.onUnload = function myOnUnload(reason) {
-    DEBUG_ADDON &&
-      console.log(exports.onUnload.name + ' of version ' + self.version +
-                  ' of addon ' + self.name, reason);
-    getObjectValues(observableNotifications).forEach(function (name) {
-      Services.obs.removeObserver(observer, name);
-    });
-  };
-  require('sdk/system/unload').when(exports.onUnload);
+//   exports.main = function myMain(options, callbacks) {
+//     DEBUG_ADDON &&
+//       console.log(exports.main.name + ' of version ' + self.version +
+//                   ' of addon ' + self.name, options, callbacks);
+//     getObjectValues(observableNotifications).forEach(function (name) {
+//       Services.obs.addObserver(observer, name, false);
+//     });
+//   };
+//   exports.onUnload = function myOnUnload(reason) {
+//     DEBUG_ADDON &&
+//       console.log(exports.onUnload.name + ' of version ' + self.version +
+//                   ' of addon ' + self.name, reason);
+//     getObjectValues(observableNotifications).forEach(function (name) {
+//       Services.obs.removeObserver(observer, name);
+//     });
+//   };
+//   require('sdk/system/unload').when(exports.onUnload);
 
   sp.on('sdk.console.logLevel', function(prefName) {
     DEBUG_ADDON &&
@@ -141,9 +148,9 @@
     DEBUG_ADDON &&
       console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
                     self.version + ' to ' + sp.prefs[prefName]);
-    DEBUG_ADDON &&
-      console.log('reloading ' + inlineOptionsDocument.location);
-    inlineOptionsDocument.location.reload(true);
+//     DEBUG_ADDON &&
+//       console.log('reloading ' + inlineOptionsDocument.location);
+//     inlineOptionsDocument.location.reload(true);
   });
 
   sp.on('REPORT_ISSUE', function() {
@@ -220,7 +227,7 @@
             inNewWindow: true,
             url: 'https://github.com/anaran/JotFirefox/issues/new?' + data,
             onClose: function() {
-              require("sdk/tabs").activeTab.activate();
+              tabs.activeTab.activate();
             }});
         }});
       DEBUG_ADDON &&
@@ -229,7 +236,7 @@
   });
 
   let getAboutData = function getAboutData() {
-    let quotaUse = (new Number(ss.quotaUsage * 100)).toPrecision(3),
+    let quotaUse = (new Number(ss.quotaUsage * 100)).toFixed(2),
         len = ss.storage.entries ? ss.storage.entries.length : 0,
         start, end, min_start, max_start, min_end, max_end,
         text, min_text, max_text;
@@ -402,7 +409,7 @@
   };
 
   let openJotTab = function(selection) {
-    let activeTab = require("sdk/tabs").activeTab;
+    let activeTab = tabs.activeTab;
     let snapData = {
       about: getAboutData(),
       now: Date.now(),
@@ -437,9 +444,9 @@
         let worker = tab.attach({
           contentScriptFile: self.data.url('display.js')
         });
-        worker.port.emit('display', snapData);
+        // worker.port.emit('display', snapData);
         worker.port.on('close', function(data) {
-          require("sdk/tabs").activeTab.close();
+          tabs.activeTab.close();
         });
         worker.port.on('options', function(data) {
           // TODO: Remove button does not properly hide preferences when
@@ -448,7 +455,7 @@
           // Services.wm.getMostRecentWindow('navigator:browser').
           //   BrowserOpenAddonsMgr('addons://detail/' + self.id +
           //   '/preferences');
-          let tabs = require("sdk/tabs");
+          // let tabs = tabs;
           try {
             for each (var tab in tabs) {
               DEBUG_ADDON &&
@@ -471,7 +478,7 @@
             // url: 'addons://detail/jid1-HE38Y6vsW9TpHg%40jetpack/preferences'
             url: 'about:addons',
             onClose: function() {
-              require("sdk/tabs").activeTab.activate();
+              tabs.activeTab.activate();
             }
           });
         });
@@ -529,8 +536,9 @@
         worker.port.on('getJotEntries', function(data) {
           getJotEntries(worker, data);
         });
+        worker.port.emit('display', snapData);
       };
-      require("sdk/tabs").open({
+      tabs.open({
         url: self.data.url('display.html'),
         onReady: runScript,
         onClose: function() {

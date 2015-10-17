@@ -1,6 +1,21 @@
 /* -*- indent-tabs-mode: nil; js-indent-level: 2 -*- */
-let main = require("./main");
+'use strict';
+let DEBUG_ADDON = false;
 
+var lo = require("@loader/options");
+let sp = require('sdk/simple-prefs');
+// See https://github.com/mozilla-jetpack/jpm/issues/339
+sp.prefs['sdk.console.logLevel'] = 'info';
+DEBUG_ADDON &&
+  console.dir(lo);
+var path;
+if (lo && lo.metadata.title) {
+  path = ("../lib/main");
+} else {
+  path = ("./main");
+}
+var main = require(path);
+// var main = require("../lib/main");
 exports["test main"] = function(assert) {
   assert.pass("Unit test running!");
 };

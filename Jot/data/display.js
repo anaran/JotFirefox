@@ -11,7 +11,7 @@
   // NOTE Set "DEBUG_ADDON = true" in the debugger before continuing to get console messages logged.
   // Make sure option "Console Logging Level" is not set to "off".
   //
-  debugger;
+  // debugger;
   DEBUG_ADDON &&
     console.log('Logging enabled via debugger');
   let loading = "content script $Format:%h%d$ loads in " + document.URL +
@@ -175,7 +175,7 @@
         event.target.removeAttribute('cols');
       }, BLUR_DELAY);
       // Filter out empty strings (at begin or end) to
-      // avoid counting them as words (without trimmig
+      // avoid counting them as words (without trimming
       // text content).
       let lines = event.target.value.split(/\n/g).filter(function(value) {
         if (value.length) {
@@ -234,12 +234,12 @@
           (data.title ? '\n@ ' + data.url : '\n@') +
           (data.selection ? '\n' + data.selection : '');
     if (activity) {
-      //                preActivity.blur();
+      // preActivity.blur();
       preActivity.value = activity;
       preClockin.textContent = dateToTimeClock(d);
       // preClockin.textContent = d.toString();
       preClockout.textContent = preClockin.textContent;
-      //                timelogEntry.click();
+      // timelogEntry.click();
     }
   }
   self.port.on('display', function(data) {

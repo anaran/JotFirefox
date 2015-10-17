@@ -94,7 +94,7 @@ textarea:focus+p.tooltip_activity {
     transition: left 0s ease-in-out;
 }
 
-/*textarea:+p.tooltip_activity {
+/*textarea+p.tooltip_activity {
     left: -80em;
     transition: left 0s ease-in-out;
 }*/
