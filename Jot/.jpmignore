@@ -1,0 +1,7 @@
+bower_components/*
+node_modules/*
+*.xpi
+*.txt
+# !bower_components/pouchdb/*
+# !bower_components/pouchdb-authentication/dist/*
+!node_modules/pouchdb/dist/pouchdb-shimmed.js

@@ -148,5 +148,46 @@
       "description": "Set Jot Entry Format (%i = in or start datetime, %o = out or end datetime, %t = jot text).",
       "value": "%i,%o,%T\\n",
       "title": "2. ENTRY FORMAT"
-    }]
+    },
+    {
+      "description": "site protocol",
+      "hidden": false,
+      "name": "protocol",
+      "title": "Jot Database Acess Protocol",
+      "type": "string",
+      "value": "https"
+    },
+    {
+      "description": "site name",
+      "hidden": false,
+      "name": "site",
+      "title": "Jot Database Site",
+      "type": "string",
+      "value": ""
+    },
+    {
+      "description": "port number",
+      "hidden": false,
+      "name": "port",
+      "title": "Jot Database Port",
+      "type": "string",
+      "value": "443"
+    },
+    {
+      "description": "database path name",
+      "hidden": false,
+      "name": "path",
+      "title": "Jot Database Path",
+      "type": "string",
+      "value": "/jot"
+    },
+    {
+      "description": "user name",
+      "hidden": false,
+      "name": "user",
+      "title": "Jot Database Username",
+      "type": "string",
+      "value": ""
+    }
+  ]
 }

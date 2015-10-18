@@ -15,10 +15,10 @@
   DEBUG_ADDON &&
     console.log('Logging enabled via debugger');
   let loading = "content script $Format:%h%d$ loads in " + document.URL +
-        " using " + JSON.stringify(navigator.userAgent) + ' ' +
-        // NOTE: Introduce fragment specifier before line spec to make
-        // clickable link work in console.log.
-        (new Error).stack.replace(/:(\d+):(\d+)/g, '#L$1C$2');
+      " using " + JSON.stringify(navigator.userAgent) + ' ' +
+      // NOTE: Introduce fragment specifier before line spec to make
+      // clickable link work in console.log.
+      (new Error).stack.replace(/:(\d+):(\d+)/g, '#L$1C$2');
   DEBUG_ADDON &&
     console.log(loading);
   // TODO Place following code where timed section should start.
@@ -37,6 +37,10 @@
   const BLUR_DELAY = 300;
   const LINK_REMOVAL_DELAY = 900;
   let divAboutData;
+  let enterPassword;
+  let syncButton;
+  let syncInfo;
+  let exportButton;
   let preActivity;
   let tooltipActivity;
   let preClockin;
@@ -69,7 +73,7 @@
 
   function display(data) {
     let { quotaUse, len, 
-          min_text, max_text, min_start, max_start } = data.about;
+         min_text, max_text, min_start, max_start } = data.about;
     DEBUG_ADDON &&
       console.log('display.js self:', self);
     divAboutData = document.querySelector('.about');
@@ -84,6 +88,37 @@
       selection.addRange(range);
     };
     divAboutData.addEventListener('click', selectAll, false);
+    enterPassword = document.getElementById('enter_passwd');
+    syncInfo = document.getElementById('sync_info');
+    syncButton = document.getElementById('sync');
+    exportButton = document.getElementById('export');
+    exportButton.addEventListener('click', function (event) {
+      self.port.on('export_data', function (data) {
+        var div = document.createElement('div');
+        var download = document.createElement('a');
+        var blob = new window.Blob([JSON.stringify(data, null, 2)], {
+          type: 'text/plain; charset=utf-8'
+        });
+        download.href = window.URL.createObjectURL(blob);
+        download.download = 'jot-' + data.total_rows + '-' + Date.now() + '.txt';
+        download.textContent = 'Download exported data';
+        div.appendChild(download);
+        document.body.appendChild(div);
+      });
+      self.port.emit('request_export', true);
+    });
+    syncButton.addEventListener('click', function(event) {
+      self.port.on('sync_info', function (data) {
+        syncInfo.textContent += JSON.stringify(data, Object.keys(data), 2);
+      });
+      self.port.emit('sync', true);
+    })
+    enterPassword.addEventListener('change', function(event) {
+      // self.port.on('session_result', function(data) {
+      //   
+      // })
+      self.port.emit('session', { password: event.target.value });
+    })
     preActivity = document.querySelector('.activity');
     tooltipActivity = document.querySelector('.tooltip_activity');
     tooltipActivity.textContent =
@@ -157,9 +192,9 @@
     preActivity.addEventListener('focus', function(event) {
       let rows = event.target.value.split('\n').length;
       let cols =
-            Math.max.apply(null,
-                           event.target.value.split('\n').
-                           map(function(value) { return value.length; }));
+          Math.max.apply(null,
+                         event.target.value.split('\n').
+                         map(function(value) { return value.length; }));
       // event.target.style = '';
       event.target.rows = rows;
       event.target.cols = cols;
@@ -230,9 +265,9 @@
       type: 'DATAFORMAT2'
     });
     let activity =
-          data.self.name + '!\n#' + (data.title ? ' ' + data.title : '') +
-          (data.title ? '\n@ ' + data.url : '\n@') +
-          (data.selection ? '\n' + data.selection : '');
+        data.self.name + '!\n#' + (data.title ? ' ' + data.title : '') +
+        (data.title ? '\n@ ' + data.url : '\n@') +
+        (data.selection ? '\n' + data.selection : '');
     if (activity) {
       // preActivity.blur();
       preActivity.value = activity;

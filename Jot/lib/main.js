@@ -8,8 +8,13 @@
   // Make sure option "Console Logging Level" is not set to "off".
   //
   // debugger;
+  let pd = require('./pouchdb-shimmed');
   DEBUG_ADDON &&
     console.log('Logging enabled via debugger');
+  exports.dummy = function(text, callback) {
+    let session = require('./session');
+    callback(text);
+  }
   let tabs;
   // Workaround for https://bugzil.la/1102504
   // let bad = require('./reference-error');
@@ -52,105 +57,105 @@
   let ss = require("sdk/simple-storage");
   let ps = require("sdk/preferences/service");
   let notifications = require("sdk/notifications");
-//   const { Cu } = require("chrome");
-//   const { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
+  //   const { Cu } = require("chrome");
+  //   const { Services } = Cu.import("resource://gre/modules/Services.jsm", {});
 
-//   let inlineOptionsDocument;
-//   let observer = {
-//     observe: function(aSubject, aTopic, aData) {
-//       DEBUG_ADDON &&
-//         console.log(aSubject, aTopic, aData, self, this);
-//       // Prepared for handling other notification types
-//       switch (aTopic) {
-//       case "addon-options-displayed":
-//         if (self && aData === self.id) {
-//           inlineOptionsDocument = aSubject;
-//           var spn = inlineOptionsDocument.querySelectorAll('setting[pref-name]');
-//           var collapseOptions = !sp.prefs['SHOW_OPTIONS'];
-//           for (let i = 0, len = spn.length; i < len; i++) {
-//             DEBUG_ADDON &&
-//               console.log(spn[i].collapsed);
-//             if (spn[i].getAttribute('pref-name') !== 'SHOW_OPTIONS' &&
-//                 spn[i].getAttribute('pref-name') !== 'REPORT_ISSUE' &&
-//                 spn[i].collapsed !== collapseOptions) {
-//               spn[i].collapsed = collapseOptions;
-//             }
-//           }
-//         }
-//         break;
-//       default:
-//       }
-//       return;
-//     }
-//   };
+  //   let inlineOptionsDocument;
+  //   let observer = {
+  //     observe: function(aSubject, aTopic, aData) {
+  //       DEBUG_ADDON &&
+  //         console.log(aSubject, aTopic, aData, self, this);
+  //       // Prepared for handling other notification types
+  //       switch (aTopic) {
+  //       case "addon-options-displayed":
+  //         if (self && aData === self.id) {
+  //           inlineOptionsDocument = aSubject;
+  //           var spn = inlineOptionsDocument.querySelectorAll('setting[pref-name]');
+  //           var collapseOptions = !sp.prefs['SHOW_OPTIONS'];
+  //           for (let i = 0, len = spn.length; i < len; i++) {
+  //             DEBUG_ADDON &&
+  //               console.log(spn[i].collapsed);
+  //             if (spn[i].getAttribute('pref-name') !== 'SHOW_OPTIONS' &&
+  //                 spn[i].getAttribute('pref-name') !== 'REPORT_ISSUE' &&
+  //                 spn[i].collapsed !== collapseOptions) {
+  //               spn[i].collapsed = collapseOptions;
+  //             }
+  //           }
+  //         }
+  //         break;
+  //       default:
+  //       }
+  //       return;
+  //     }
+  //   };
 
-//   let observableNotifications = {
-//     OPTIONS_NOTIFICATION_DISPLAYED: "addon-options-displayed",
-//     // Options notification will be hidden
-//     OPTIONS_NOTIFICATION_HIDDEN: "addon-options-hidden",
+  //   let observableNotifications = {
+  //     OPTIONS_NOTIFICATION_DISPLAYED: "addon-options-displayed",
+  //     // Options notification will be hidden
+  //     OPTIONS_NOTIFICATION_HIDDEN: "addon-options-hidden",
 
-//     // Constants for getStartupChanges, addStartupChange and removeStartupChange
-//     // Add-ons that were detected as installed during startup. Doesn't include
-//     // add-ons that were pending installation the last time the application ran.
-//     STARTUP_CHANGE_INSTALLED: "installed",
-//     // Add-ons that were detected as changed during startup. This includes an
-//     // add-on moving to a different location, changing version or just having
-//     // been detected as possibly changed.
-//     STARTUP_CHANGE_CHANGED: "changed",
-//     // Add-ons that were detected as uninstalled during startup. Doesn't include
-//     // add-ons that were pending uninstallation the last time the application ran.
-//     STARTUP_CHANGE_UNINSTALLED: "uninstalled",
-//     // Add-ons that were detected as disabled during startup, normally because of
-//     // an application change making an add-on incompatible. Doesn't include
-//     // add-ons that were pending being disabled the last time the application ran.
-//     STARTUP_CHANGE_DISABLED: "disabled",
-//     // Add-ons that were detected as enabled during startup, normally because of
-//     // an application change making an add-on compatible. Doesn't include
-//     // add-ons that were pending being enabled the last time the application ran.
-//     STARTUP_CHANGE_ENABLED: "enabled",
+  //     // Constants for getStartupChanges, addStartupChange and removeStartupChange
+  //     // Add-ons that were detected as installed during startup. Doesn't include
+  //     // add-ons that were pending installation the last time the application ran.
+  //     STARTUP_CHANGE_INSTALLED: "installed",
+  //     // Add-ons that were detected as changed during startup. This includes an
+  //     // add-on moving to a different location, changing version or just having
+  //     // been detected as possibly changed.
+  //     STARTUP_CHANGE_CHANGED: "changed",
+  //     // Add-ons that were detected as uninstalled during startup. Doesn't include
+  //     // add-ons that were pending uninstallation the last time the application ran.
+  //     STARTUP_CHANGE_UNINSTALLED: "uninstalled",
+  //     // Add-ons that were detected as disabled during startup, normally because of
+  //     // an application change making an add-on incompatible. Doesn't include
+  //     // add-ons that were pending being disabled the last time the application ran.
+  //     STARTUP_CHANGE_DISABLED: "disabled",
+  //     // Add-ons that were detected as enabled during startup, normally because of
+  //     // an application change making an add-on compatible. Doesn't include
+  //     // add-ons that were pending being enabled the last time the application ran.
+  //     STARTUP_CHANGE_ENABLED: "enabled",
 
-//     // Constants for the Addon.userDisabled property
-//     // Indicates that the userDisabled state of this add-on is currently
-//     // ask-to-activate. That is, it can be conditionally enabled on a
-//     // case-by-case basis.
-//     STATE_ASK_TO_ACTIVATE: "askToActivate"
-//   };
+  //     // Constants for the Addon.userDisabled property
+  //     // Indicates that the userDisabled state of this add-on is currently
+  //     // ask-to-activate. That is, it can be conditionally enabled on a
+  //     // case-by-case basis.
+  //     STATE_ASK_TO_ACTIVATE: "askToActivate"
+  //   };
 
-//   // Not ready to use Object.values shim directly. See
-//   // http://stackoverflow.com/questions/7306669/how-to-get-all-properties-values-of-a-javascript-object-without-knowing-the-key
-//   let getObjectValues = obj => Object.keys(obj).map(key => obj[key]);
+  //   // Not ready to use Object.values shim directly. See
+  //   // http://stackoverflow.com/questions/7306669/how-to-get-all-properties-values-of-a-javascript-object-without-knowing-the-key
+  //   let getObjectValues = obj => Object.keys(obj).map(key => obj[key]);
 
-//   exports.main = function myMain(options, callbacks) {
-//     DEBUG_ADDON &&
-//       console.log(exports.main.name + ' of version ' + self.version +
-//                   ' of addon ' + self.name, options, callbacks);
-//     getObjectValues(observableNotifications).forEach(function (name) {
-//       Services.obs.addObserver(observer, name, false);
-//     });
-//   };
-//   exports.onUnload = function myOnUnload(reason) {
-//     DEBUG_ADDON &&
-//       console.log(exports.onUnload.name + ' of version ' + self.version +
-//                   ' of addon ' + self.name, reason);
-//     getObjectValues(observableNotifications).forEach(function (name) {
-//       Services.obs.removeObserver(observer, name);
-//     });
-//   };
-//   require('sdk/system/unload').when(exports.onUnload);
+  //   exports.main = function myMain(options, callbacks) {
+  //     DEBUG_ADDON &&
+  //       console.log(exports.main.name + ' of version ' + self.version +
+  //                   ' of addon ' + self.name, options, callbacks);
+  //     getObjectValues(observableNotifications).forEach(function (name) {
+  //       Services.obs.addObserver(observer, name, false);
+  //     });
+  //   };
+  //   exports.onUnload = function myOnUnload(reason) {
+  //     DEBUG_ADDON &&
+  //       console.log(exports.onUnload.name + ' of version ' + self.version +
+  //                   ' of addon ' + self.name, reason);
+  //     getObjectValues(observableNotifications).forEach(function (name) {
+  //       Services.obs.removeObserver(observer, name);
+  //     });
+  //   };
+  //   require('sdk/system/unload').when(exports.onUnload);
 
   sp.on('sdk.console.logLevel', function(prefName) {
     DEBUG_ADDON &&
       console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
-                    self.version + ' to ' + sp.prefs[prefName]);
+                  self.version + ' to ' + sp.prefs[prefName]);
   });
 
   sp.on('SHOW_OPTIONS', function(prefName) {
     DEBUG_ADDON &&
       console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
-                    self.version + ' to ' + sp.prefs[prefName]);
-//     DEBUG_ADDON &&
-//       console.log('reloading ' + inlineOptionsDocument.location);
-//     inlineOptionsDocument.location.reload(true);
+                  self.version + ' to ' + sp.prefs[prefName]);
+    //     DEBUG_ADDON &&
+    //       console.log('reloading ' + inlineOptionsDocument.location);
+    //     inlineOptionsDocument.location.reload(true);
   });
 
   sp.on('REPORT_ISSUE', function() {
@@ -163,7 +168,7 @@
   sp.on('SYNC_DATA', function(prefName) {
     DEBUG_ADDON &&
       console.log('Setting ' + prefName + ' for ' + self.name + ' version ' +
-                    self.version + ' to ' + sp.prefs[prefName]);
+                  self.version + ' to ' + sp.prefs[prefName]);
     ps.set("services.sync.prefs.sync.extensions." + self.id + ".syncstorage", sp.prefs[prefName]);
   });
 
@@ -210,8 +215,8 @@
                                          Object.getOwnPropertyNames(exception),
                                          2);
       let systemText = JSON.stringify(system,
-                                         Object.getOwnPropertyNames(system),
-                                         2);
+                                      Object.getOwnPropertyNames(system),
+                                      2);
       notifications.notify({
         title: title,
         text: exceptionText,
@@ -258,19 +263,19 @@
       }
     }
     return { quotaUse: quotaUse, len: len, min_text: min_text,
-              max_text: max_text, min_start: min_start, max_start: max_start };
+            max_text: max_text, min_start: min_start, max_start: max_start };
   };
 
   sp.on('ABOUTDATA', function () {
     let { quotaUse, len,
-          min_text, max_text, min_start, max_start } = getAboutData();
+         min_text, max_text, min_start, max_start } = getAboutData();
     notifications.notify({
       title: 'About Jot Data',
       text: 'Use of storage quota: ' +
-        quotaUse +
-        '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
-        ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
-        min_start + '\nnewest: ' + max_start
+      quotaUse +
+      '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
+      ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
+      min_start + '\nnewest: ' + max_start
     });
     DEBUG_ADDON &&
       console.log('notify:' + 'Use of storage quota: ' +
@@ -290,7 +295,7 @@
     // likely with character escapes of its own, although quotes) gets
     // replaced.
     entryFormat = entryFormat.replace(/\\n/g, '\n').replace(/\\r/g, '\r').
-      replace(/\\t/g, '\t');
+    replace(/\\t/g, '\t');
     entryFormat = entryFormat.replace(/%e\b/g, self.title);
     entryFormat = entryFormat.replace(/%i\b/g, start);
     entryFormat = entryFormat.replace(/%o\b/g, end);
@@ -343,68 +348,68 @@
     //trouble downloading or opening in Firefox.
     let start, end, text, content, dateFormat, infoFormat, entryFormat,
         filename =
-          self.name + '_' + sp.prefs[data.type] + '_' +
-          ss.storage.entries.length + '@' + Date.now() + '.txt';
+        self.name + '_' + sp.prefs[data.type] + '_' +
+        ss.storage.entries.length + '@' + Date.now() + '.txt';
     DEBUG_ADDON &&
       console.log('ss.quotaUsage:', ss.quotaUsage);
     switch (data.type) {
-    case 'DATAFORMAT0':
-      worker.port.emit('setJotEntriesBlob', {
-        content: JSON.stringify(ss.storage.entries, null, 2),
-        filename: filename,
-        type: data.type,
-        download: !! data.download
-      });
-      break;
-    case 'DATAFORMAT1':
-      content = '', dateFormat = sp.prefs['DATEFORMAT1'],
-      infoFormat = sp.prefs['INFOFORMAT1'],
-      entryFormat = sp.prefs['ENTRYFORMAT1'];
-      for (let i = 0, len = ss.storage.entries.length;
-           i < len; i++) {
-        start = (ss.storage.entries[i].start);
-        end = (ss.storage.entries[i].end);
-        //                                start = replaceDates(dateFormat, ss.storage.entries[i].start);
-        //                                end = replaceDates(dateFormat, ss.storage.entries[i].end);
-        text = ss.storage.entries[i].activity;
-        content += formatEntry(entryFormat, start, end, text);
-      }
-      worker.port.emit('setJotEntriesBlob', {
-        content: content,
-        filename: filename,
-        type: data.type,
-        download: !! data.download
-      });
-      break;
-    case 'DATAFORMAT2':
-      content = '', dateFormat = sp.prefs['DATEFORMAT2'],
-      infoFormat = sp.prefs['INFOFORMAT2'],
-      entryFormat = sp.prefs['ENTRYFORMAT2'];
-      for (let i = 0, len = ss.storage.entries.length;
-           i < len; i++) {
-        start = (ss.storage.entries[i].start);
-        end = (ss.storage.entries[i].end);
-        // start = replaceDates(dateFormat, ss.storage.entries[i].start);
-        // end = replaceDates(dateFormat, ss.storage.entries[i].end);
-        text = ss.storage.entries[i].activity;
-        content += formatEntry(entryFormat, start, end, text);
-      }
-      worker.port.emit('setJotEntriesBlob', {
-        content: content,
-        filename: filename,
-        type: data.type,
-        download: !! data.download
-      });
-      break;
-    default:
-      notifications.notify({
-        title: 'Jot Notification',
-        text: 'Don\'t know how to download ' + sp.prefs[data.type]
-      });
-      DEBUG_ADDON &&
-        console.log('notify:' + 'Don\'t know how to download ' +
-                    sp.prefs[data.type]);
-      break;
+      case 'DATAFORMAT0':
+        worker.port.emit('setJotEntriesBlob', {
+          content: JSON.stringify(ss.storage.entries, null, 2),
+          filename: filename,
+          type: data.type,
+          download: !! data.download
+        });
+        break;
+      case 'DATAFORMAT1':
+        content = '', dateFormat = sp.prefs['DATEFORMAT1'],
+          infoFormat = sp.prefs['INFOFORMAT1'],
+          entryFormat = sp.prefs['ENTRYFORMAT1'];
+        for (let i = 0, len = ss.storage.entries.length;
+             i < len; i++) {
+          start = (ss.storage.entries[i].start);
+          end = (ss.storage.entries[i].end);
+          //                                start = replaceDates(dateFormat, ss.storage.entries[i].start);
+          //                                end = replaceDates(dateFormat, ss.storage.entries[i].end);
+          text = ss.storage.entries[i].activity;
+          content += formatEntry(entryFormat, start, end, text);
+        }
+        worker.port.emit('setJotEntriesBlob', {
+          content: content,
+          filename: filename,
+          type: data.type,
+          download: !! data.download
+        });
+        break;
+      case 'DATAFORMAT2':
+        content = '', dateFormat = sp.prefs['DATEFORMAT2'],
+          infoFormat = sp.prefs['INFOFORMAT2'],
+          entryFormat = sp.prefs['ENTRYFORMAT2'];
+        for (let i = 0, len = ss.storage.entries.length;
+             i < len; i++) {
+          start = (ss.storage.entries[i].start);
+          end = (ss.storage.entries[i].end);
+          // start = replaceDates(dateFormat, ss.storage.entries[i].start);
+          // end = replaceDates(dateFormat, ss.storage.entries[i].end);
+          text = ss.storage.entries[i].activity;
+          content += formatEntry(entryFormat, start, end, text);
+        }
+        worker.port.emit('setJotEntriesBlob', {
+          content: content,
+          filename: filename,
+          type: data.type,
+          download: !! data.download
+        });
+        break;
+      default:
+        notifications.notify({
+          title: 'Jot Notification',
+          text: 'Don\'t know how to download ' + sp.prefs[data.type]
+        });
+        DEBUG_ADDON &&
+          console.log('notify:' + 'Don\'t know how to download ' +
+                      sp.prefs[data.type]);
+        break;
     }
   };
 
@@ -426,14 +431,14 @@
     };
     ss.on("OverQuota", function() {
       let { quotaUse, len,
-            min_text, max_text, min_start, max_start } = getAboutData();
+           min_text, max_text, min_start, max_start } = getAboutData();
       notifications.notify({
         title: 'Jot Quota Exceeded!',
         text: 'Use of storage quota: ' +
-          quotaUse +
-          '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
-          ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
-          min_start + '\nnewest: ' + max_start
+        quotaUse +
+        '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
+        ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
+        min_start + '\nnewest: ' + max_start
       });
       DEBUG_ADDON &&
         console.error('ss.quotaUsage:', ss.quotaUsage);
@@ -495,8 +500,8 @@
             notifications.notify({
               title: 'Jot Notification',
               text: 'Deleting all ' + ss.storage.entries.length +
-                ' entries of jot data, see browser\'s downloads directory' +
-                ' for exported data.'
+              ' entries of jot data, see browser\'s downloads directory' +
+              ' for exported data.'
             });
             DEBUG_ADDON &&
               console.log('notify:' + 'Deleting all ' +
@@ -536,6 +541,125 @@
         worker.port.on('getJotEntries', function(data) {
           getJotEntries(worker, data);
         });
+        worker.port.on('sync', function(data) {
+          let localDb = new pd('jot');
+          localDb.info().then(function (result) {
+            // handle result
+            if (result.doc_count == 0) {
+              for (let i = 0, len = ss.storage.entries.length;
+                   i < len; i++) {
+                localDb.post({
+                  activity: ss.storage.entries[i].activity,
+                  start: ss.storage.entries[i].astart,
+                  end: ss.storage.entries[i].end
+                }).catch(function (err) {
+                  worker.port.emit('sync_info', err);
+                  return;
+                });
+              }
+            }
+            else {
+              let protocol = sp.prefs['protocol'],
+                  site = sp.prefs['site'],
+                  port = sp.prefs['port'],
+                  path = sp.prefs['path'];
+              if (protocol && site && port && path) {
+                var XMLHttpRequest = require("sdk/net/xhr").XMLHttpRequest;
+                var myXHR = function () {
+                  var request;
+                  if (false && /* false && */window.location.protocol == "app:") {
+                    request = new XMLHttpRequest({ mozSystem: true, mozAnon: true });
+                  }
+                  else {
+                    request = new XMLHttpRequest({ mozSystem: false, mozAnon: false });
+                    // request = new XMLHttpRequest();
+                  }
+                  return request;
+                }
+                var opts = {
+                  ajax: {
+                    xhr: myXHR,
+                    // headers: { 'Cookie': cookie },
+                    timeout: 30000
+                  }
+                };
+                let url = protocol + '://' + site + ':' + port + path;
+                let remoteDb = new pd(url, opts);
+                for (let i = 0, len = ss.storage.entries.length;
+                     i < len; i++) {
+                  remoteDb.post({
+                    activity: ss.storage.entries[i].activity,
+                    start: ss.storage.entries[i].astart,
+                    end: ss.storage.entries[i].end
+                  }, opts).then(function (result) {
+                    // handle result
+                    worker.port.emit('sync_info', { remoteDB: result });
+                  }).catch(function (err) {
+                    worker.port.emit('sync_info', err);
+                    return;
+                  });
+                }
+                // localDb.sync(remoteDb).on('change', function (info) {
+                localDb.sync(remoteDb, opts).on('change', function (info) {
+                  // handle change
+                  worker.port.emit('sync_info', {'sync_change': info});
+                }).on('paused', function (err) {
+                  // replication paused (e.g. user went offline)
+                  worker.port.emit('sync_info', {'sync_paused': err});
+                }).on('active', function (what) {
+                  // replicate resumed (e.g. user went back online)
+                  worker.port.emit('sync_info', {'sync_active': what});
+                }).on('denied', function (info) {
+                  // a document failed to replicate, e.g. due to permissions
+                  worker.port.emit('sync_info', {'sync_denied': info});
+                }).on('complete', function (info) {
+                  // handle complete
+                  worker.port.emit('sync_info', {'sync_complete': info});
+                }).on('error', function (err) {
+                  // handle error
+                  worker.port.emit('sync_info', {'sync_err_result': err.result});
+                  return;
+                });
+              }
+            }
+            worker.port.emit('sync_info', result);
+          }).catch(function (err) {
+            worker.port.emit('sync_info_err', { info_error: err });
+            return;
+          });
+        });
+        worker.port.on('request_export', function(data) {
+          let localDb = new pd('jot');
+          localDb.allDocs({
+            include_docs: true/*, 
+  attachments: true*/
+          }).then(function (result) {
+            // handle result
+            worker.port.emit('export_data', result);
+          }).catch(function (err) {
+            worker.port.emit('sync_info', { export_error: err });
+          });
+        });
+        worker.port.on('session', function(data) {
+          let session = require('./session');
+          let protocol = sp.prefs['protocol'],
+              site = sp.prefs['site'],
+              port = sp.prefs['port'],
+              path = sp.prefs['path'],
+              user = sp.prefs['user'];
+          if (protocol && site && port && path && user) {
+            let url = protocol + '://' + site + ':' + port + path;
+            let sessionUrl = protocol + '://' + site + ':' + port + '/_session';
+            if (data.password) {
+              session.sessionLogin(sessionUrl, user, data.password);
+              // loggedIn = true;
+            }
+            else {
+              session.sessionLogout(sessionUrl);
+              // loggedIn = false;
+            }
+          }
+        });
         worker.port.emit('display', snapData);
       };
       tabs.open({
@@ -571,13 +695,13 @@
       label: "Jot",
       context: cm.URLContext("*"),
       contentScript: 'self.on("click", function (node, data) {' +
-        'let s = document.getSelection();' +
-        'let selectionText = s.toString();' +
-        'let rangesText = "";' +
-        'for (var i = 0; i < s.rangeCount; i++) {' +
-        '  rangesText += s.getRangeAt(i).toString();' +
-        '}' +
-        ' self.postMessage(rangesText.contains("\\n") && !selectionText.contains("\\n") ? rangesText : selectionText); });',
+      'let s = document.getSelection();' +
+      'let selectionText = s.toString();' +
+      'let rangesText = "";' +
+      'for (var i = 0; i < s.rangeCount; i++) {' +
+      '  rangesText += s.getRangeAt(i).toString();' +
+      '}' +
+      ' self.postMessage(rangesText.contains("\\n") && !selectionText.contains("\\n") ? rangesText : selectionText); });',
       onMessage: function(selection) {
         openJotTab(selection);
       },
