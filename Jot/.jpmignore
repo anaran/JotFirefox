@@ -4,6 +4,7 @@
 *.xpi
 *.zip
 *~
+.git
 .jpmignore
 gulpfile.js
 bower_components/

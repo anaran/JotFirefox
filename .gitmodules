@@ -1,0 +1,6 @@
+[submodule "Jot/lib/anaran-jetpack-add-on"]
+	path = Jot/lib/anaran-jetpack-add-on
+	url = git@github.com:anaran/anaran-jetpack-add-on.git
+[submodule "Jot/data/anaran-jetpack-content"]
+	path = Jot/data/anaran-jetpack-content
+	url = git@github.com:anaran/anaran-jetpack-content.git
