@@ -10,9 +10,10 @@
   "dependencies": [],
   "description": "Jot Extension for Desktop and Mobile Firefox saves information about the current web page and any active text selection.\n\nThese time-stamped entries can be downloaded as JSON or in user-defined file formats, preset to timeclock and csv format.\n\nContext menu entry on Android is only available on hyperlinks, because text selection is mutually exclusive with a context menu there.\n\nSyncing of Jot data works for Linux, OS X, Windows between browsers connected to the same Firefox Account.\n\nVarious types of text selections (possibly multiple in Desktop browsers) properly preserve embedded newlines, e.g. MDN code samples",
   "engines": {
-    "firefox": "38.0 - 43.0",
-    "fennec": "38.0 - 43.0"
+    "firefox": "38.0 - 44.0",
+    "fennec": "38.0 - 44.0"
   },
+  "icon": "resource://jid1-HE38Y6vsW9TpHg-at-jetpack/data/posts-48.png",
   "id": "jid1-HE38Y6vsW9TpHg@jetpack",
   "license": "MPL 2.0",
   "main": "lib/main.js",
@@ -26,7 +27,33 @@
     "url" : "https://github.com/anaran/JotFirefox.git"
   },
   "preferences": [
+        {
+      "description": "Jot loading into newly opened tabs can be disabled, immediate, or delayed to when a tab is activated again.",
+      "hidden": false,
+      "name": "loading",
+      "title": "Loading",
+      "value": "immediate",
+      "type": "radio",
+      "options": [{
+        "value": "disabled",
+        "label": "Disabled"
+      }, {
+        "value": "immediate",
+        "label": "Immediate"
+      }, {
+        "value": "delayed",
+        "label": "Delayed"
+      }]
+	},
     {
+      "description": "This preference shall be hidden, except for debug purposes. It is changed by the user dragging the icon into place.",
+      "hidden": true,
+      "name": "position",
+      "title": "Icon Positioning",
+      "type": "string",
+      "value": ""
+    },
+      {
       "description": "You may want to hide options after you have adjusted them, to avoid accidental changes.",
       "hidden": false,
       "label": "Hide options when you have adjusted them.",
