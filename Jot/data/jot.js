@@ -17,55 +17,8 @@
     DEBUG_ADDON &&
       console.log("self.port is true", self);
     self.port.on('jot_icon_show', function (data) {
-      let div = window.setupIcon('jot_icon_div', 'request_position_save', data, function (event) {
-        // console.log("selection", window.getSelection().toString());
-        event.preventDefault();
-        event.stopPropagation();
-        if (this.children[0].style.display == 'none') {
-          this.children[0].style.display = 'inline-block';
-        }
-        else {
-          this.children[0].style.display = 'none';
-        }
-      });
-      
-      let divClose = document.createElement('span');
-      let close = document.createElement('a');
-      close.href = 'close';
-      close.innerHTML = '&times;';
-      close.addEventListener('click', function(event) {
-        event.preventDefault();
-        event.target.parentElement.parentElement.parentElement.removeChild(event.target.parentElement.parentElement);
-      });
-      // let divDiffs = document.createElement('div');
-      // divDiffs.style = 'position: fixed;  background-color: white; bottom: 2mm; left: 2mm; right: 2mm; top: 2mm; overflow: auto';
-      // let style = 'position: fixed; ';
-      // style += ' left: 2mm; top: 2mm; background-color: white';
-      // div.style = style;
-      // divClose.style = 'position: fixed;  background-color: white; bottom: 2mm; right: 2mm; font-size: large';
-      divClose.appendChild(close);
-      // close.style = 'position: relative;  top: 0; left: 0; font-size: large';
-
-      var menu = div.appendChild(document.createElement('div'));
-      let keys = data && data.position && Object.keys(data.position);
-      if (keys && keys.length == 2) {
-        menu.style.bottom = '';
-        menu.style.left = '';
-        menu.style.position = 'absolute';
-        menu.style.right = '';
-        menu.style.top = '';
-        keys.forEach(function(prop) {
-          menu.style[prop] = '0';
-        });
-      }
-      div.appendChild(divClose);
-      menu.className = 'menu';
-      menu.style.display = 'none';
-      menu.style.opacity = 0.7;
-      // menu.style.backgroundColor = (efpBC == 'transparent' ? bodyBC : efpBC);
-      menu.style.borderRadius = '3px';
-      menu.style.borderColor = menu.style.color;
-      menu.style.border = '2px solid';
+      let div = window.setupIcon('jot_icon_div', 'request_position_save', data);
+      let menu = window.setupMenu(div, data);
       window.setupMenuItem(menu, 'jot', data.menu.jot, function (event) {
         console.log("selection", window.getSelection().toString());
         event.preventDefault();
