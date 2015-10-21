@@ -10,7 +10,7 @@ DEBUG_ADDON &&
   console.dir(lo);
 var path;
 if (lo && lo.metadata.title) {
-  path = ("../lib/main");
+  path = ("../");
 } else {
   path = ("./main");
 }

@@ -21,11 +21,11 @@
         // console.log("selection", window.getSelection().toString());
         event.preventDefault();
         event.stopPropagation();
-        if (this.children[1].style.display == 'none') {
-          this.children[1].style.display = 'inline-block';
+        if (this.children[0].style.display == 'none') {
+          this.children[0].style.display = 'inline-block';
         }
         else {
-          this.children[1].style.display = 'none';
+          this.children[0].style.display = 'none';
         }
       });
       
@@ -44,10 +44,21 @@
       // div.style = style;
       // divClose.style = 'position: fixed;  background-color: white; bottom: 2mm; right: 2mm; font-size: large';
       divClose.appendChild(close);
-      div.appendChild(divClose);
       // close.style = 'position: relative;  top: 0; left: 0; font-size: large';
 
       var menu = div.appendChild(document.createElement('div'));
+      let keys = data && data.position && Object.keys(data.position);
+      if (keys && keys.length == 2) {
+        menu.style.bottom = '';
+        menu.style.left = '';
+        menu.style.position = 'absolute';
+        menu.style.right = '';
+        menu.style.top = '';
+        keys.forEach(function(prop) {
+          menu.style[prop] = '0';
+        });
+      }
+      div.appendChild(divClose);
       menu.className = 'menu';
       menu.style.display = 'none';
       menu.style.opacity = 0.7;
@@ -73,7 +84,7 @@
         event.stopPropagation();
         // FIXME: Only works until a new tab receives response.
         // self.port.emit('request_options');
-        self.port.emit('settings', { url: 'settings.html' });
+        self.port.emit('settings', { url: 'anaran-jetpack-content/settings.html' });
       });
     });
     // }

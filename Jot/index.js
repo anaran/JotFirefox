@@ -8,13 +8,13 @@
   // Make sure option "Console Logging Level" is not set to "off".
   //
   // debugger;
-  let pd = require('./pouchdb-shimmed');
+  let pd = require('./lib/pouchdb-shimmed');
   const tabs = require("sdk/tabs");
   const _ = require("sdk/l10n").get;
   DEBUG_ADDON &&
     console.log('Logging enabled via debugger');
   exports.dummy = function(text, callback) {
-    let session = require('./session');
+    let session = require('./lib/anaran-jetpack-add-on/session');
     callback(text);
   }
   // Workaround for https://bugzil.la/1102504
@@ -661,7 +661,7 @@
           });
         });
         worker.port.on('session', function(data) {
-          let session = require('./session');
+          let session = require('./anaran-jetpack-add-on/session');
           let protocol = sp.prefs['protocol'],
               site = sp.prefs['site'],
               port = sp.prefs['port'],
@@ -700,8 +700,8 @@
         // let worker = tabs.activeTab.attach({
         // contentScriptFile: self.data.url('reportFeedbackInformation.js'),
         contentScriptFile: [
-          './setup_icon.js',
-          './setup_menu_item.js',
+          './anaran-jetpack-content/setup_icon.js',
+          './anaran-jetpack-content/setup_menu_item.js',
           './jot.js',
         ],
         onError: handleErrors
@@ -775,7 +775,7 @@
               settingsTab = tab;
               settingsWorker = tab.attach({
                 contentScriptFile: [
-                  './settings.js',
+                  './anaran-jetpack-content/settings.js',
                   // './report-json-parse-error.js',
                   // './diagnostics_overlay.js'
                 ],
@@ -878,43 +878,6 @@
   });
   // IP SECTION END
 
-
-  if (recent.NativeWindow) {
-    let nw = require('./nativewindow');
-    let jotId = nw.addContextMenu({
-      name: 'Jot',
-      // TODO Please report mozilla bug to the fact that Fennec
-      // contextmenu and text selection are mutually exclusive!
-      context: nw.SelectorContext('a'),
-      callback: function(target) {
-        let s = target.ownerDocument.getSelection();
-        let selectionText = s.toString();
-        let rangesText = "";
-        for (var i = 0; i < s.rangeCount; i++) {
-          rangesText += s.getRangeAt(i).toString();
-        }
-        openJotTab(rangesText.contains("\n") && !selectionText.contains("\n") ? rangesText : selectionText);
-      }
-    });
-  } else {
-    let cm = require("sdk/context-menu");
-    cm.Item({
-      label: "Jot",
-      context: cm.URLContext("*"),
-      contentScript: 'self.on("click", function (node, data) {' +
-      'let s = document.getSelection();' +
-      'let selectionText = s.toString();' +
-      'let rangesText = "";' +
-      'for (var i = 0; i < s.rangeCount; i++) {' +
-      '  rangesText += s.getRangeAt(i).toString();' +
-      '}' +
-      ' self.postMessage(rangesText.contains("\\n") && !selectionText.contains("\\n") ? rangesText : selectionText); });',
-      onMessage: function(selection) {
-        openJotTab(selection);
-      },
-      data: 'snap'
-    });
-  }
   // TODO Place following code where timed section should end.
   if (console.timeEnd) {
     DEBUG_ADDON &&

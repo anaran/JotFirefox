@@ -1,7 +1,16 @@
-bower_components/*
-node_modules/*
-*.xpi
+*.md
 *.txt
+*.webapp
+*.xpi
+*.zip
+*~
+.jpmignore
+gulpfile.js
+bower_components/
+lib/anaran-jetpack-add-on/pouchdb-add-on-sdk-shim.js
+node_modules/
+test/
+tmp/
 # !bower_components/pouchdb/*
 # !bower_components/pouchdb-authentication/dist/*
 !node_modules/pouchdb/dist/pouchdb-shimmed.js

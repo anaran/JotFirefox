@@ -16,7 +16,7 @@
   "icon": "resource://jid1-HE38Y6vsW9TpHg-at-jetpack/data/posts-48.png",
   "id": "jid1-HE38Y6vsW9TpHg@jetpack",
   "license": "MPL 2.0",
-  "main": "lib/main.js",
+  "main": "index.js",
   "name": "jot",
   "title": "Jot",
   "// See http://semver.org/": " for jpm version requirements.",
