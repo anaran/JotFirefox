@@ -6,9 +6,9 @@ const gulp = require('gulp');
 const concat = require('gulp-concat');
 
 gulp.task('shim-pouchdb', function() {
-    return gulp.src([
-	'./lib/anaran-jetpack-add-on/pouchdb-add-on-sdk-shim.js',
-	'./node_modules/pouchdb/dist/pouchdb.min.js'])
-	.pipe(concat('pouchdb-shimmed.js'))
-	.pipe(gulp.dest('./lib'));
+	return gulp.src([
+		'./lib/anaran-jetpack-add-on/pouchdb-add-on-sdk-shim.js',
+		'./node_modules/pouchdb/dist/pouchdb.min.js'])
+		.pipe(concat('pouchdb-shimmed.js'))
+		.pipe(gulp.dest('./lib'));
 });
