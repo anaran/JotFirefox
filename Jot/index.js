@@ -786,12 +786,19 @@
                 pref.description = _(pref.name + '_description');
                 return pref;
               });
-              settingsWorker.port.on('request_settings', function (data) {
+              let emitLoadSettings = function (data) {
                 settingsWorker.port.emit('load_settings', {
                   localizedPreferences: localizedPreferences,
-                  prefs: sp.prefs
+                  prefs: sp.prefs,
+                  links: [
+                    {
+                      id: 'help_link',
+                      href: self.data.url(_('help_path'))
+                    }
+                  ]
                 });
-              });
+              };
+              settingsWorker.port.on('request_settings', emitLoadSettings);
               settingsWorker.port.on('save_setting', function (data) {
                 sp.prefs[data.name] = data.value;
                 // NOTE: We don't need this as long as we don't incrementally update the settings UI.
@@ -800,16 +807,10 @@
                 // This works:
                 // document.querySelector('.menulist[name*="sdk"]').value = "error"
                 // document.querySelector('label.radio input[name="sdk.console.logLevel"][value="all"]').checked = true;
-                settingsWorker.port.emit('load_settings', {
-                  localizedPreferences: localizedPreferences,
-                  prefs: sp.prefs
-                });
+                emitLoadSettings();
               });
               sp.on('position', function(prefName) {
-                settingsWorker.port.emit('load_settings', {
-                  localizedPreferences: localizedPreferences,
-                  prefs: sp.prefs
-                });
+                emitLoadSettings();
               });
             },
             onClose: function() {
