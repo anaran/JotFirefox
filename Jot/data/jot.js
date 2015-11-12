@@ -16,7 +16,7 @@
   try {
     DEBUG_ADDON &&
       console.log("self.port is true", self);
-    self.port.on('jot_icon_show', function (data) {
+    'body' in document && self.port.on('jot_icon_show', function (data) {
       let div = window.setupIcon('jot_icon_div', 'request_position_save', data);
       let menu = window.setupMenu(div, data);
       window.setupMenuItem(menu, 'jot', data.menu.jot, function (event) {
