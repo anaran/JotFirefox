@@ -9,6 +9,8 @@
   //
   // debugger;
   let pd = require('./lib/pouchdb-shimmed');
+  let localDb = new pd('jot6');
+  let pur = require('./lib/pouchdb_utc_random');
   const tabs = require("sdk/tabs");
   const _ = require("sdk/l10n").get;
   DEBUG_ADDON &&
@@ -192,36 +194,48 @@
     ps.set("services.sync.prefs.sync.extensions." + self.id + ".syncstorage", sp.prefs[prefName]);
   });
 
-  sp.on("syncstorage", function(prefname) {
+  if (ss.storage.entries && ss.storage.entries.length) {
     try {
-      let syncstorage = JSON.parse(sp.prefs["syncstorage"]);
-      if (syncstorage.hasOwnProperty('entries')) {
-        console.error('converting legacy format ', syncstorage);
-        syncstorage = syncstorage.entries;
-      }
-      console.error(syncstorage);
-      let mergeFrom, mergeTo;
-      if (syncstorage && syncstorage.length && ss.storage.entries && ss.storage.entries.length) {
-        if (syncstorage.length > ss.storage.entries.length) {
-          mergeFrom = ss.storage.entries;
-          mergeTo = syncstorage;
+      // let localDb = new pd('jot');
+      // DEBUG_ADDON && localDb.destroy();
+      ss.storage.entries.forEach(function(fromValue, fromIndex, fromObject) {
+        let activity, start = new Date(fromValue.start), end = new Date(fromValue.end);
+        let startkey = pur.couchdbUtcRandomFromDate(start).substring(0, 14);
+        let endkey = startkey + "\ufff0";
+        try {
+          // activity is stringified twice in legacy versions of Jot.
+          activity = JSON.parse(fromValue.activity);
         }
-        else {
-          mergeFrom = syncstorage;
-          mergeTo = ss.storage.entries;
+        catch (e) {
+          activity = fromValue.activity;
         }
-        mergeFrom.forEach(function(fromValue, fromIndex, fromObject) {
-          if(!mergeTo.some(function(toValue, toIndex, toObject) {
-            return fromValue.start == toValue.start
-              && fromValue.end == toValue.end
-              && fromValue.activity == toValue.activity;
+        localDb.allDocs({
+          endkey: endkey,
+          include_docs: true,
+          startkey: startkey,
+        }).then(function (result) {
+          // handle result
+          // worker.port.emit('export_data', result);
+          if(!result.rows.some(function(toValue, toIndex, toObject) {
+            return start.toJSON() == toValue.doc.start
+              && end.toJSON() == toValue.doc.end
+              && activity == toValue.doc.activity;
           })) {
-            mergeTo.push(fromValue);
+            // See http://pouchdb.com/errors.html#could_not_be_cloned
+            localDb.put({
+              _id: pur.couchdbUtcRandomFromDate(start),
+              activity: activity,
+              end: end.toJSON(),
+              start: start.toJSON()
+            }).catch(function (err) {
+              worker.port.emit('local_put_error', err);
+            });
           }
+        }).catch(function (err) {
+          worker.port.emit('sync_info', { migration_error: err });
         });
-      }
-      ss.storage.entries = mergeTo;
-      sp.prefs["syncstorage"] = JSON.stringify(ss.storage.entries);
+      });
+      // delete ss.storage;
     }
     catch (exception) {
       // NOTE Anonymize user profile in stack trace
@@ -258,7 +272,7 @@
       DEBUG_ADDON &&
         console.error(exception);
     }
-  });
+  }
 
   let getAboutData = function getAboutData() {
     let quotaUse = (new Number(ss.quotaUsage * 100)).toFixed(2),
@@ -285,30 +299,6 @@
     return { quotaUse: quotaUse, len: len, min_text: min_text,
             max_text: max_text, min_start: min_start, max_start: max_start };
   };
-
-  sp.on('ABOUTDATA', function () {
-    let { quotaUse, len,
-         min_text, max_text, min_start, max_start } = getAboutData();
-    notifications.notify({
-      title: 'About Jot Data',
-      text: 'Use of storage quota: ' +
-      quotaUse +
-      '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
-      ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
-      min_start + '\nnewest: ' + max_start
-    });
-    DEBUG_ADDON &&
-      console.log('notify:' + 'Use of storage quota: ' +
-                  quotaUse +
-                  '%\nNumber of snaps: ' + len + '\nshortest: ' + min_text +
-                  ' characters\nlongest: ' + max_text + ' characters\noldest: ' +
-                  min_start + '\nnewest: ' + max_start);
-  });
-  // See https://blog.mozilla.org/addons/2013/06/13/jetpack-fennec-and-nativewindow
-  // get a global window reference
-  const utils = require('sdk/window/utils');
-  const recent = utils.getMostRecentBrowserWindow();
-
 
   let formatEntry = function(entryFormat, start, end, text) {
     // Expand character escapes (\n, \r, \t) first, before text (most
@@ -562,10 +552,10 @@
           getJotEntries(worker, data);
         });
         worker.port.on('sync', function(data) {
-          let localDb = new pd('jot');
+          // let localDb = new pd('jot');
           localDb.info().then(function (result) {
             // handle result
-            if (result.doc_count == 0) {
+            if (false && result.doc_count == 0) {
               for (let i = 0, len = ss.storage.entries.length;
                    i < len; i++) {
                 localDb.post({
@@ -605,21 +595,6 @@
                 };
                 let url = protocol + '://' + site + ':' + port + path;
                 let remoteDb = new pd(url, opts);
-                for (let i = 0, len = ss.storage.entries.length;
-                     i < len; i++) {
-                  remoteDb.post({
-                    activity: ss.storage.entries[i].activity,
-                    start: ss.storage.entries[i].astart,
-                    end: ss.storage.entries[i].end
-                  }, opts).then(function (result) {
-                    // handle result
-                    worker.port.emit('sync_info', { remoteDB: result });
-                  }).catch(function (err) {
-                    worker.port.emit('sync_info', err);
-                    return;
-                  });
-                }
-                // localDb.sync(remoteDb).on('change', function (info) {
                 localDb.sync(remoteDb, opts).on('change', function (info) {
                   // handle change
                   worker.port.emit('sync_info', {'sync_change': info});
@@ -649,7 +624,7 @@
           });
         });
         worker.port.on('request_export', function(data) {
-          let localDb = new pd('jot');
+          // let localDb = new pd('jot');
           localDb.allDocs({
             include_docs: true/*, 
   attachments: true*/
@@ -661,7 +636,7 @@
           });
         });
         worker.port.on('session', function(data) {
-          let session = require('./anaran-jetpack-add-on/session');
+          let session = require('./lib/anaran-jetpack-add-on/session');
           let protocol = sp.prefs['protocol'],
               site = sp.prefs['site'],
               port = sp.prefs['port'],
