@@ -14,6 +14,10 @@ See [which versions](https://addons.mozilla.org/en-US/firefox/addon/jot/versions
 This README is not delivered with the add-on. It is aimed at
 developers and contributors.
 
+## Cloning this repository
+
+Make sure to use `git clone --recursive ...` since this repository uses submodules under [Jot/data](Jot/data) and [Jot/lib](Jot/lib).
+
 ## Add-on User Help
 
 [Jot/data/HELP.md](Jot/data/HELP.md) is what gets converted to HTML and bundled with the add-on, accessible under the `Help` menu entry.
